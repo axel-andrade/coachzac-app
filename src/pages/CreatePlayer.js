@@ -87,7 +87,7 @@ export default class CreatePlayer extends Component {
     };
 
     callRequest = async (url) => {
-
+        const { params} = this.props.navigation.state;
         api.post('/createPlayer', {
 
             _ApplicationId: 'coachzacId',
@@ -105,16 +105,19 @@ export default class CreatePlayer extends Component {
             profileImage: url
 
         }).then((res) => {
+            //AsyncStorage.setItem('@CoachZac:configPlayer', JSON.stringify({hasChangePlayer: true}));
+            this.props.navigation.navigate("Home",{page:1})
+
             Alert.alert("Atleta cadastrado com sucesso!");
-            this.props.onSaved();
+            params.onChangePage(1);
         }).catch((e) => {
-            //limpar campos
-            this.setState({
-                error: true,
-                name: "",
-                email: ""
-            });
-            Alert.alert(JSON.stringify(e.response.data.error));
+            // //limpar campos
+            // this.setState({
+            //     error: true,
+            //     name: "",
+            //     email: ""
+            // });
+            Alert.alert(JSON.stringify(e.response.data.error));    
         });
 
     };
@@ -138,7 +141,6 @@ export default class CreatePlayer extends Component {
     render() {
         return (
 
-
             <Container>
                 <Header style={{ backgroundColor: 'white' }}>
                     <Left>
@@ -150,8 +152,8 @@ export default class CreatePlayer extends Component {
                         <Text style={{ color: '#269cda', fontSize: 20, fontWeight: 'bold' }}>Cadastrar</Text>
                     </Body>
                     <Right>
-                        <Button small style={{backgroundColor:"#E07A2F", borderRadius:24}} onPress={this.createPlayer}>
-                            <Text style={{color:'white'}}>SALVAR</Text>
+                        <Button transparent small onPress={this.createPlayer}>
+                            <Text style={{color:'#E07A2F'}}>SALVAR</Text>
                         </Button>
                     </Right>
                 </Header>

@@ -10,16 +10,20 @@ import Home from './pages/Home';
 import PlayerProfile from './pages/PlayerProfile';
 import ResultDetail from './pages/ResultDetail';
 import AnalyzesByPlayer from './pages/AnalyzesByPlayer';
-import RegisterPlayer from './pages/RegisterPlayer';
+import ResultByPlayer from './pages/ResultByPlayer';
 import Main from './pages/Main';
 import Account from './pages/Account';
 import CreatePlayer from './pages/CreatePlayer';
+import InitAnalyze from './pages/InitAnalyze';
+import PlayerForAnalyze from './pages/PlayerForAnalyze';
+import AnalyzeWithoutVideo from './pages/AnalyzeWithoutVideo';
+import NewAnalyze from  './pages/NewAnalyze';
 
 //export default createAppContainer(TabNavigator);
 const AppNavigator = createStackNavigator({
 
     'Main': {  
-        screen: Home,
+        screen: Main,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }
@@ -36,8 +40,34 @@ const AppNavigator = createStackNavigator({
             return ({ header: null });
         }
     },
+    'InitAnalyze': {  
+        screen: InitAnalyze,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
+    },
+    'NewAnalyze': {  
+        screen: NewAnalyze,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
+    },
     'PlayerProfile': {
         screen: PlayerProfile,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
+
+    },
+    'PlayerForAnalyze': {
+        screen: PlayerForAnalyze,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
+
+    },
+    'AnalyzeWithoutVideo': {
+        screen: AnalyzeWithoutVideo,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }
@@ -51,6 +81,12 @@ const AppNavigator = createStackNavigator({
     },
     'AnalyzesByPlayer': {
         screen: AnalyzesByPlayer,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
+    },
+    'ResultByPlayer': {
+        screen: ResultByPlayer,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }

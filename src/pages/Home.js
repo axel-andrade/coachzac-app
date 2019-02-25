@@ -7,6 +7,7 @@ import Player from '../pages/Player';
 import Account from '../pages/Account';
 import Analyze from '../pages/Analyze';
 import Result from '../pages/Result';
+import PlayerForAnalyze from '../pages/PlayerForAnalyze';
 
 import { View, TouchableOpacity, StyleSheet, AsyncStorage, Alert, Image } from 'react-native';
 
@@ -39,9 +40,9 @@ export default class Home extends Component {
         const sessionToken = await AsyncStorage.getItem('@CoachZac:sessionToken');
         //let page = this.props.navigation.getParam('page', 0);
         //if(page === 0 )
-            this.setState({ sessionToken: sessionToken});
+        this.setState({ sessionToken: sessionToken });
         //else
-         //   this.setState({ sessionToken: sessionToken, page: page});
+        //   this.setState({ sessionToken: sessionToken, page: page});
     }
 
     componentWillUnmount() {
@@ -49,14 +50,22 @@ export default class Home extends Component {
     }
 
     state = {
-        page: this.props.navigation.getParam('page', 0)===0 ? 3:  this.props.navigation.getParam('page', 0),
+        page: this.props.navigation.getParam('page', 0) === 0 ? 3 : this.props.navigation.getParam('page', 0),
         sessionToken: "",
         nameHeader: "Avaliações",
+        players: []
     };
+
+    onChangePage(page) {
+        this.setState({ page: page })
+    }
 
     renderPage = () => {
         switch (this.state.page) {
-            case 1: return <Player navigation={this.props.navigation} />
+            case 1: return <Player
+                navigation={this.props.navigation}
+                onChangePage={(page) => this.setState({ page: page })}
+            />
                 break;
             case 2: return <Result navigation={this.props.navigation} />
                 break;
@@ -65,6 +74,9 @@ export default class Home extends Component {
             case 4:
                 break;
             case 5: return <Account navigation={this.props.navigation} />
+                break;
+
+            case 6: return <PlayerForAnalyze navigation={this.props.navigation} />
                 break;
 
             default: break;
@@ -77,7 +89,7 @@ export default class Home extends Component {
 
             <Container>
 
-                {this.state.page === 1 ? <HeaderPlayer nameHeader={this.state.nameHeader} /> : null}
+                {this.state.page === 1 ? <HeaderPlayer nameHeader={this.state.nameHeader} /> : null} 
                 {this.state.page === 2 ? <HeaderPlayer nameHeader={this.state.nameHeader} /> : null}
 
                 <Content>
@@ -86,15 +98,19 @@ export default class Home extends Component {
 
                 {this.state.page === 1 || this.state.page === 3
                     ? this.state.page === 1
-                        ? <View style={{ alignItems: 'flex-end', position: "absolute", backgroundColor: 'transparent', top: '73%', left: '72%'}}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("CreatePlayer")}>
+                        ? <View style={{ alignItems: 'flex-end', position: "absolute", backgroundColor: 'transparent', top: '73%', left: '72%' }}>
+                            <TouchableOpacity onPress={
+                                () => this.props.navigation.navigate("CreatePlayer", {
+                                    'onChangePage': (page) => this.onChangePage(page)
+                                })
+                            }>
                                 <Icon name="plus-circle" size={70} style={{ color: '#C9F60A' }} />
                             </TouchableOpacity>
                         </View>
 
-                        : <View style={{ alignItems: 'flex-end', position: "absolute", backgroundColor: 'transparent', top: '73%', left:'65%'}}>
-                            <Button rounded style={{backgroundColor: '#E07A2F'}}>
-                                <Text style={{color:'white'}}>Começar</Text>
+                        : <View style={{ alignItems: 'flex-end', position: "absolute", backgroundColor: 'transparent', top: '73%', left: '65%' }}>
+                            <Button rounded style={{ backgroundColor: '#E07A2F' }} onPress={() => this.props.navigation.navigate("PlayerForAnalyze")}>
+                                <Text style={{ color: 'white' }}>Começar</Text>
                             </Button>
                         </View>
                     : null
@@ -103,13 +119,13 @@ export default class Home extends Component {
                 <Footer>
                     <FooterTab style={{ backgroundColor: 'white' }}>
                         <Button transparent vertical onPress={() => this.setState({ page: 1, nameHeader: "Atletas" })}>
-                            {this.state.page === 1 || this.state.page == 6 ? <Icon name="account-multiple" size={30} style={styles.orange} /> : <Icon name="account-multiple" size={30} style={styles.blue} />}
+                            {this.state.page === 1  ? <Icon name="account-multiple" size={30} style={styles.orange} /> : <Icon name="account-multiple" size={30} style={styles.blue} />}
                         </Button>
                         <Button transparent vertical onPress={() => this.setState({ page: 2, nameHeader: "Avaliações" })}>
                             {this.state.page === 2 ? <Icon name="clipboard-pulse-outline" size={30} style={styles.orange} /> : <Icon name="clipboard-pulse-outline" size={30} style={styles.blue} />}
                         </Button>
                         <Button transparent vertical onPress={() => this.setState({ page: 3 })}>
-                            {this.state.page === 3 ? <Icon name="tennis" size={30} style={styles.orange} /> : <Icon name="tennis" size={30} style={styles.blue} />}
+                            {this.state.page === 3 || this.state.page === 6 ? <Icon name="tennis" size={30} style={styles.orange} /> : <Icon name="tennis" size={30} style={styles.blue} />}
                         </Button>
                         <Button transparent vertical onPress={() => this.setState({ page: 4 })}>
                             {this.state.page === 4 ? <Icon name="calendar-clock" size={30} style={styles.orange} /> : <Icon name="calendar-clock" size={30} style={styles.blue} />}

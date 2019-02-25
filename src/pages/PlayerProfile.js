@@ -5,8 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const profileImage = require('../../assets/profile.png');
 import ProfileModal from '../components/ProfileModal';
 import PhotoModal from '../components/PhotoModal';
-import PureChart from 'react-native-pure-chart';
-
+import ChartScaleBand from '../components/ChartScaleBand';
 
 export default class PlayerProfile extends Component {
 
@@ -16,52 +15,40 @@ export default class PlayerProfile extends Component {
         modalVisible: false,
         fromListItem: true,
         modalPhotoVisible: false,
+        good: [],
+        medium: [],
+        bad: []
+
     };
 
     async componentDidMount() {
 
         //verificando se o componente esta vindo da list item 
         if (this.state.fromListItem) {
+
+            let good = this.getSteps(this.props.navigation.state.params.player.goodSteps);
+            let medium = this.getSteps(this.props.navigation.state.params.player.mediumSteps);
+            let bad = this.getSteps(this.props.navigation.state.params.player.badSteps);
+            let existsProfileImage;
             //Alert.alert("Veio do list item");
-            if (this.props.navigation.state.params.player.profileImage != undefined) {
-                this.setState({
-                    player: this.props.navigation.state.params.player,
-                    existsProfileImage: true
-                });
+            if (this.props.navigation.state.params.player.profileImage != undefined)
+                existsProfileImage = true;
+            else
+                existsProfileImage = false;
 
-                await AsyncStorage.multiSet([
-                    ['@CoachZac:player', JSON.stringify(this.props.navigation.state.params.player)],
-                ]);
-            }
-            else {
-                this.setState({
-                    player: this.props.navigation.state.params.player,
-                    existsProfileImage: false
-                });
+            this.setState({
+                player: this.props.navigation.state.params.player,
+                existsProfileImage: existsProfileImage,
+                good: good,
+                medium: medium,
+                bad: bad
 
-                await AsyncStorage.multiSet([
-                    ['@CoachZac:player', JSON.stringify(this.props.navigation.state.params.player)],
-                ]);
-            }
+            });
+            await AsyncStorage.multiSet([
+                ['@CoachZac:player', JSON.stringify(this.props.navigation.state.params.player)],
+            ]);
         }
 
-    };
-
-    renderFundaments = (borderColor, color, step, nameStep) => {
-        return (
-            <Item style={{ borderColor: 'transparent', alignItems: 'center' }}>
-                <Left style={{ paddingLeft: '3%' }}>
-                    <View style={{ backgroundColor: "white", borderWidth: 1, borderColor: `${borderColor}`, width: "40%", alignItems: 'center', justifyContent: "center" }}>
-                        <Text style={{ fontSize: 12, color: `${color}`, padding: 3, fontWeight: "bold" }}>{"Passos " + nameStep}</Text>
-                    </View>
-                    {step
-                        ? <Text note style={{ fontSize: 10, paddingTop: "2%" }}>{step}</Text>
-                        : <Text note style={{ fontSize: 10, paddingTop: "2%" }}>Nenhum</Text>
-                    }
-                </Left>
-            </Item>
-
-        );
     };
 
     renderInfo = (name, state) => {
@@ -95,26 +82,36 @@ export default class PlayerProfile extends Component {
 
     };
 
+    getSteps(step) {
+        let data = [];
+        if (step) {
+            for (let i = 0; i < step.length; i++)
+                data.push(<Text note style={{ fontSize: 10, paddingTop: "2%" }}>{"- " + step[i]}</Text>)
+        }
+        else
+            data.push(<Text note style={{ fontSize: 10, paddingTop: "2%" }}>{"- Nenhum"}</Text>)
+        return data;
+    };
 
     render() {
-        
+
         return (
             <Container>
                 <Header style={{ backgroundColor: 'white' }}>
-                    <Left>
-                        <Button transparent onPress={() => this.props.navigation.goBack()}>
-                            <Icon name="arrow-left" size={22.5} color='#269cda' />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Text style={{ color: '#269cda', fontSize: 20, fontWeight: 'bold' }}>Perfil do Atleta</Text>
+
+                    <Button transparent onPress={() => this.props.navigation.goBack()}>
+                        <Icon name="arrow-left" size={22.5} color='#269cda' />
+                    </Button>
+
+                    <Body style={{ paddingLeft: '5%' }}>
+                    <Title style={{color:'#269cda'}}>Perfil do Atleta</Title>
+
                     </Body>
-                    <Right>
-                    </Right>
                 </Header>
-                <ScrollView>
-                    <View style={{ backgroundColor: "white", height: '35%', paddingTop: '2%' }}>
-                        <ListItem avatar>
+              
+                <Content>
+                    <View style={{ backgroundColor: "white", paddingTop: '10%', paddingLeft: '5%', paddingBottom: '5%' }}>
+                        <Item style={{ borderColor: 'white' }}>
                             <Left>
 
                                 {this.state.existsProfileImage
@@ -128,80 +125,62 @@ export default class PlayerProfile extends Component {
 
                             </Left>
                             <Body>
-                                <Text style={{ color: '#269cda', fontWeight: 'bold' }}>{this.state.player.name}</Text>
-                                {this.renderInfo("Email: ", this.state.player.username)}
-                                {this.renderInfo("Idade: ", this.state.player.dateOfBirth)}
-                                {this.renderInfo("Saque: ", this.state.player.level + "/10")}
-                                {this.renderInfo("Peso: ", this.state.player.weight + " kg")}
-                                {this.renderInfo("Altura: ", this.state.player.height + " cm")}
-                                {this.renderInfo("Telefone: ", this.state.player.phone)}
-                                {this.renderInfo("Endereço: ", this.state.player.adress)}
-                                {this.state.player.lastAnalyze ? this.renderInfo("Última avaliação: ", this.state.player.lastAnalyze) : this.renderInfo("Última avaliação: ", "Ainda não possui avaliações")}
-
+                                <Body>
+                                </Body>
                             </Body>
-                            <Right>
+                            <Right style={{ flexDirection: 'row' }}>
                                 <TouchableOpacity>
                                     <Icon name="pencil" size={25} style={styles.icon} />
                                 </TouchableOpacity>
+                                <TouchableOpacity>
+                                    <Icon name="delete" size={25} style={styles.icon} />
+                                </TouchableOpacity>
                             </Right>
 
-                        </ListItem>
+                        </Item>
+                    </View>
+                    <View style={{ paddingLeft: '8%' }}>
+                        {this.renderInfo("Email: ", this.state.player.username)}
+                        {this.renderInfo("Idade: ", this.state.player.dateOfBirth)}
+                        {this.renderInfo("Saque: ", this.state.player.level + "/10")}
+                        {this.renderInfo("Peso: ", this.state.player.weight + " kg")}
+                        {this.renderInfo("Altura: ", this.state.player.height + " cm")}
+                        {this.renderInfo("Telefone: ", this.state.player.phone)}
+                        {this.renderInfo("Endereço: ", this.state.player.adress)}
+                        {this.state.player.lastAnalyze ? this.renderInfo("Última avaliação: ", this.state.player.lastAnalyze) : this.renderInfo("Última avaliação: ", "Ainda não possui avaliações")}
                     </View>
 
-                    <View style={{ height: '20%', paddingLeft: '5%', paddingTop:"10%" }}>
+                    <Item style={{ borderColor: 'white', paddingTop: '10%', justifyContent: 'center', alignItems: 'center', paddingLeft: '5%' }}>
+                        <Left style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity>
+                                <Icon name="share-variant" size={25} style={styles.icon} />
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                <Icon name="forum" size={24} style={styles.icon} />
+                            </TouchableOpacity>
+                        </Left>
+                        <Body style={{ paddingLeft: '30%' }}>
+                            <Button style={{ backgroundColor: "#E07A2F", borderRadius: 24 }}>
+                                <Text style={{ color: 'white' }}>AVALIAR</Text>
+                            </Button>
+                        </Body>
+                    </Item>
 
-                        <View style={{ alignItems: 'flex-end', paddingBottom: '20%', paddingTop: '7%', paddingRight: '5%' }}>
+                    {this.state.player.countAnalyze > 0
+                        ?
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ResultByPlayer", { good: this.state.good, medium: this.state.medium, bad: this.state.bad })}>
+                            <View style={{ paddingTop: '3%', paddingLeft: '5%', paddingRight: '5%', paddingTop: '10%' }}>
+                                <View style={{ backgroundColor: "#F1F9FF", height: 78, borderWidth: 1, borderColor: '#269cda', alignItems: 'center', justifyContent: "center" }}>
+                                    <Text style={{ fontSize: 12, color: "#269cda", padding: 3, fontWeight: "bold" }}>Ver Resultados</Text>
+                                </View>
 
-                            <View style={{ flexDirection: 'row' }}>
-                                <Left style={{ flexDirection: 'row' }}>
-                                    <TouchableOpacity>
-                                        <Icon name="email" size={25} style={styles.icon} />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <Icon name="share-variant" size={25} style={styles.icon} />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity>
-                                        <Icon name="phone" size={24} style={styles.icon} />
-                                    </TouchableOpacity>
-                                </Left>
-                                <Right>
-                                    <Button style={{ backgroundColor: "#E07A2F", borderRadius: 24 }}>
-                                        <Text style={{ color: 'white' }}>AVALIAR</Text>
-                                    </Button>
-                                </Right>
                             </View>
 
-                        </View>
+                        </TouchableOpacity>
+                        : null
+                    }
 
-                    </View>
-                    {/* Fundamentos bons ruins e medio */}
-
-                    {this.renderFundaments('green', 'green', this.state.player.goodSteps, 'Bons')}
-                    {this.renderFundaments('#FFD700', '#FFD700', this.state.player.mediumSteps, "Médios")}
-                    {this.renderFundaments('red', 'red', this.state.player.badSteps, "Ruins")}
-
-
-
-                    <View style={{ alignItems: 'center', height: '30%', justifyContent: 'center', paddingBottom: '10%' }}>
-
-                        {this.state.player.countAnalyze > 0
-                            ?
-                            <TouchableOpacity onPress={()=>this.props.navigation.navigate("AnalyzesByPlayer")}>
-                                <View style={{ width: '90%', height: '60%', backgroundColor: '#F1F9FF', borderColor: '#269cda', borderWidth: 0.5, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-
-                                    <Left style={{ paddingLeft: 10 }}>
-                                        <Text style={{ color: '#269cda' }}>Avaliações</Text>
-                                    </Left>
-                                    <Right style={{ paddingRight: 10 }}>
-                                        <Text style={{ color: '#269cda' }}>{"+" + this.state.player.countAnalyze}</Text>
-                                    </Right>
-                                </View>
-                            </TouchableOpacity>
-                            : null
-                        }
-                    </View>
-            
-                </ScrollView>
+                </Content>
 
                 <ProfileModal
 
@@ -219,8 +198,8 @@ export default class PlayerProfile extends Component {
                     onClose={() => this.setState({ modalPhotoVisible: false })}
                     visible={this.state.modalPhotoVisible}
                 />
-        
-            </Container>
+
+            </Container >
         );
     };
 
@@ -232,7 +211,7 @@ const styles = StyleSheet.create({
     },
     noteBold: {
         fontWeight: 'bold',
-        color: 'black'
+        color: '#269cda'
     },
     buttonEnviar: {
         borderWidth: 1,

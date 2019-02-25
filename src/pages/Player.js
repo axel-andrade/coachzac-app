@@ -5,7 +5,6 @@ import styles from '../styles/Tab';
 import { Container, Header, Item, Input, Content } from 'native-base';
 import api from '../services/api';
 import PlayerList from '../components/PlayerList';
-import RegisterPlayer from '../pages/RegisterPlayer';
 import PhotoModal from '../components/PhotoModal';
 
 export default class Player extends Component {
@@ -32,13 +31,24 @@ export default class Player extends Component {
   };
 
   async componentDidMount() {
+  
     this._isMounted = true;
 
-    //setTimeout(async () => {
+    const config = JSON.parse(await AsyncStorage.getItem('@CoachZac:configPlayer'));
+    //alert(config.hasChangePlayer);
     const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
     if (this._isMounted) {
-      this.setState({ sessionToken: sessionToken, loading: true });
-      this.getPlayers();
+
+      if (config.hasChangePlayer) {
+        this.setState({ sessionToken: sessionToken, loading: true });
+        this.getPlayers();
+      }
+      else {
+        let players =JSON.parse( await AsyncStorage.getItem('@CoachZac:players'));
+        let total = await AsyncStorage.getItem('@CoachZac:totalPlayer');
+        this.setState({ sessionToken: sessionToken, loading: false, players: players, count: total });
+      }
+
     }
 
   }
@@ -56,18 +66,22 @@ export default class Player extends Component {
         _ApplicationId: 'coachzacId',
         _SessionToken: this.state.sessionToken
       }).then((res) => {
-        //AsyncStorage.multiSet([['@CoachZac:players', JSON.stringify(res.data.result)]]);
+        AsyncStorage.multiSet([
+          ['@CoachZac:players', JSON.stringify(res.data.result.players)],
+          ['@CoachZac:totalPlayer', JSON.stringify(res.data.result.total)],
+          ['@CoachZac:configPlayer', JSON.stringify({hasChangePlayer:false})],
+        ]);
         this.setState({ loading: false, players: res.data.result.players, count: res.data.result.total });
       }).catch((e) => {
         this.setState({ loading: false, error: true });
-        //Alert.alert(JSON.stringify(e.response.data.error));
+        Alert.alert(JSON.stringify(e.response.data.error));
       });
     }
   };
 
   render() {
 
-
+    const {onChangePage} = this.props;
     return (
 
 
@@ -77,8 +91,8 @@ export default class Player extends Component {
           : this.state.error
             ? <Text style={{ color: 'red', alignSelf: 'center' }}>Ops ... algo deu errado! :( </Text>
             : <View>
-              <View style={{paddingRight: 10, alignItems: 'flex-end' }}>
-                <Text style={{ fontSize: 10}}>{this.state.count + " atleta(s)"}</Text>
+              <View style={{ paddingRight: 10, alignItems: 'flex-end' }}>
+                <Text style={{ fontSize: 10 }}>{this.state.count + " atleta(s)"}</Text>
               </View>
               <PlayerList
                 players={this.state.players}
@@ -91,7 +105,7 @@ export default class Player extends Component {
               />
             </View>
         }
-      
+
         <PhotoModal
           uri={this.state.uriSelectPlayer}
           onClose={() => this.setState({ modalPhotoVisible: false })}

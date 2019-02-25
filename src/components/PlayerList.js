@@ -16,7 +16,7 @@ import PlayerListItem from '../components/PlayerListItem';
 
 const PlayerList = props => {
 
-    const {players, onPress, onLongPress, onFavorited} = props;
+    const {players, onPress, onLongPress, onFavorited,type} = props;
 
     return (
 
@@ -28,6 +28,7 @@ const PlayerList = props => {
                     onPress={onPress}
                     onLongPress={onLongPress}
                     onFavorited={onFavorited}
+                    type={type}
                 />    
         )}
         keyExtractor={item => item.objectId}/>

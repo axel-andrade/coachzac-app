@@ -51,6 +51,8 @@ export default class Login extends Component {
             AsyncStorage.multiSet([
                 ['@CoachZac:sessionToken', JSON.stringify(user.sessionToken)],
                 ['@CoachZac:user', JSON.stringify(user)],
+                ['@CoachZac:configPlayer', JSON.stringify({hasChangePlayer:  true})],
+                ['@CoachZac:configAnalyze', JSON.stringify({hasChangeAnalyze:  true})]
             ]);
 
             this.props.navigation.navigate('Home');

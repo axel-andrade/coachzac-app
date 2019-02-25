@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import { AreaChart, Grid } from 'react-native-svg-charts';
 import * as shape from 'd3-shape';
 
-import { Text, View, AsyncStorage, Alert, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
+import { Text, View, AsyncStorage, Alert, ActivityIndicator, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from '../styles/Tab';
-import { Container, Header, Item, Input, Content, Left, Right, Body, Button } from 'native-base';
+import { Container, Form, Header, Item, Input, Content, Left, Right, Body, Button, Picker, Title } from 'native-base';
 import api from '../services/api';
 import ResultList from '../components/ResultList';
-import RegisterPlayer from './RegisterPlayer';
 import PhotoModal from '../components/PhotoModal';
-import ChartScaleBand from  '../components/ChartScaleBand';
+import ChartScaleBand from '../components/ChartScaleBand';
 
 export default class AnalyzesByPlayer extends Component {
 
@@ -26,7 +25,8 @@ export default class AnalyzesByPlayer extends Component {
     loading: false,
     error: false,
     player: [],
-    count: ""
+    count: "",
+    genre: ""
   };
 
   async componentDidMount() {
@@ -65,35 +65,41 @@ export default class AnalyzesByPlayer extends Component {
     }
   };
 
+  onValueChange(value) {
+    this.setState({
+      genre: value
+    });
+  };
+
   render() {
 
-    const data = [ 50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80 ];
+    const data = [50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80];
 
     return (
 
       <Container>
-        <Header style={{ backgroundColor: 'white', justifyContent:'center',alignItems:'center',flexDirection:'row'}}>
-          <Left>
-            <Button transparent onPress={() => this.props.navigation.goBack()}>
-              <Icon name="arrow-left" size={22.5} color='#269cda' />
-            </Button>
-          </Left>
+        <Header style={{ backgroundColor: 'white' }}>
 
-          <Text style={{ color: '#269cda', fontSize: 20, fontWeight: 'bold' }}>Avaliações do Atleta</Text>
-          <Right></Right>
+          <Button transparent onPress={() => this.props.navigation.goBack()}>
+            <Icon name="arrow-left" size={22.5} color='#269cda' />
+          </Button>
+
+          <Body style={{ paddingLeft: '5%' }}>
+            <Title style={{ color: '#269cda' }}>Avaliações do Atleta</Title>
+          </Body>
+
+          <Button transparent onPress={() => this.props.navigation.navigate("Home", { page: 3 })}>
+            <Icon name="tune" size={22.5} color='#269cda' />
+          </Button>
 
         </Header>
-        <Content padder style={{backgroundColor:'white'}}>
-          <View style={{ paddingRight: 10, alignItems: 'flex-end' }}>
-            <Text style={{ fontSize: 10 }}>{this.state.count + " avaliações"}</Text>
-          </View>
-          
-          <ChartScaleBand 
-            array={this.state.player}
-          />
-          
-          
-        </Content>
+        <ChartScaleBand
+          array={this.state.player}
+        />
+
+        <View style={{ paddingRight: 10, alignItems: 'flex-end', borderTopWidth: 1, borderTopColor: '#F1F9FF' }}>
+          <Text style={{ fontSize: 10 }}>{this.state.count + " avaliações"}</Text>
+        </View>
         <Content>
           {this.state.loading
             ? <ActivityIndicator style={{ paddingTop: '2%' }} size='large' color="#C9F60A" />
@@ -104,8 +110,8 @@ export default class AnalyzesByPlayer extends Component {
                 onPress={(params) => this.props.navigation.navigate('ResultDetail', params)}
               />
           }
-          </Content>
-        
+        </Content>
+
       </Container>
 
     );

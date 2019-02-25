@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, TouchableOpacity, Alert, StyleSheet } from 'react-native';
-
 import {
     List,
     ListItem,
@@ -9,7 +8,8 @@ import {
     Right,
     Body,
     Text,
-    Item
+    Item,
+    Button
 } from 'native-base';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -28,43 +28,54 @@ import PhotoModal from '../components/PhotoModal';
 
 const PlayerListItem = props => {
 
-    const { player, onPress, onLongPress, onFavorited} = props;
-    return (
+    const { player, onPress, onLongPress, onFavorited, type} = props;
+    var list;
+    if (type != 2) {
+        list = <ListItem avatar>
 
-        <ListItem avatar>
             <Left style={{ justifyContent: 'center' }}>
 
                 {player.profileImage
-                    ? <TouchableOpacity onPress={() => onPress({ player })} onLongPress={()=>onLongPress(player.profileImage)}>
+                    ? <TouchableOpacity onPress={() => onPress({ player })} onLongPress={() => onLongPress(player.profileImage)}>
                         <Thumbnail small source={{ uri: player.profileImage }} />
                     </TouchableOpacity>
                     : <TouchableOpacity onPress={() => onPress({ player })}>
                         <Thumbnail small source={profileImage} />
                     </TouchableOpacity>
                 }
-               
+
             </Left>
 
-        <Body>
-            <TouchableOpacity onPress={() => onPress({ player })}>
-                <Text style={{ color: '#269cda', fontWeight: 'bold' }}>{player.name}</Text>
-                <Text note style={styles.note}>{player.dateOfBirth}</Text>
-                <Text note style={styles.note}>{player.level + " estrelas"}</Text>
-            </TouchableOpacity>
-        </Body>
+            <Body>
+                <TouchableOpacity onPress={() => onPress({ player })}>
+                    <Text style={{ color: '#269cda', fontWeight: 'bold' }}>{player.name}</Text>
+                    <Text note style={styles.note}>{player.dateOfBirth}</Text>
+                    <Text note style={styles.note}>{player.level + " estrelas"}</Text>
+                </TouchableOpacity>
+            </Body>
 
-        <Right style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-            <TouchableOpacity onPress={()=>onFavorited({player})}>
-            <Icon name="star-outline" size={27} style={{ color: 'gray'/*'#E07A2F' */}} />
-            </TouchableOpacity>
-        </Right>
-
-       
-
+            <Right style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+                <TouchableOpacity onPress={() => onFavorited({ player })}>
+                    <Icon name="star-outline" size={27} style={{ color: 'gray'/*'#E07A2F' */ }} />
+                </TouchableOpacity>
+            </Right>
         </ListItem >
-
-
-    );
+    }
+    else {
+        list = <ListItem >
+            
+                <Button small transparent onPress={() => onPress({ player: player }) }>
+                <View style={{ flexDirection: 'row' }}>
+                    <Left>
+                        <Text style={{ color: '#269cda', fontWeight: 'bold' }}>{player.name}</Text>
+                    </Left>
+                    <Icon name="chevron-right" size={30} color='#E07A2F' />
+                </View>
+                </Button>
+        
+        </ListItem >
+    }
+    return (list);
 
 };
 

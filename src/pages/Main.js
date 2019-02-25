@@ -17,6 +17,10 @@ export default class Main extends Component {
     };
 
     async componentDidMount() {
+        // await AsyncStorage.multiSet([
+        //     ['@CoachZac:configPlayer', JSON.stringify({hasChangePlayer:true})],
+        //     ['@CoachZac:configAnalyze', JSON.stringify({hasChangeAnalyze:false})],
+        //   ]);
         const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
         if (sessionToken != null)
             this.setState({ sessionToken: sessionToken });
@@ -29,6 +33,7 @@ export default class Main extends Component {
                 _ApplicationId: 'coachzacId',
                 _SessionToken: this.state.sessionToken
             }).then((res) => {
+
                 this.props.navigation.navigate("Home");
             }).catch((e) => {
                 
@@ -45,7 +50,7 @@ export default class Main extends Component {
           
             });
 
-        }, 3000);
+        }, 1500);
 
     }
 

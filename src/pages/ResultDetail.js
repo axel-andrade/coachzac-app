@@ -5,63 +5,123 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const profileImage = require('../../assets/profile.png');
 import ProfileModal from '../components/ProfileModal';
 import PhotoModal from '../components/PhotoModal';
+import ChartScaleBand from '../components/ChartScaleBand';
 
 export default class ResultDetail extends Component {
 
     state = {
         analyze: [],
+        player: [],
         existsProfileImage: false,
         modalVisible: false,
         fromListItem: true,
         modalPhotoVisible: false,
+        good: [],
+        medium: [],
+        bad: [],
+        data: [],
+        keys: []
     };
 
     async componentDidMount() {
 
+        //verificando se o componente esta vindo da list item 
+        if (this.state.fromListItem) {
 
+            let good = this.getSteps(this.props.navigation.state.params.analyze.player.goodSteps);
+            let medium = this.getSteps(this.props.navigation.state.params.analyze.player.mediumSteps);
+            let bad = this.getSteps(this.props.navigation.state.params.analyze.player.badSteps);
+            let existsProfileImage;
+            //Alert.alert("Veio do list item");
+            if (this.props.navigation.state.params.analyze.player.profileImage != undefined)
+                existsProfileImage = true;
+            else
+                existsProfileImage = false;
 
-        await AsyncStorage.multiSet([
-            ['@CoachZac:analyze', JSON.stringify(this.props.navigation.state.params.analyze)],
-        ]);
-        if (this.props.navigation.state.params.analyze.player.profileImage != undefined) {
             this.setState({
                 analyze: this.props.navigation.state.params.analyze,
-                existsProfileImage: true
+                player: this.props.navigation.state.params.analyze.player,
+                existsProfileImage: existsProfileImage,
+                good: good,
+                medium: medium,
+                bad: bad
+
             });
-        }
-        else {
-            this.setState({
-                analyze: this.props.navigation.state.params.analyze,
-                existsProfileImage: false
-            });
+            await AsyncStorage.multiSet([
+                ['@CoachZac:analyze', JSON.stringify(this.props.navigation.state.params.analyze)],
+            ]);
         }
     }
 
+    getSteps(step) {
+        let data = [];
+        if (step) {
+            for (let i = 0; i < step.length; i++)
+                data.push(<Text note style={{ fontSize: 10, paddingTop: "2%" }}>{"- " + step[i]}</Text>)
+        }
+        else
+            data.push(<Text note style={{ fontSize: 10, paddingTop: "2%" }}>{"- Nenhum"}</Text>)
+        return data;
+    };
+
+    renderInfo = (name, state) => {
+        return (
+            <Text note style={styles.note}>
+                <Text note style={[styles.note, styles.noteBold]}>{name}</Text>
+                {state}
+            </Text>
+        );
+    };
+
+    renderFundaments = (borderColor, color, step, nameStep) => {
+        return (
+
+            <View style={{ paddingTop: '3%', paddingLeft: '5%', paddingRight: '5%' }}>
+                <View style={{ backgroundColor: "white", borderWidth: 1, borderColor: `${borderColor}`, alignItems: 'center', justifyContent: "center" }}>
+                    <Text style={{ fontSize: 12, color: `${color}`, padding: 3, fontWeight: "bold" }}>{"Passos " + nameStep}</Text>
+                </View>
+                {step}
+            </View>
+
+
+        )
+    };
+
     render() {
         return (
+
             <Container>
-                <Header style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', flexDirection: 'row' }}>
-
-                    <Item style={{ justifyContent: 'center', alignItems: 'center', borderColor: 'transparent' }}>
-                        <Left>
-                            <TouchableOpacity onPress={()=> this.props.navigation.navigate('Home', {page: 2})}>
+                <Header style={{ backgroundColor: 'white' }}>
+                    <Left>
+                        <Button transparent onPress={() => this.props.navigation.goBack()}>
                             <Icon name="arrow-left" size={22.5} color='#269cda' />
-                            </TouchableOpacity>
-
-                        </Left>
-                        
-                        <Body style={{alignItems:'flex-start'}}>
-                        <Text style={{ color: '#269cda', fontSize: 20 , fontWeight:'bold'}}>Avaliação</Text>
-                        </Body>
-                        <Left></Left>
-
-                    </Item>
-
+                        </Button>
+                    </Left>
+                    <Body>
+                        <Title style={{color:'#269cda'}}>Resultados</Title>
+                    </Body>
+                    <Right></Right>
                 </Header>
 
-                <Text>{JSON.stringify(this.state.analyze)}</Text>
+                <View style={{paddingLeft:'5%',paddingTop:'2%'}}>
 
+                    {this.renderInfo("Name: ", this.state.player.name)}
+                    {this.renderInfo("Fundamento: ", "Saque")}
+                    {this.renderInfo("Nota: ", this.state.analyze.average)}
+                    {this.renderInfo("Data: ", "")}
+                    
+                </View >
 
+                <View>
+                    {this.renderFundaments('green', 'green', this.state.good, 'Bons')}
+                    {this.renderFundaments('#FFD700', '#FFD700', this.state.medium, "Médios")}
+                    {this.renderFundaments('red', 'red', this.state.bad, "Ruins")}
+                </View>
+
+                <ChartScaleBand
+                    data={this.state.data}
+                    keys={this.state.keys}
+                />
 
 
             </Container>
@@ -70,18 +130,13 @@ export default class ResultDetail extends Component {
 
 }
 
-// <PhotoModal
-//                     uri={this.state.analyze.player.profileImage}
-//                     onClose={() => this.setState({ modalPhotoVisible: false })}
-//                     visible={this.state.modalPhotoVisible}
-//                 />
 const styles = StyleSheet.create({
     note: {
         fontSize: 12
     },
     noteBold: {
         fontWeight: 'bold',
-        color: 'black'
+        color: '#269cda'
     },
     buttonEnviar: {
         borderWidth: 1,

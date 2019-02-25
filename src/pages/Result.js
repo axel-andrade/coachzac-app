@@ -5,8 +5,6 @@ import styles from '../styles/Tab';
 import { Container, Header, Item, Input, Content } from 'native-base';
 import api from '../services/api';
 import ResultList from '../components/ResultList';
-import RegisterPlayer from '../pages/RegisterPlayer';
-import PhotoModal from '../components/PhotoModal';
 
 export default class Result extends Component {
 
@@ -31,35 +29,50 @@ export default class Result extends Component {
   async componentDidMount() {
     this._isMounted = true;
 
-    //setTimeout(async () => {
+    
+    const config = JSON.parse(await AsyncStorage.getItem('@CoachZac:configAnalyze'));
+    //alert(config.hasChangeAnalyze)
     const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
-    if (this._isMounted) {
-      this.setState({ sessionToken: sessionToken, loading: true });
-      this.getAnalyzes();
-    }
+    //if (this._isMounted) {
 
+      if (config.hasChangeAnalyze) {
+        this.setState({ sessionToken: sessionToken, loading: true });
+        this.getAnalyzes();
+      }
+      else {
+        let analyzes =JSON.parse( await AsyncStorage.getItem('@CoachZac:analyzes'));
+        let total = await AsyncStorage.getItem('@CoachZac:totalAnalyze');
+        this.setState({ sessionToken: sessionToken, loading: false, analyzes: analyzes, count: total });
+      }
+
+    //}
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
+    //this._isMounted = false;
   }
 
 
   getAnalyzes = async () => {
 
-    if (this._isMounted) {
+    //if (this._isMounted) {
       //Alert.alert(this.state.sessionToken);
       api.post('/getAnalyzesMostRecent', {
         _ApplicationId: 'coachzacId',
         _SessionToken: this.state.sessionToken
       }).then((res) => {
         //AsyncStorage.multiSet([['@CoachZac:players', JSON.stringify(res.data.result)]]);
+        AsyncStorage.multiSet([
+          ['@CoachZac:analyzes', JSON.stringify(res.data.result.analyzes)],
+          ['@CoachZac:totalAnalyze', JSON.stringify(res.data.result.total)],
+          ['@CoachZac:configAnalyze', JSON.stringify({hasChangeAnalyze:false})],
+        ]);
         this.setState({ loading: false, analyzes: res.data.result.analyzes, count: res.data.result.total});
       }).catch((e) => {
         this.setState({ loading: false, error: true });
         //Alert.alert(JSON.stringify(e.response.data.error));
       });
-    }
+   // }
   };
 
   render() {
@@ -69,7 +82,6 @@ export default class Result extends Component {
 
 
       <View>
-
         {this.state.loading
           ? <ActivityIndicator style={{ paddingTop: '2%' }} size='large' color="#C9F60A" />
           : this.state.error

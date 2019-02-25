@@ -46,8 +46,8 @@ const ResultListItem = props => {
         <Body>
             <TouchableOpacity onPress={() => onPress({analyze})}>
                 <Text style={{ color: '#269cda', fontWeight: 'bold' }}>{analyze.player.name}</Text>
-                <Text note style={styles.note}>{analyze.fundament.name}</Text>
-                <Text note style={styles.note}>{analyze.createdAt.iso}</Text>
+                <Text note style={styles.note}>{"Fundamento: "+analyze.fundament.name}</Text>
+                <Text note style={styles.note}>{"Data: "+analyze.createdAt.iso}</Text>
             </TouchableOpacity>
         </Body>
 
