@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, AsyncStorage, Alert } from 'react-native';
+import { TextField } from 'react-native-material-textfield';
+import { Dropdown } from 'react-native-material-dropdown';
 import {
     Container,
     Content,
@@ -19,7 +21,7 @@ import {
     CheckBox,
     ListItem,
     Thumbnail,
-    Picker
+    Picker,
 } from "native-base";
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -42,21 +44,25 @@ export default class CreatePlayer extends Component {
         height: "",
         genre: "",
         phone: "",
-        adress: "",
+        address: "",
         profileImage: null,
         error: false,
         errorMessage: "",
         modalVisible: false,
-        genre: "key1",
         existsProfileImage: false,
         photoURL: "",
         sessionToken: ""
     };
 
     onValueChange(value) {
-        this.setState({
-            genre: value
-        });
+        let genre;
+        if (value === "Masculino")
+            genre = "male"
+        if (value === "Feminino")
+            genre = "female"
+        if (value === "Outro")
+            genre = "outher"
+        this.setState({ genre: genre });
     };
 
     saveProfileImage = async () => {
@@ -87,7 +93,7 @@ export default class CreatePlayer extends Component {
     };
 
     callRequest = async (url) => {
-        const { params} = this.props.navigation.state;
+        const { params } = this.props.navigation.state;
         api.post('/createPlayer', {
 
             _ApplicationId: 'coachzacId',
@@ -101,12 +107,12 @@ export default class CreatePlayer extends Component {
             height: this.state.height,
             genre: this.state.genre,
             phone: this.state.phone,
-            adress: this.state.adress,
+            address: this.state.address,
             profileImage: url
 
         }).then((res) => {
             //AsyncStorage.setItem('@CoachZac:configPlayer', JSON.stringify({hasChangePlayer: true}));
-            this.props.navigation.navigate("Home",{page:1})
+            this.props.navigation.navigate("Home", { page: 1 })
 
             Alert.alert("Atleta cadastrado com sucesso!");
             params.onChangePage(1);
@@ -117,7 +123,7 @@ export default class CreatePlayer extends Component {
             //     name: "",
             //     email: ""
             // });
-            Alert.alert(JSON.stringify(e.response.data.error));    
+            Alert.alert(JSON.stringify(e.response.data.error));
         });
 
     };
@@ -136,9 +142,10 @@ export default class CreatePlayer extends Component {
 
     };
 
-
-
     render() {
+
+        let { name, email, dateOfBirth, weight, height, phone, address, genre } = this.state;
+        let data = [{ value: 'Feminino' }, { value: 'Masculino' }, { value: 'Outro' }];
         return (
 
             <Container>
@@ -152,136 +159,107 @@ export default class CreatePlayer extends Component {
                         <Text style={{ color: '#269cda', fontSize: 20, fontWeight: 'bold' }}>Cadastrar</Text>
                     </Body>
                     <Right>
-                        <Button transparent small onPress={this.createPlayer}>
-                            <Text style={{color:'#E07A2F'}}>SALVAR</Text>
-                        </Button>
                     </Right>
                 </Header>
-                <Content padder >
-                    <Item style={{ borderColor: 'white' }}>
-                        <Left style={{ alignItems: 'flex-start', flexDirection: 'column', paddingLeft: '3%' }}>
+                <Content>
+                    <View style={{ padding: '5%', }}>
+                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                             <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
                                 {this.state.existsProfileImage
                                     ? <Thumbnail large source={{ uri: this.state.profileImage.path }} />
                                     : <Thumbnail large source={profileImage} />
                                 }
                             </TouchableOpacity>
+                        </View>
 
-                        </Left>
-                    </Item>
-                    <Form>
-                        <Item style={{ borderColor: '#269cda' }}>
-                            <Input
-                                placeholder='Nome'
-                                style={{ fontFamily: 'Exo Medium', color: '#269cda' }}
-                                placeholderTextColor='#269cda'
-                                value={this.state.name}
-                                onChangeText={text => this.setState({ name: text })}
-                            />
-                        </Item>
+                        <TextField
+                            label="Nome"
+                            textColor='#E07A2F'
+                            labelHeight={20}
+                            tintColor='#E07A2F'
+                            baseColor='#269cda'
+                            value={name}
+                            onChangeText={(name) => this.setState({ name })}
+                        />
+                        <TextField
+                            label="Email"
+                            textColor='#E07A2F'
+                            labelHeight={20}
+                            tintColor='#E07A2F'
+                            baseColor='#269cda'
+                            value={email}
+                            onChangeText={(email) => this.setState({ email })}
+                        />
 
-                    </Form>
-                    <Form>
-                        <Item style={{ borderColor: '#269cda' }}>
+                        <TextField
+                            label="Data de nascimento"
+                            textColor='#E07A2F'
+                            labelHeight={20}
+                            tintColor='#E07A2F'
+                            baseColor='#269cda'
+                            value={dateOfBirth}
+                            onChangeText={(dateOfBirth) => this.setState({ dateOfBirth })}
+                        />
 
-                            <Input
-                                placeholder='Email'
-                                style={{ fontFamily: 'Exo Medium', color: '#269cda' }}
-                                placeholderTextColor='#269cda'
-                                value={this.state.email}
-                                onChangeText={text => this.setState({ email: text })}
-                            />
-                        </Item>
-                    </Form>
-                    <Form>
-                        <Item style={{ borderColor: '#269cda' }}>
+                        <TextField
+                            label="Peso"
+                            textColor='#E07A2F'
+                            labelHeight={20}
+                            tintColor='#E07A2F'
+                            baseColor='#269cda'
+                            value={weight}
+                            onChangeText={(weight) => this.setState({ weight })}
+                        />
 
-                            <Input
-                                placeholder='Data de nascimento'
-                                style={{ fontFamily: 'Exo Medium', color: '#269cda' }}
-                                placeholderTextColor='#269cda'
-                                value={this.state.dateOfBirth}
-                                onChangeText={text => this.setState({ dateOfBirth: text })}
-                            />
-                        </Item>
-                    </Form>
-                    <Form>
-                        <Item style={{ borderColor: '#269cda' }}>
+                        <TextField
+                            label="Altura"
+                            textColor='#E07A2F'
+                            labelHeight={20}
+                            tintColor='#E07A2F'
+                            baseColor='#269cda'
+                            value={height}
+                            onChangeText={(height) => this.setState({ height })}
+                        />
 
-                            <Input
-                                placeholder='Peso'
-                                style={{ fontFamily: 'Exo Medium', color: '#269cda' }}
-                                placeholderTextColor='#269cda'
-                                value={this.state.weight}
-                                onChangeText={text => this.setState({ weight: text })}
-                            />
-                        </Item>
-                    </Form>
-                    <Form>
-                        <Item style={{ borderColor: '#269cda' }}>
+                        <TextField
+                            label="Telefone"
+                            textColor='#E07A2F'
+                            labelHeight={20}
+                            tintColor='#E07A2F'
+                            baseColor='#269cda'
+                            value={phone}
+                            onChangeText={(phone) => this.setState({ phone })}
+                        />
 
-                            <Input
-                                placeholder='Altura'
-                                style={{ fontFamily: 'Exo Medium', color: '#269cda' }}
-                                placeholderTextColor='#269cda'
-                                value={this.state.height}
-                                onChangeText={text => this.setState({ height: text })}
-                            />
-                        </Item>
-                    </Form>
-                    <Form>
-                        <Item style={{ borderColor: '#269cda' }}>
+                        <TextField
+                            label="Endereço"
+                            textColor='#E07A2F'
+                            labelHeight={20}
+                            tintColor='#E07A2F'
+                            baseColor='#269cda'
+                            value={address}
+                            onChangeText={(address) => this.setState({ address })}
+                        />
 
-                            <Input
-                                placeholder='Telefone'
-                                style={{ fontFamily: 'Exo Medium', color: '#269cda' }}
-                                placeholderTextColor='#269cda'
-                                value={this.state.phone}
-                                onChangeText={text => this.setState({ phone: text })}
-                            />
-                        </Item>
-                    </Form>
-                    <Form>
-                        <Item style={{ borderColor: '#269cda' }}>
+                        <Dropdown
+                            label='Sexo'
+                            textColor='#E07A2F'
+                            labelHeight={20}
+                            tintColor='#E07A2F'
+                            baseColor='#269cda'
+                            selectedItemColor='#269cda'
+                            value={genre}
+                            onChangeText={(genre) => this.onValueChange(genre)}
+                            data={data}
+                        />
 
-                            <Input
-                                placeholder='Endereço'
-                                style={{ fontFamily: 'Exo Medium', color: '#269cda' }}
-                                placeholderTextColor='#269cda'
-                                value={this.state.adress}
-                                onChangeText={text => this.setState({ adress: text })}
-                            />
-                        </Item>
-                    </Form>
-                    <Form style={{ paddingLeft: 5 }}>
-                        <Item style={{ borderColor: 'white' }}>
-                            <Left>
-                                <Text style={{ color: "#269cda", fontSize: 18 }}>Sexo</Text>
-                            </Left>
-                            <Picker
-                                mode="dropdown"
-                                placeholder="Select your SIM"
-                                iosIcon={<Icon name="arrow-down" />}
-                                placeholder="Select your SIM"
-                                textStyle={{ color: "#269cda" }}
-                                itemStyle={{
-                                    backgroundColor: "white",
-                                    marginLeft: 0,
-                                    paddingLeft: 10
-                                }}
-                                itemTextStyle={{ color: '#269cda' }}
-                                style={{ width: undefined, color: '#269cda' }}
-                                selectedValue={this.state.genre}
-                                onValueChange={this.onValueChange.bind(this)}
-                            >
-                                <Picker.Item label="Feminino" value="female" />
-                                <Picker.Item label="Masculino" value="male" />
-                                <Picker.Item label="Outro" value="outher" />
-
-                            </Picker>
-                        </Item>
-                    </Form>
+                    </View>
                 </Content>
+
+                <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.openModal()}>
+                    <Text>SALVAR</Text>
+                </Button>
+
                 <ProfileModal
                     onSave={this.saveProfileImage}
                     onClose={() => this.setState({ modalVisible: false })}

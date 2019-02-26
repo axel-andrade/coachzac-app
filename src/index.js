@@ -23,7 +23,7 @@ import NewAnalyze from  './pages/NewAnalyze';
 const AppNavigator = createStackNavigator({
 
     'Main': {  
-        screen: Main,
+        screen: Home,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }
