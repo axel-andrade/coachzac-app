@@ -25,8 +25,9 @@ Parse.initialize('coachzacId');
 Parse.serverURL = 'https://coachzac-v2-api.herokuapp.com/use';
 
 
-export default class CreatePlayer extends Component {
+export default class UpdatePlayer extends Component {
     state = {
+        playerId: "",
         name: "",
         email: "",
         dateOfBirth: "",
@@ -35,6 +36,7 @@ export default class CreatePlayer extends Component {
         genre: "",
         phone: "",
         address: "",
+        oldProfileImage: null,
         profileImage: null,
         error: false,
         errorMessage: "",
@@ -63,21 +65,32 @@ export default class CreatePlayer extends Component {
     async componentDidMount() {
 
         const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
-        if (sessionToken != null)
-            this.setState({
-                 sessionToken: sessionToken ? sessionToken : null,
-                 existsProfileImage: this.state.profileImage? true: null,
-             });
-
-      
-
+        const player = this.props.navigation.state.params.player;
+        this.setState({
+            sessionToken: sessionToken,
+            existsProfileImage: this.state.profileImage ? true : false,
+            playerId: player.objectId,
+            name: player.name,
+            email: player.username,
+            dateOfBirth: player.dateOfBirth,
+            weight: player.weight,
+            height: player.height,
+            phone: player.phone,
+            address: player.adress,
+            genre: player.genre === "male" ? "Masculino" : player.genre === "female" ? "Feminino" : "Outro",
+            oldProfileImage: player.profileImage
+        });
     };
 
-    createPlayer = async () => {
+    UpdatePlayer = async () => {
 
         //se existe foto fazer upload para salva junto com os dados do atleta
         if (this.state.existsProfileImage) {
-            this.uploadPhoto(this.state.profileImage)
+
+            if (this.state.profileImage === this.state.oldProfileImage)
+                this.callRequest(this.state.profileImage);
+            else
+                this.uploadPhoto(this.state.profileImage)
         }
         else
             this.callRequest(undefined);
@@ -85,11 +98,12 @@ export default class CreatePlayer extends Component {
     };
 
     callRequest = async (url) => {
-        const { params } = this.props.navigation.state;
-        api.post('/createPlayer', {
+
+        api.post('/updatePlayer', {
 
             _ApplicationId: 'coachzacId',
             _SessionToken: this.state.sessionToken,
+            playerId: this.state.playerId,
             name: this.state.name,
             email: this.state.email,
             password: this.state.password,
@@ -103,18 +117,17 @@ export default class CreatePlayer extends Component {
             profileImage: url
 
         }).then((res) => {
-            AsyncStorage.setItem('@CoachZac:configPlayer', JSON.stringify({hasChangePlayer: true}));
-            this.props.navigation.navigate("Home", { page: 1 })
-            Alert.alert("Atleta cadastrado com sucesso!");
+
+            alert(JSON.stringify(res.data.result));
+
+            AsyncStorage.setItem('@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true }));
+            //this.props.navigation.navigate("Home", { page: 1 })
+            this.props.navigation.state.params.onUpdate({player: res.data.result})
+            this.props.navigation.navigate("PlayerProfile")
+            //Alert.alert("Atleta editado com sucesso!");
             //params.onChangePage(1);
         }).catch((e) => {
-            // //limpar campos
-            // this.setState({
-            //     error: true,
-            //     name: "",
-            //     email: ""
-            // });
-            Alert.alert(JSON.stringify(e.response.data.error));
+            alert(e.response.data.error.message);
         });
 
     };
@@ -147,7 +160,7 @@ export default class CreatePlayer extends Component {
                         </Button>
                     </Left>
                     <Body>
-                        <Text style={{ color: '#269cda', fontSize: 20, fontWeight: 'bold' }}>Cadastrar</Text>
+                        <Text style={{ color: '#269cda', fontSize: 20, fontWeight: 'bold' }}>Editar Atleta</Text>
                     </Body>
                     <Right>
                     </Right>
@@ -245,11 +258,21 @@ export default class CreatePlayer extends Component {
                         />
 
                     </View>
+
+                    <View style={{paddingLeft:'5%',paddingRight:'5%'}}>
+                        <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.UpdatePlayer()}>
+                            <Text>SALVAR</Text>
+                        </Button>
+                    </View>
+
+                    <View style={{padding:'5%'}}>
+                        <Button bordered block danger style={{borderColor: '#E07A2F'}}>
+                            <Text style={{color:'#E07A2F'}}>EXCLUIR ATLETA</Text>
+                        </Button>
+                    </View>
                 </Content>
 
-                <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createPlayer()}>
-                    <Text>SALVAR</Text>
-                </Button>
+
 
                 <ProfileModal
                     onSave={this.saveProfileImage}

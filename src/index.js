@@ -18,6 +18,7 @@ import InitAnalyze from './pages/InitAnalyze';
 import PlayerForAnalyze from './pages/PlayerForAnalyze';
 import AnalyzeWithoutVideo from './pages/AnalyzeWithoutVideo';
 import NewAnalyze from  './pages/NewAnalyze';
+import UpdatePlayer from './pages/UpdatePlayer';
 
 //export default createAppContainer(TabNavigator);
 const AppNavigator = createStackNavigator({
@@ -54,6 +55,13 @@ const AppNavigator = createStackNavigator({
     },
     'PlayerProfile': {
         screen: PlayerProfile,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
+
+    },
+    'UpdatePlayer': {
+        screen: UpdatePlayer,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }

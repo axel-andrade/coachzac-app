@@ -17,14 +17,14 @@ export default class AnalyzeWithoutVideo extends Component {
         sessionToken: "",
         values: [],
         showComments: false,
-        commentAudio: "/",
-        commentsAudio: "/"
+        commentAudio: "",
+        commentsAudio: ""
     };
 
     async componentDidMount() {
         const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
 
-        if (sessionToken){
+        if (sessionToken) {
             this.setState({
                 sessionToken: sessionToken,
                 playerId: this.props.navigation.state.params.playerId,
@@ -46,8 +46,8 @@ export default class AnalyzeWithoutVideo extends Component {
     renderSliders(pos) {
         return (
             <View style={{ paddingLeft: '10%' }}>
-                <Text style={{ fontSize: 14, color: '#E07A2F' }}>
-                    <Text style={{ fontSize: 12, color: '#696969' }}>{Define.nameSteps[pos] + ": "}</Text>
+                <Text style={{ fontSize: 16, color: '#E07A2F' }}>
+                    <Text style={{ fontSize: 14, color: '#696969' }}>{Define.nameSteps[pos] + ": "}</Text>
                     {this.state.values[pos]}
                 </Text>
                 <View style={{ paddingLeft: '5%', paddingRight: '10%' }}>
@@ -68,14 +68,14 @@ export default class AnalyzeWithoutVideo extends Component {
         );
     };
 
-    initValues(){
+    initValues() {
         let data = [null, null, null, null, null, null, null, null];
         let steps = this.state.steps;
-        for (let i = 0; i < steps.length; i++) 
-            if (steps[i]) 
+        for (let i = 0; i < steps.length; i++)
+            if (steps[i])
                 data[i] = 0;
-        
-        this.setState({values: data})        
+
+        this.setState({ values: data })
     };
     createAnalyze() {
         let data = this.state.values;
@@ -104,12 +104,12 @@ export default class AnalyzeWithoutVideo extends Component {
             commentAudio: this.state.commentAudio,
 
         }).then((res) => {
-         AsyncStorage.multiSet([
+            AsyncStorage.multiSet([
                 ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })],
                 ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
-        ]);
-           
-        this.props.navigation.navigate("NewAnalyze", { points: points, playerName:  this.props.navigation.state.params.playerName})
+            ]);
+
+            this.props.navigation.navigate("NewAnalyze", { points: points, playerName: this.props.navigation.state.params.playerName })
         }).catch((e) => {
             //alert("Erro");
             alert(JSON.stringify(e.response.data.error));
@@ -148,17 +148,23 @@ export default class AnalyzeWithoutVideo extends Component {
                     {this.state.steps[6] ? this.renderSliders(6) : null}
                     {this.state.steps[7] ? this.renderSliders(7) : null}
 
-                    {this.state.showComments ?
-                        <Form style={{ padding: '5%' }}>
-                            <Textarea rowSpan={5} bordered placeholder="Comentários" style={{ borderColor: '#269cda' }} />
-                        </Form>
-                        : null
-                    }
+
+
+                    <Form style={{ padding: '5%' }}>
+                        <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+                            <Text style={{ fontSize: 10, color: 'gray' }}>0/255</Text>
+                        </View>
+                        <Textarea rowSpan={5} bordered placeholder="Comentários" style={{ borderColor: '#269cda' }} />
+                    </Form>
+
+
 
                 </Content>
-                <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createAnalyze()}>
-                    <Text>SALVAR AVALIAÇÃO</Text>
-                </Button>
+                <View style={{ padding: '5%' }}>
+                    <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createAnalyze()}>
+                        <Text>SALVAR AVALIAÇÃO</Text>
+                    </Button>
+                </View>
             </Container >
 
         );

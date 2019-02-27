@@ -50,7 +50,7 @@ const PlayerListItem = props => {
                 <TouchableOpacity onPress={() => onPress({ player })}>
                     <Text style={{ color: '#269cda', fontWeight: 'bold' }}>{player.name}</Text>
                     <Text note style={styles.note}>{player.dateOfBirth}</Text>
-                    <Text note style={styles.note}>{player.level + " estrelas"}</Text>
+                    <Text note style={styles.note}>{parseFloat(player.level).toFixed(1)}</Text>
                 </TouchableOpacity>
             </Body>
 

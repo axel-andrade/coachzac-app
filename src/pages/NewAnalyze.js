@@ -5,8 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Slider } from 'react-native-elements';
 const Define = require('../config/Define.js');
 import api from '../services/api';
-
-const INITIAL_VALUES = [null, null, null, null, null, null, null, null];
+import AnalyzeDetailModal from '../components/AnalyzeDetailModal';
 
 export default class AnalyzeWithoutVideo extends Component {
 
@@ -18,7 +17,9 @@ export default class AnalyzeWithoutVideo extends Component {
         average: 0,
         codes: [],
         points: {},
-        showButtons: false
+        showButtons: false,
+        modalVisible: false,
+        listFields: []
     };
 
     async componentDidMount() {
@@ -30,6 +31,8 @@ export default class AnalyzeWithoutVideo extends Component {
             this.calculateAverage(this.props.navigation.state.params.points)
         }
 
+        this.renderInfo();
+    
     };
 
     calculateAverage(points) {
@@ -49,15 +52,17 @@ export default class AnalyzeWithoutVideo extends Component {
         alert(points)
     }
     renderInfo() {
-
-        return this.state.codes.map((data, index) => {
-            return (
-                <Text note style={{ fontSize: 12, color: "#269cda" }}>
-                    <Text note style={{ fontSize: 12, color: '#696969' }}>{Define.nameSteps[Define.codeSteps.indexOf(data)] + ": "}</Text>
+        let temp = [];
+        this.state.codes.map((data, index) => {
+            temp.push(
+                <Text note style={{ fontSize: 14, color: "#269cda" }}>
+                    <Text note style={{ fontSize: 14, color: '#696969' }}>{Define.nameSteps[Define.codeSteps.indexOf(data)] + ": "}</Text>
                     {this.state.points[data]}
                 </Text>
             )
         });
+
+        this.setState({listFields: temp})
 
     };
     render() {
@@ -81,30 +86,21 @@ export default class AnalyzeWithoutVideo extends Component {
 
 
 
-                    <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: '5%' }}>
+                    <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: '10%' }}>
                         <View style={styles.CircleShapeView}>
-
                             <Text style={{ color: '#E07A2F', fontWeight: 'bold', fontSize: 48 }}>{this.state.average} </Text>
                         </View>
                     </View>
 
-                    <View style={{ paddingLeft: '5%', paddingTop: "5%" }}>
-                        <Text note style={{ fontSize: 12, color: "#269cda" }}>
-                            <Text note style={{ fontSize: 12, color: '#696969' }}>{"Atleta: "}</Text>
-                            {this.props.navigation.state.params.playerName}
-                        </Text>
-                        <Text note style={{ fontSize: 12, color: "#269cda" }}>
-                            <Text note style={{ fontSize: 12, color: '#696969' }}>{"Fundamento: "}</Text>
-                            Saque
-                        </Text>
-
-                        <View style={{paddingTop:'5%'}}>
-                            <Text note style={{ fontSize: 12, color: '#E07A2F' }}>{"Passos: "}</Text>
-                        </View>
-
-                        {this.renderInfo()}
+                    <View style={{alignItems: 'center', justifyContent: 'center', paddingTop: '15%' }}>
+                        <TouchableOpacity onPress={()=> this.setState({modalVisible: true})}>
+                            <View style={{borderBottomColor: '#E07A2F', borderBottomWidth:  0.5}}>
+                            <Text style={{ color: '#E07A2F', fontSize: 14 }}>Ver Detalhes</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                    <View>
+                    
+                    <View style={{paddingTop:"10%"}}>
                         <View style={{ padding: '5%' }}>
                             <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.props.navigation.navigate("PlayerForAnalyze")}>
                                 <Text>NOVA AVALIAÇÃO</Text>
@@ -117,8 +113,18 @@ export default class AnalyzeWithoutVideo extends Component {
                         </View>
                     </View>
 
-
                 </Content>
+
+                <AnalyzeDetailModal
+                    navigation={this.props.navigation}
+                    onClose={() => this.setState({modalVisible: false})}
+                    visible={this.state.modalVisible}
+                    codes={this.state.codes}
+                    points={this.state.points}
+                    playerName={this.props.navigation.state.params.playerName}
+                    list={this.state.listFields}
+                    
+                />
 
             </Container >
 

@@ -126,7 +126,7 @@ export default class InitAnalyze extends Component {
                         <View style={{ paddingLeft: '5%', paddingTop: '2%' }}>
                             {this.renderInfo("Name: ", this.state.player.name)}
                             {this.renderInfo("Idade: ", this.state.player.dateOfBirth)}
-                            {this.renderInfo("Saque: ", this.state.player.level + "/10")}
+                            {this.renderInfo("Saque: ", parseFloat(this.state.player.level).toFixed(1) + "/10")}
                             {this.renderInfo("Peso: ", this.state.player.weight + " kg")}
                             {this.renderInfo("Altura: ", this.state.player.height + " cm")}
                             {this.renderInfo("Fundamento: ", "Saque")}
@@ -135,10 +135,10 @@ export default class InitAnalyze extends Component {
                     <Content>
                         <ListItem style={{ borderColor: 'white' }}>
 
-                            <Button bordered light onPress={() => this.setState({ showSteps: !this.state.showSteps })}>
+                            <Button bordered style={{borderColor:'#F1F9FF'}} onPress={() => this.setState({ showSteps: !this.state.showSteps })}>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Left style={{ paddingLeft: '2%' }}>
-                                        <Text style={{ color: '#E07A2F', fontSize: 14, fontWeight: 'bold' }}>Passos</Text>
+                                        <Text style={{ color: '#E07A2F', fontSize: 16, fontWeight: 'bold' }}>Passos</Text>
                                     </Left>
                                     <Right style={{ paddingRight: '2%' }}>
                                         {this.state.showSteps
@@ -163,7 +163,7 @@ export default class InitAnalyze extends Component {
                                 {this.renderSteps("Flexionamento dos joelhos ", 7)}
                                 <TouchableOpacity onPress={() => this.clearSteps()}>
                                     <View style={{ paddingTop: '5%' }}>
-                                        <Text style={{ fontSize: 12, color: "#E07A2F" }}>Limpar</Text>
+                                        <Text style={{ fontSize: 14, color: "#E07A2F" }}>Limpar</Text>
                                     </View>
                                 </TouchableOpacity>
                             </View>
@@ -174,6 +174,7 @@ export default class InitAnalyze extends Component {
 
                     </Content>
                 </Content>
+                <View style={{ padding: '5%' }}>
                 {this.state.isValid
                     ? <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.openModal()}>
                         <Text>AVANÇAR</Text>
@@ -183,6 +184,7 @@ export default class InitAnalyze extends Component {
                         <Text>AVANÇAR</Text>
                     </Button>
                 }
+                </View>
 
                 <SelectVideoModal
                     navigation={this.props.navigation}
@@ -202,14 +204,14 @@ export default class InitAnalyze extends Component {
 
 const styles = StyleSheet.create({
     note: {
-        fontSize: 12
+        fontSize: 14,
     },
     noteBold: {
         fontWeight: 'bold',
         color: '#269cda'
     },
     step: {
-        fontSize: 12,
-        color: 'gray'
+        fontSize: 14,
+        color: '#555555'
     }
 });

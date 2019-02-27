@@ -5,19 +5,20 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const profileImage = require('../../assets/profile.png');
 import ProfileModal from '../components/ProfileModal';
 import PhotoModal from '../components/PhotoModal';
-import ChartScaleBand from '../components/ChartScaleBand';
+import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 
 export default class PlayerProfile extends Component {
 
     state = {
-        player: [],
+        player: this.props.navigation.state.params.player,
         existsProfileImage: false,
         modalVisible: false,
         fromListItem: true,
         modalPhotoVisible: false,
         good: [],
         medium: [],
-        bad: []
+        bad: [],
+        from: this.props.navigation.state.params.from
 
     };
 
@@ -53,10 +54,12 @@ export default class PlayerProfile extends Component {
 
     renderInfo = (name, state) => {
         return (
-            <Text note style={styles.note}>
-                <Text note style={[styles.note, styles.noteBold]}>{name}</Text>
-                {state}
-            </Text>
+            <View style={{ backgroundColor: '#F1F9FF', padding: '2%', borderWidth: 0.5, borderColor: 'white' }}>
+                <Text note style={styles.note}>
+                    <Text note style={[styles.note, styles.noteBold]}>{name}</Text>
+                    {state}
+                </Text>
+            </View>
         );
     };
 
@@ -97,52 +100,51 @@ export default class PlayerProfile extends Component {
 
         return (
             <Container>
-                <Header style={{ backgroundColor: 'white' }}>
+
+
+
+                <Header style={{ backgroundColor: '#F1F9FF', alignItems: 'center' }}>
 
                     <Button transparent onPress={() => this.props.navigation.goBack()}>
                         <Icon name="arrow-left" size={22.5} color='#269cda' />
                     </Button>
 
-                    <Body style={{ paddingLeft: '5%' }}>
-                    <Title style={{color:'#269cda'}}>Perfil do Atleta</Title>
-
+                    <Body>
                     </Body>
+
+                    <Button transparent onPress={() => this.props.navigation.navigate("UpdatePlayer", {
+                         player: this.state.player ,
+                         onUpdate: (params) => this.setState(params) 
+                     })}>
+                        <Icon name="pencil" size={22.5} color='#269cda' />
+                    </Button>
+
                 </Header>
-              
-                <Content>
-                    <View style={{ backgroundColor: "white", paddingTop: '10%', paddingLeft: '5%', paddingBottom: '5%' }}>
+
+                <View style={{ backgroundColor: "#F1F9FF", height: '10%', width: '100%' }}>
+                </View>
+                <View style={{ backgroundColor: "white", height: '10%', width: '100%', paddingRight: '5%' }}>
+                    {this.state.player.countAnalyze > 0 ?
                         <Item style={{ borderColor: 'white' }}>
-                            <Left>
-
-                                {this.state.existsProfileImage
-                                    ? <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} onLongPress={() => this.setState({ modalPhotoVisible: true })}>
-                                        <Thumbnail large source={{ uri: this.state.player.profileImage }} />
-                                    </TouchableOpacity>
-                                    : <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
-                                        <Thumbnail large source={profileImage} />
-                                    </TouchableOpacity>
-                                }
-
-                            </Left>
-                            <Body>
-                                <Body>
-                                </Body>
-                            </Body>
-                            <Right style={{ flexDirection: 'row' }}>
-                                <TouchableOpacity>
-                                    <Icon name="pencil" size={25} style={styles.icon} />
-                                </TouchableOpacity>
-                                <TouchableOpacity>
-                                    <Icon name="delete" size={25} style={styles.icon} />
-                                </TouchableOpacity>
+                            <Right>
+                                <Button transparent onPress={() => this.props.navigation.navigate("ResultByPlayer", { good: this.state.good, medium: this.state.medium, bad: this.state.bad })}>
+                                    <Text uppercase={false} style={{ color: '#E07A2F', fontSize: 12 }}>Ver Resultados</Text>
+                                </Button>
                             </Right>
-
                         </Item>
-                    </View>
-                    <View style={{ paddingLeft: '8%' }}>
+                        : null}
+                </View>
+
+
+
+
+
+                <Content>
+                    <View style={{ paddingLeft: '5%', paddingRight: '5%', borderRadius: 10 }}>
+                        {this.renderInfo("Nome: ", this.state.player.name)}
                         {this.renderInfo("Email: ", this.state.player.username)}
                         {this.renderInfo("Idade: ", this.state.player.dateOfBirth)}
-                        {this.renderInfo("Saque: ", this.state.player.level + "/10")}
+                        {this.renderInfo("Nível: ", parseFloat(this.state.player.level).toFixed(1) + "/10")}
                         {this.renderInfo("Peso: ", this.state.player.weight + " kg")}
                         {this.renderInfo("Altura: ", this.state.player.height + " cm")}
                         {this.renderInfo("Telefone: ", this.state.player.phone)}
@@ -150,8 +152,12 @@ export default class PlayerProfile extends Component {
                         {this.state.player.lastAnalyze ? this.renderInfo("Última avaliação: ", this.state.player.lastAnalyze) : this.renderInfo("Última avaliação: ", "Ainda não possui avaliações")}
                     </View>
 
-                    <Item style={{ borderColor: 'white', paddingTop: '10%', justifyContent: 'center', alignItems: 'center', paddingLeft: '5%' }}>
+
+                    <Item style={{ borderColor: 'white', paddingTop: '10%', justifyContent: 'center', alignItems: 'center', paddingLeft: '5%', paddingRight: '5%' }}>
                         <Left style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity>
+                                <Icon name="email" size={25} style={styles.icon} />
+                            </TouchableOpacity>
                             <TouchableOpacity>
                                 <Icon name="share-variant" size={25} style={styles.icon} />
                             </TouchableOpacity>
@@ -159,27 +165,12 @@ export default class PlayerProfile extends Component {
                                 <Icon name="forum" size={24} style={styles.icon} />
                             </TouchableOpacity>
                         </Left>
-                        <Body style={{ paddingLeft: '30%' }}>
-                            <Button style={{ backgroundColor: "#E07A2F", borderRadius: 24 }}>
-                                <Text style={{ color: 'white' }}>AVALIAR</Text>
+                        <Body style={{ paddingLeft: '30%', flexDirection: 'column' }}>
+                            <Button bordered block style={{ width: '100%',borderColor:"#E07A2F"}} onPress={()=>this.props.navigation.navigate("InitAnalyze", {player: this.state.player})}>
+                                <Text uppercase={false} style={{ color: '#E07A2F' }}>Avaliar</Text>
                             </Button>
                         </Body>
                     </Item>
-
-                    {this.state.player.countAnalyze > 0
-                        ?
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("ResultByPlayer", { good: this.state.good, medium: this.state.medium, bad: this.state.bad })}>
-                            <View style={{ paddingTop: '3%', paddingLeft: '5%', paddingRight: '5%', paddingTop: '10%' }}>
-                                <View style={{ backgroundColor: "#F1F9FF", height: 78, borderWidth: 1, borderColor: '#269cda', alignItems: 'center', justifyContent: "center" }}>
-                                    <Text style={{ fontSize: 12, color: "#269cda", padding: 3, fontWeight: "bold" }}>Ver Resultados</Text>
-                                </View>
-
-                            </View>
-
-                        </TouchableOpacity>
-                        : null
-                    }
-
                 </Content>
 
                 <ProfileModal
@@ -199,6 +190,24 @@ export default class PlayerProfile extends Component {
                     visible={this.state.modalPhotoVisible}
                 />
 
+                <View style={{ alignItems: 'center', backgroundColor: 'green', position: "absolute", backgroundColor: 'transparent', top: '12%', left: 20 }}>
+
+                    {this.state.existsProfileImage
+                        ? <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} onLongPress={() => this.setState({ modalPhotoVisible: true })}>
+                            <View style={{ borderColor: '#white', borderWidth: 3, borderRadius: 50 }}>
+                                <Thumbnail large source={{ uri: this.state.player.profileImage }} />
+                            </View>
+                        </TouchableOpacity>
+                        : <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
+                            <View style={{ borderColor: 'white', borderWidth: 3, borderRadius: 50 }}>
+                                <Thumbnail large source={profileImage} />
+                            </View>
+                        </TouchableOpacity>
+
+                    }
+
+                </View>
+
             </Container >
         );
     };
@@ -207,10 +216,10 @@ export default class PlayerProfile extends Component {
 
 const styles = StyleSheet.create({
     note: {
-        fontSize: 12
+        fontSize: 14,
+        color: '#555555'
     },
     noteBold: {
-        fontWeight: 'bold',
         color: '#269cda'
     },
     buttonEnviar: {
@@ -227,3 +236,18 @@ const styles = StyleSheet.create({
         paddingLeft: '15%', color: "#269cda"
     }
 });
+
+
+// {this.state.player.countAnalyze > 0
+//     ?
+//     <TouchableOpacity onPress={() => this.props.navigation.navigate("ResultByPlayer", { good: this.state.good, medium: this.state.medium, bad: this.state.bad })}>
+//         <View style={{ paddingTop: '3%', paddingLeft: '5%', paddingRight: '5%', paddingTop: '10%' }}>
+//             <View style={{ backgroundColor: "#F1F9FF", height: 78, borderWidth: 1, borderColor: '#269cda', alignItems: 'center', justifyContent: "center" }}>
+//                 <Text style={{ fontSize: 12, color: "#269cda", padding: 3, fontWeight: "bold" }}>Ver Resultados</Text>
+//             </View>
+
+//         </View>
+
+//     </TouchableOpacity>
+//     : null
+// }

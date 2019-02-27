@@ -40,7 +40,7 @@ export default class Home extends Component {
         const sessionToken = await AsyncStorage.getItem('@CoachZac:sessionToken');
         //let page = this.props.navigation.getParam('page', 0);
         //if(page === 0 )
-        this.setState({ sessionToken: sessionToken });
+        this.setState({ sessionToken: sessionToken })//, page: page !== 0 ? page : 3 });
         //else
         //   this.setState({ sessionToken: sessionToken, page: page});
     }
