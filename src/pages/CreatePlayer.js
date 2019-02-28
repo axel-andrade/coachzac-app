@@ -13,10 +13,16 @@ import {
     Right,
     Thumbnail
 } from "native-base";
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import api from '../services/api';
 import ProfileModal from '../components/ProfileModal';
+import { NavigationActions, StackActions } from 'react-navigation';
+
+const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'Home', params: {page: 1}})],
+});
+   
 const profileImage = require('../../assets/profile.png');
 //Funções do Parse
 const Parse = require('parse/react-native');
@@ -104,9 +110,8 @@ export default class CreatePlayer extends Component {
 
         }).then((res) => {
             AsyncStorage.setItem('@CoachZac:configPlayer', JSON.stringify({hasChangePlayer: true}));
-            this.props.navigation.navigate("Home", { page: 1 })
+            this.props.navigation.dispatch(resetAction)
             Alert.alert("Atleta cadastrado com sucesso!");
-            //params.onChangePage(1);
         }).catch((e) => {
             // //limpar campos
             // this.setState({

@@ -108,6 +108,7 @@ export default class PlayerProfile extends Component {
                     </Button>
 
                     <Body>
+
                     </Body>
 
                     <Right>
@@ -115,13 +116,9 @@ export default class PlayerProfile extends Component {
                     </Right>
                 </Header>
 
-
-
-
-
                 <Content>
 
-                    <Item style={{ borderColor: 'white', paddingTop: '5%' }}>
+                    <Item style={{ borderColor: 'white', paddingTop: '10%' }}>
                         <Left style={{ alignItems: 'center' }}>
 
                             {this.state.existsProfileImage
@@ -176,8 +173,8 @@ export default class PlayerProfile extends Component {
                             </Button>
                         </Body>
                     </Item>
-
-                    <View style={{ paddingTop: '10%',paddingBottom:  '5%', paddingLeft: '5%', paddingRight: '5%', borderRadius: 10 }}>
+                
+                    <View style={{ paddingTop: '5%', paddingBottom: '5%', paddingLeft: '5%', paddingRight: '5%', borderRadius: 10 }}>
                         {/*this.renderInfo("Nome: ", this.state.player.name)*/}
                         {this.renderInfo("Email: ", this.state.player.username)}
                         {this.renderInfo("Idade: ", this.state.player.dateOfBirth)}
@@ -188,6 +185,16 @@ export default class PlayerProfile extends Component {
                         {this.renderInfo("Endereço: ", this.state.player.adress)}
                         {this.state.player.lastAnalyze ? this.renderInfo("Última avaliação: ", this.state.player.lastAnalyze) : this.renderInfo("Última avaliação: ", "Ainda não possui avaliações")}
                     </View>
+
+                    {this.state.player.countAnalyze > 0
+                            ? <View style={{padding:'5%'}}>
+                            <Button block style={{backgroundColor:'#269cda'}} onPress={() => this.props.navigation.navigate("ResultByPlayer", { good: this.state.good, medium: this.state.medium, bad: this.state.bad })}>
+                                <Text style={{ color: "white" }}>Resultados</Text>
+                            </Button>
+                            </View>
+                            : null
+                        }
+
 
 
 

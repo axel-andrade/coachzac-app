@@ -35,10 +35,10 @@ export default class AnalyzesByPlayer extends Component {
     //setTimeout(async () => {
     const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
     const player = JSON.parse(await AsyncStorage.getItem('@CoachZac:player'));
-    if (this._isMounted) {
+   // if (this._isMounted) {
       this.setState({ sessionToken: sessionToken, player: player, loading: true });
       this.getAnalyzes();
-    }
+    //}
 
   }
 
@@ -49,7 +49,7 @@ export default class AnalyzesByPlayer extends Component {
 
   getAnalyzes = async () => {
 
-    if (this._isMounted) {
+    //if (this._isMounted) {
       //Alert.alert(this.state.sessionToken);
       api.post('/getAnalyzesByPlayer', {
         _ApplicationId: 'coachzacId',
@@ -62,7 +62,7 @@ export default class AnalyzesByPlayer extends Component {
         this.setState({ loading: false, error: true });
         //Alert.alert(JSON.stringify(e.response.data.error));
       });
-    }
+   // }
   };
 
   onValueChange(value) {

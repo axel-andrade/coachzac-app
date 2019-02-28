@@ -25,8 +25,10 @@ export default class ResultDetail extends Component {
 
     async componentDidMount() {
 
+        alert(JSON.stringify(this.props.navigation.state.params.analyze))
+
         //verificando se o componente esta vindo da list item 
-        if (this.state.fromListItem) {
+        //if (this.state.fromListItem) {
 
             let good = this.getSteps(this.props.navigation.state.params.analyze.player.goodSteps);
             let medium = this.getSteps(this.props.navigation.state.params.analyze.player.mediumSteps);
@@ -50,7 +52,7 @@ export default class ResultDetail extends Component {
             await AsyncStorage.multiSet([
                 ['@CoachZac:analyze', JSON.stringify(this.props.navigation.state.params.analyze)],
             ]);
-        }
+        //}
     }
 
     getSteps(step) {
