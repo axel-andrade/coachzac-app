@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         paddingLeft: '10%'
     },
     boxContainer: {
-        backgroundColor: '#F1F9FF',
+        backgroundColor: 'white',
         borderWidth: 1,
         borderRadius: 5,
         borderColor: '#269cda',
@@ -161,6 +161,7 @@ export default class ProfileModal extends Component {
             const player = res.data.result;
             AsyncStorage.multiSet([
                 ['@CoachZac:player', JSON.stringify(player)],
+                ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })]
             ]);
             this.props.onClose();
             this.props.onCreated();

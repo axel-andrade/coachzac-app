@@ -6,6 +6,13 @@ import { Slider } from 'react-native-elements';
 const Define = require('../config/Define.js');
 import api from '../services/api';
 import AnalyzeDetailModal from '../components/AnalyzeDetailModal';
+import { NavigationActions, StackActions } from 'react-navigation';
+
+const resetAction = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'Home' })],
+});
+   
 
 export default class AnalyzeWithoutVideo extends Component {
 
@@ -75,7 +82,7 @@ export default class AnalyzeWithoutVideo extends Component {
                     </View>
 
                     <Right>
-                        <Button transparent onPress={() => this.props.navigation.navigate("Home", { page: 3 })}>
+                        <Button transparent onPress={() =>  this.props.navigation.dispatch(resetAction)}>
                             <Icon name="home" size={22.5} color='#E07A2F' />
                         </Button>
                     </Right>

@@ -118,10 +118,9 @@ export default class UpdatePlayer extends Component {
 
         }).then((res) => {
 
-            alert(JSON.stringify(res.data.result));
+            //alert(JSON.stringify(res.data.result));
 
             AsyncStorage.setItem('@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true }));
-            //this.props.navigation.navigate("Home", { page: 1 })
             this.props.navigation.state.params.onUpdate({player: res.data.result})
             this.props.navigation.navigate("PlayerProfile")
             //Alert.alert("Atleta editado com sucesso!");

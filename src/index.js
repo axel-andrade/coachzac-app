@@ -19,6 +19,7 @@ import PlayerForAnalyze from './pages/PlayerForAnalyze';
 import AnalyzeWithoutVideo from './pages/AnalyzeWithoutVideo';
 import NewAnalyze from  './pages/NewAnalyze';
 import UpdatePlayer from './pages/UpdatePlayer';
+import UpdateUser from './pages/UpdateUser';
 
 //export default createAppContainer(TabNavigator);
 const AppNavigator = createStackNavigator({
@@ -65,7 +66,12 @@ const AppNavigator = createStackNavigator({
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }
-
+    },
+    'UpdateUser': {
+        screen: UpdateUser,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
     },
     'PlayerForAnalyze': {
         screen: PlayerForAnalyze,
@@ -109,32 +115,14 @@ const AppNavigator = createStackNavigator({
     'SignUp': {
         screen: SignUp,
         navigationOptions: ({ navigation }) => {
-            return ({
-                title: 'Cadastrar',
-                headerTintColor: 'white',
-                headerStyle: {
-                    backgroundColor: '#269cda',
-                }, headerTitleStyle: {
-                    color: 'white',
-                    fontWeight: 'normal'
-                }
-            });
+            return ({ header: null });
         }
     },
 
     'RecoverPassword': {
         screen: RecoverPassword,
         navigationOptions: ({ navigation }) => {
-            return ({
-                title: 'Recuperação de Senha',
-                headerTintColor: 'white',
-                headerStyle: {
-                    backgroundColor: '#269cda',
-                }, headerTitleStyle: {
-                    color: 'white',
-                    fontWeight: 'normal'
-                }
-            });
+            return ({ header: null });
         }
     },
 

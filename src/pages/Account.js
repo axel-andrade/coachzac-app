@@ -78,17 +78,22 @@ export default class Account extends Component {
 
             <Content padder>
 
-                <Item style={{ borderColor: 'white', paddingTop: '5%' }}>
+                <Item style={{ borderColor: 'white', paddingTop: '15%' }}>
                     <Left style={{ alignItems: 'center' }}>
 
                         {this.state.existsProfileImage
 
                             ? <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} onLongPress={() => this.setState({ modalPhotoVisible: true })}>
-                                <Thumbnail large source={{ uri: this.state.user.profileImage }} />
+                                <View style={{ borderColor: '#F1F9FF', borderWidth: 3, borderRadius: 50 }}>
+                                    <Thumbnail large source={{ uri: this.state.user.profileImage }} />
+                                </View>
+
                             </TouchableOpacity>
 
                             : <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} >
-                                <Thumbnail large source={profileImage} />
+                                <View style={{ borderColor: '#F1F9FF', borderWidth: 3, borderRadius: 50 }}>
+                                    <Thumbnail large source={profileImage} />
+                                </View>
                             </TouchableOpacity>
                         }
 
@@ -99,12 +104,14 @@ export default class Account extends Component {
                     </Body>
                     <Right style={{ alignItems: 'center' }}>
                         <TouchableOpacity>
-                            <Icon name="pencil" size={30} style={{ color: '#269cda' }} />
+                            <View style={{ padding: 10, backgroundColor: '#F1F9FF', borderRadius: 50 }}>
+                                <Icon name="pencil" size={30} style={{ color: '#269cda' }} onPress={()=>this.props.navigation.navigate("UpdateUser")}/>
+                            </View>
                         </TouchableOpacity>
                     </Right>
                 </Item>
 
-                <View style={{ paddingTop: '10%', padding: '10%' }}>
+                <View style={{ paddingTop: '5%', padding: '10%' }}>
                     <View style={{ paddingTop: "10%" }}>
                         <TouchableOpacity>
                             {this.renderOption("bell", "Notificações", "Notifications")}

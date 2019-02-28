@@ -94,13 +94,13 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.coachzac"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion 18
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         ndk {

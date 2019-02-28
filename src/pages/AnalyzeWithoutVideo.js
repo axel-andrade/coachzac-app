@@ -5,8 +5,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Slider } from 'react-native-elements';
 const Define = require('../config/Define.js');
 import api from '../services/api';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 const INITIAL_VALUES = [null, null, null, null, null, null, null, null];
+const resetAction = StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({ routeName: 'Home' })],
+});
 
 export default class AnalyzeWithoutVideo extends Component {
 
@@ -131,7 +136,7 @@ export default class AnalyzeWithoutVideo extends Component {
                         <Text style={{ fontSize: 10, color: '#269cda' }}>Avalie os passos selecionados </Text>
                     </Body>
 
-                    <Button transparent onPress={() => this.props.navigation.navigate("Home", { page: 3 })}>
+                    <Button transparent onPress={() => this.props.navigation.dispatch(resetAction)}>
                         <Icon name="home" size={22.5} color='#E07A2F' />
                     </Button>
 

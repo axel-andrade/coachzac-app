@@ -36,6 +36,7 @@ export default class Home extends Component {
     _isMounted = false;
 
     async componentDidMount() {
+        
         this._isMounted = true;
         const sessionToken = await AsyncStorage.getItem('@CoachZac:sessionToken');
         //let page = this.props.navigation.getParam('page', 0);

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { TextField } from 'react-native-material-textfield';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
     Container,
     Content,
@@ -14,46 +16,52 @@ import {
     Text,
     Left,
     Right,
-    Icon,
     Footer
 } from "native-base";
 
 export default class RecoverPassword extends Component {
-
+    state = {
+        email: "",
+    };
     render() {
+
+        let { email } = this.state;
         return (
             <Container style={{ backgroundColor: 'white' }}>
-            
-                <Content padder style={{ paddingTop: '10%' }}>
-                    <Form>
-                        <Item style={{ borderColor: '#269cda' }}>
+                <Header style={{ backgroundColor: 'white' }}>
+                    <Left>
+                        <Button transparent onPress={() => this.props.navigation.goBack()}>
+                            <Icon name="arrow-left" size={22.5} color='#269cda' />
+                        </Button>
+                    </Left>
+                    <Body style={{ alignItems: "flex-start" }}>
+                        <Text style={{ color: '#269cda', fontSize: 20, fontWeight: 'bold' }}>Recuperar Senha</Text>
+                    </Body>
 
-                            <Input
-                                placeholder='Email'
-                                style={{ fontFamily: 'Exo Medium', color: '#269cda' }}
-                                placeholderTextColor='#269cda'
-                            //value={this.state.busca}
-                            //onChangeText={textoDig => this.setState({ busca: textoDig })}
-                            />
-                        </Item>
-                    </Form>
+                </Header>
+                <Content>
 
+                    <View style={{ padding: '5%' }}>
+                        <TextField
+                            label="Email"
+                            textColor='#555555'
+                            labelHeight={20}
+                            tintColor='#E07A2F'
+                            baseColor='#269cda'
+                            value={email}
+                            onChangeText={(email) => this.setState({ email })}
+                        />
 
+                    </View>
 
                 </Content>
 
-                <Container>
-                <View style={{alignItems: 'flex-end', paddingBottom: '30%', paddingRight: '5%' }}>
-
-                    <TouchableOpacity>
-                        <View style={styles.buttonEnviar}>
-
-                            <Text style={{ fontFamily: 'Exo Bold', color: 'white' }}>Enviar</Text>
-
-                        </View>
-                    </TouchableOpacity>
+                <View style={{ padding: '5%' }}>
+                    <Button block style={{ backgroundColor: '#269cda' }} >
+                        <Text uppercase={false}>Enviar</Text>
+                    </Button>
                 </View>
-                </Container>
+
 
             </Container>
         );

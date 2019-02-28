@@ -31,13 +31,13 @@ export default class Player extends Component {
   };
 
   async componentDidMount() {
-  
+
     this._isMounted = true;
 
     const config = JSON.parse(await AsyncStorage.getItem('@CoachZac:configPlayer'));
     //alert(config.hasChangePlayer);
     const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
-    if (this._isMounted) {
+    //if (this._isMounted) {
 
       if (config.hasChangePlayer) {
         this.setState({ sessionToken: sessionToken, loading: true });
@@ -49,7 +49,7 @@ export default class Player extends Component {
         this.setState({ sessionToken: sessionToken, loading: false, players: players, count: total });
       }
 
-    }
+   // }
 
   }
 
@@ -60,7 +60,7 @@ export default class Player extends Component {
 
   getPlayers = async () => {
 
-    if (this._isMounted) {
+    //if (this._isMounted) {
       //Alert.alert(this.state.sessionToken);
       api.post('/getPlayers', {
         _ApplicationId: 'coachzacId',
@@ -76,7 +76,7 @@ export default class Player extends Component {
         this.setState({ loading: false, error: true });
         Alert.alert(JSON.stringify(e.response.data.error));
       });
-    }
+    //}
   };
 
   render() {
@@ -92,7 +92,7 @@ export default class Player extends Component {
             ? <Text style={{ color: 'red', alignSelf: 'center' }}>Ops ... algo deu errado! :( </Text>
             : <View>
               <View style={{ paddingRight: 10, alignItems: 'flex-end' }}>
-                <Text style={{ fontSize: 10 }}>{this.state.count + " atleta(s)"}</Text>
+                <Text style={{ fontSize: 10, color:"#E07A2F"}}>{this.state.count + " atleta(s)"}</Text>
               </View>
               <PlayerList
                 players={this.state.players}

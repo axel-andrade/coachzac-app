@@ -6,11 +6,19 @@ const profileImage = require('../../assets/profile.png');
 import ProfileModal from '../components/ProfileModal';
 import PhotoModal from '../components/PhotoModal';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
+import { NavigationActions, StackActions } from 'react-navigation';
+
+const resetAction = StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({ routeName: 'Home', params: { page: 1 } })],
+
+});
+
 
 export default class PlayerProfile extends Component {
 
     state = {
-        player: this.props.navigation.state.params.player,
+        player: [],
         existsProfileImage: false,
         modalVisible: false,
         fromListItem: true,
@@ -18,47 +26,40 @@ export default class PlayerProfile extends Component {
         good: [],
         medium: [],
         bad: [],
-        from: this.props.navigation.state.params.from
-
     };
 
     async componentDidMount() {
 
-        //verificando se o componente esta vindo da list item 
-        if (this.state.fromListItem) {
+        let good = this.getSteps(this.props.navigation.state.params.player.goodSteps);
+        let medium = this.getSteps(this.props.navigation.state.params.player.mediumSteps);
+        let bad = this.getSteps(this.props.navigation.state.params.player.badSteps);
+        let existsProfileImage;
+        if (this.props.navigation.state.params.player.profileImage != undefined)
+            existsProfileImage = true;
+        else
+            existsProfileImage = false;
 
-            let good = this.getSteps(this.props.navigation.state.params.player.goodSteps);
-            let medium = this.getSteps(this.props.navigation.state.params.player.mediumSteps);
-            let bad = this.getSteps(this.props.navigation.state.params.player.badSteps);
-            let existsProfileImage;
-            //Alert.alert("Veio do list item");
-            if (this.props.navigation.state.params.player.profileImage != undefined)
-                existsProfileImage = true;
-            else
-                existsProfileImage = false;
+        this.setState({
+            player: this.props.navigation.state.params.player,
+            existsProfileImage: existsProfileImage,
+            good: good,
+            medium: medium,
+            bad: bad
 
-            this.setState({
-                player: this.props.navigation.state.params.player,
-                existsProfileImage: existsProfileImage,
-                good: good,
-                medium: medium,
-                bad: bad
+        });
+        await AsyncStorage.multiSet([
+            ['@CoachZac:player', JSON.stringify(this.props.navigation.state.params.player)],
+        ]);
 
-            });
-            await AsyncStorage.multiSet([
-                ['@CoachZac:player', JSON.stringify(this.props.navigation.state.params.player)],
-            ]);
-        }
 
     };
 
     renderInfo = (name, state) => {
         return (
-            <View style={{ backgroundColor: '#F1F9FF', padding: '2%', borderWidth: 0.5, borderColor: 'white' }}>
-                <Text note style={styles.note}>
-                    <Text note style={[styles.note, styles.noteBold]}>{name}</Text>
-                    {state}
-                </Text>
+            <View style={{ backgroundColor: 'white', padding: '2%', borderWidth: 1, borderColor: '#F1F9FF' }}>
+                <Text note style={[styles.note, styles.noteBold]}>{name}</Text>
+                <Text note style={styles.note}>{state}</Text>
+
             </View>
         );
     };
@@ -100,57 +101,61 @@ export default class PlayerProfile extends Component {
 
         return (
             <Container>
+                <Header style={{ backgroundColor: 'white', alignItems: 'center' }}>
 
-
-
-                <Header style={{ backgroundColor: '#F1F9FF', alignItems: 'center' }}>
-
-                    <Button transparent onPress={() => this.props.navigation.goBack()}>
+                    <Button transparent onPress={() => this.props.navigation.dispatch(resetAction)}>
                         <Icon name="arrow-left" size={22.5} color='#269cda' />
                     </Button>
 
                     <Body>
                     </Body>
 
-                    <Button transparent onPress={() => this.props.navigation.navigate("UpdatePlayer", {
-                         player: this.state.player ,
-                         onUpdate: (params) => this.setState(params) 
-                     })}>
-                        <Icon name="pencil" size={22.5} color='#269cda' />
-                    </Button>
-
+                    <Right>
+                        <Icon name="dots-vertical" size={22.5} color='#269cda' />
+                    </Right>
                 </Header>
-
-                <View style={{ backgroundColor: "#F1F9FF", height: '10%', width: '100%' }}>
-                </View>
-                <View style={{ backgroundColor: "white", height: '10%', width: '100%', paddingRight: '5%' }}>
-                    {this.state.player.countAnalyze > 0 ?
-                        <Item style={{ borderColor: 'white' }}>
-                            <Right>
-                                <Button transparent onPress={() => this.props.navigation.navigate("ResultByPlayer", { good: this.state.good, medium: this.state.medium, bad: this.state.bad })}>
-                                    <Text uppercase={false} style={{ color: '#E07A2F', fontSize: 12 }}>Ver Resultados</Text>
-                                </Button>
-                            </Right>
-                        </Item>
-                        : null}
-                </View>
 
 
 
 
 
                 <Content>
-                    <View style={{ paddingLeft: '5%', paddingRight: '5%', borderRadius: 10 }}>
-                        {this.renderInfo("Nome: ", this.state.player.name)}
-                        {this.renderInfo("Email: ", this.state.player.username)}
-                        {this.renderInfo("Idade: ", this.state.player.dateOfBirth)}
-                        {this.renderInfo("Nível: ", parseFloat(this.state.player.level).toFixed(1) + "/10")}
-                        {this.renderInfo("Peso: ", this.state.player.weight + " kg")}
-                        {this.renderInfo("Altura: ", this.state.player.height + " cm")}
-                        {this.renderInfo("Telefone: ", this.state.player.phone)}
-                        {this.renderInfo("Endereço: ", this.state.player.adress)}
-                        {this.state.player.lastAnalyze ? this.renderInfo("Última avaliação: ", this.state.player.lastAnalyze) : this.renderInfo("Última avaliação: ", "Ainda não possui avaliações")}
-                    </View>
+
+                    <Item style={{ borderColor: 'white', paddingTop: '5%' }}>
+                        <Left style={{ alignItems: 'center' }}>
+
+                            {this.state.existsProfileImage
+
+                                ? <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} onLongPress={() => this.setState({ modalPhotoVisible: true })}>
+                                    <View style={{ borderColor: '#F1F9FF', borderWidth: 3, borderRadius: 50 }}>
+                                        <Thumbnail large source={{ uri: this.state.player.profileImage }} />
+                                    </View>
+                                </TouchableOpacity>
+
+                                : <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} >
+                                    <View style={{ borderColor: '#F1F9FF', borderWidth: 3, borderRadius: 50 }}>
+                                        <Thumbnail large source={profileImage} />
+                                    </View>
+                                </TouchableOpacity>
+                            }
+
+                        </Left>
+                        <Body style={{ alignItems: 'flex-start' }}>
+                            <Text style={{ fontWeight: 'bold', fontSize: 20, color: "#269cda" }}>{this.state.player.name}</Text>
+                            <Text style={{ fontSize: 12, color: '#269cda' }}>Minas Tênis</Text>
+                        </Body>
+                        <Right style={{ alignItems: 'center' }}>
+                            <TouchableOpacity>
+                                <View style={{ padding: 10, backgroundColor: '#F1F9FF', borderRadius: 50 }}>
+                                    <Icon name="pencil" size={30} style={{ color: '#269cda' }} onPress={() => this.props.navigation.navigate("UpdatePlayer", {
+                                        player: this.state.player,
+                                        onUpdate: (params) => this.setState(params)
+                                    })} />
+                                </View>
+                            </TouchableOpacity>
+                        </Right>
+                    </Item>
+
 
 
                     <Item style={{ borderColor: 'white', paddingTop: '10%', justifyContent: 'center', alignItems: 'center', paddingLeft: '5%', paddingRight: '5%' }}>
@@ -166,11 +171,26 @@ export default class PlayerProfile extends Component {
                             </TouchableOpacity>
                         </Left>
                         <Body style={{ paddingLeft: '30%', flexDirection: 'column' }}>
-                            <Button bordered block style={{ width: '100%',borderColor:"#E07A2F"}} onPress={()=>this.props.navigation.navigate("InitAnalyze", {player: this.state.player})}>
+                            <Button rounded bordered block style={{ width: '100%', borderColor: "#E07A2F" }} onPress={() => this.props.navigation.push("InitAnalyze", { player: this.state.player })}>
                                 <Text uppercase={false} style={{ color: '#E07A2F' }}>Avaliar</Text>
                             </Button>
                         </Body>
                     </Item>
+
+                    <View style={{ paddingTop: '10%',paddingBottom:  '5%', paddingLeft: '5%', paddingRight: '5%', borderRadius: 10 }}>
+                        {/*this.renderInfo("Nome: ", this.state.player.name)*/}
+                        {this.renderInfo("Email: ", this.state.player.username)}
+                        {this.renderInfo("Idade: ", this.state.player.dateOfBirth)}
+                        {this.renderInfo("Nível: ", parseFloat(this.state.player.level).toFixed(1) + "/10")}
+                        {this.renderInfo("Peso: ", this.state.player.weight + " kg")}
+                        {this.renderInfo("Altura: ", this.state.player.height + " cm")}
+                        {this.renderInfo("Telefone: ", this.state.player.phone)}
+                        {this.renderInfo("Endereço: ", this.state.player.adress)}
+                        {this.state.player.lastAnalyze ? this.renderInfo("Última avaliação: ", this.state.player.lastAnalyze) : this.renderInfo("Última avaliação: ", "Ainda não possui avaliações")}
+                    </View>
+
+
+
                 </Content>
 
                 <ProfileModal
@@ -189,24 +209,6 @@ export default class PlayerProfile extends Component {
                     onClose={() => this.setState({ modalPhotoVisible: false })}
                     visible={this.state.modalPhotoVisible}
                 />
-
-                <View style={{ alignItems: 'center', backgroundColor: 'green', position: "absolute", backgroundColor: 'transparent', top: '12%', left: 20 }}>
-
-                    {this.state.existsProfileImage
-                        ? <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} onLongPress={() => this.setState({ modalPhotoVisible: true })}>
-                            <View style={{ borderColor: '#white', borderWidth: 3, borderRadius: 50 }}>
-                                <Thumbnail large source={{ uri: this.state.player.profileImage }} />
-                            </View>
-                        </TouchableOpacity>
-                        : <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
-                            <View style={{ borderColor: 'white', borderWidth: 3, borderRadius: 50 }}>
-                                <Thumbnail large source={profileImage} />
-                            </View>
-                        </TouchableOpacity>
-
-                    }
-
-                </View>
 
             </Container >
         );

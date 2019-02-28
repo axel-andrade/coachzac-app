@@ -4,6 +4,11 @@ import { Container, Item, Thumbnail, Header, Content, CheckBox, Button, List, Li
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const profileImage = require('../../assets/profile.png');
 import SelectVideoModal from '../components/SelectVideoModal';
+import { NavigationActions, StackActions } from 'react-navigation';
+const resetAction = StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({ routeName: 'Home' })],
+});
 
 export default class InitAnalyze extends Component {
 
@@ -104,7 +109,7 @@ export default class InitAnalyze extends Component {
 
                     </Body>
 
-                    <Button transparent onPress={() => this.props.navigation.navigate("Home", { page: 3 })}>
+                    <Button transparent onPress={() => this.props.navigation.dispatch(resetAction)}>
                         <Icon name="home" size={22.5} color='#E07A2F' />
                     </Button>
 

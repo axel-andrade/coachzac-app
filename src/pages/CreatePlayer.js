@@ -141,16 +141,15 @@ export default class CreatePlayer extends Component {
 
             <Container>
                 <Header style={{ backgroundColor: 'white' }}>
-                    <Left>
+                    
                         <Button transparent onPress={() => this.props.navigation.goBack()}>
                             <Icon name="arrow-left" size={22.5} color='#269cda' />
                         </Button>
-                    </Left>
-                    <Body>
-                        <Text style={{ color: '#269cda', fontSize: 20, fontWeight: 'bold' }}>Cadastrar</Text>
+                    
+                    <Body style={{paddingLeft:'5%'}}>
+                        <Text style={{ color: '#269cda', fontSize: 20, fontWeight: 'bold' }}>Cadastrar Atleta</Text>
                     </Body>
-                    <Right>
-                    </Right>
+                  
                 </Header>
                 <Content>
                     <View style={{ padding: '5%', }}>
@@ -246,10 +245,12 @@ export default class CreatePlayer extends Component {
 
                     </View>
                 </Content>
-
+                
+                <View style={{padding:'5%'}}>
                 <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createPlayer()}>
-                    <Text>SALVAR</Text>
+                    <Text uppercase={false}>Salvar</Text>
                 </Button>
+                </View>
 
                 <ProfileModal
                     onSave={this.saveProfileImage}
