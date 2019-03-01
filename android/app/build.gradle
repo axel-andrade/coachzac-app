@@ -150,6 +150,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-sound')
+    compile project(':react-native-audio')
+    compile project(':react-native-audio-recorder-player')
     compile project(':react-native-svg')
     compile project(':react-native-image-crop-picker')
     compile project(':react-native-image-picker')

@@ -20,12 +20,13 @@ import AnalyzeWithoutVideo from './pages/AnalyzeWithoutVideo';
 import NewAnalyze from  './pages/NewAnalyze';
 import UpdatePlayer from './pages/UpdatePlayer';
 import UpdateUser from './pages/UpdateUser';
+import RecorderAudio from './tests/examples/RecorderAudio';
 
 //export default createAppContainer(TabNavigator);
 const AppNavigator = createStackNavigator({
 
     'Main': {  
-        screen: Home,
+        screen: Main,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }
