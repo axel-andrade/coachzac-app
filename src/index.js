@@ -26,7 +26,7 @@ import RecorderAudio from './tests/examples/RecorderAudio';
 const AppNavigator = createStackNavigator({
 
     'Main': {  
-        screen: Main,
+        screen: Home,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }

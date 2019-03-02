@@ -68,8 +68,11 @@ export default class ProfileModal extends Component {
     handlePhotoLibrary = async () => {
 
         ImagePicker.openPicker({
+            width: 500,
+            height: 500,
             cropping: true,
             cropperCircleOverlay: true,
+            compressImageQuality: 1,
             includeBase64: true,
         }).then(response => {
             this.props.onClose();
@@ -92,8 +95,11 @@ export default class ProfileModal extends Component {
     handlePhotoCamera = () => {
 
         ImagePicker.openCamera({
+            width: 500,
+            height: 500,
             cropping: true,
             cropperCircleOverlay: true,
+            compressImageQuality: 1,
             includeBase64: true,
         }).then(response => {
             this.props.onClose();
