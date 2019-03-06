@@ -42,86 +42,91 @@ export default class PlayerForAnalyze extends Component {
         else {
             let players = JSON.parse(await AsyncStorage.getItem('@CoachZac:players'));
             let total = await AsyncStorage.getItem('@CoachZac:totalPlayer');
-            this.setState({ sessionToken: sessionToken, loading: false, players: players, count: total });
+            this.setState({ sessionToken: sessionToken, loading: false, players: players, count: parseInt(total) });
         }
 
-    //}
-};
-getPlayers = async () => {
+        //}
+    };
+    getPlayers = async () => {
 
-    //if (this._isMounted) {
-    //Alert.alert(this.state.sessionToken);
-    api.post('/getPlayers', {
-        _ApplicationId: 'coachzacId',
-        _SessionToken: this.state.sessionToken,
-        order: "+name"
-    }).then((res) => {
-        AsyncStorage.multiSet([
-            ['@CoachZac:players', JSON.stringify(res.data.result.players)],
-            ['@CoachZac:totalPlayer', JSON.stringify(res.data.result.total)],
-            ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: false })],
-        ]);
-        this.setState({ loading: false, players: res.data.result.players, count: res.data.result.total });
-    }).catch((e) => {
-        this.setState({ loading: false, error: true });
-        Alert.alert(JSON.stringify(e.response.data.error));
-    });
-    //  }
-};
+        //if (this._isMounted) {
+        //Alert.alert(this.state.sessionToken);
+        api.post('/getPlayers', {
+            _ApplicationId: 'coachzacId',
+            _SessionToken: this.state.sessionToken,
+            order: "+name"
+        }).then((res) => {
+            AsyncStorage.multiSet([
+                ['@CoachZac:players', JSON.stringify(res.data.result.players)],
+                ['@CoachZac:totalPlayer', JSON.stringify(res.data.result.total)],
+                ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: false })],
+            ]);
+            this.setState({ loading: false, players: res.data.result.players, count: parseInt(res.data.result.total) });
+        }).catch((e) => {
+            this.setState({ loading: false, error: true });
+            Alert.alert(JSON.stringify(e.response.data.error));
+        });
+        //  }
+    };
 
-componentWillUnmount() {
-    this._isMounted = false;
-}
-render() {
-    return (
-
-
-        <Container>
-            <Header style={{ backgroundColor: 'white' }}>
-
-                <Button transparent onPress={() => this.props.navigation.navigate("Home", { page: 3})}>
-                    <Icon name="arrow-left" size={22.5} color='#269cda' />
-                </Button>
-
-                <Body style={{ paddingLeft: '5%' }}>
-                    <Title style={{ color: '#269cda' }}> Avaliar Atleta</Title>
-                    <Text style={{ fontSize: 10, color: '#269cda' }}>Selecione um(a) atleta para avaliação: </Text>
-                </Body>
-
-                <Button transparent>
-                    <Icon name="tune" size={22.5} color='#269cda' />
-                </Button>
-
-            </Header>
-
-            {this.state.loading
-                ? <ActivityIndicator style={{ paddingTop: '2%' }} size='large' color="#C9F60A" />
-                : this.state.error
-                    ? <Text style={{ color: 'red' }}>Ops ... algo deu errado! :( </Text>
-                    : this.state.players[0]
-                        ? <PlayerList
-                            players={this.state.players}
-                            onPress={(params) => this.props.navigation.navigate('InitAnalyze', params)}
-                            onLongPress={(uri) => this.setState({ modalPhotoVisible: true, uriSelectPlayer: uri })}
-                            onFavorited={(playerSelected) => this.setState({
-                                playerSelected: playerSelected,
-                                favorited: !playerSelected.favorited
-                            })}
-                            type={2}
-                        />
-                        : null
-
-            }
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+    render() {
+        return (
 
 
-            <PhotoModal
-                uri={this.state.uriSelectPlayer}
-                onClose={() => this.setState({ modalPhotoVisible: false })}
-                visible={this.state.modalPhotoVisible}
-            />
-        </Container>
+            <Container>
+                <Header style={{ backgroundColor: 'white' }}>
 
-    );
-}
+                    <Button transparent onPress={() => this.props.navigation.navigate("Home", { page: 3 })}>
+                        <Icon name="arrow-left" size={22.5} color='#269cda' />
+                    </Button>
+
+                    <Body style={{ paddingLeft: '5%' }}>
+                        <Title style={{ color: '#269cda' }}> Avaliar Atleta</Title>
+                        <Text style={{ fontSize: 10, color: '#269cda' }}>Selecione um(a) atleta para avaliação: </Text>
+                    </Body>
+
+                    <Button transparent>
+                        <Icon name="tune" size={22.5} color='#269cda' />
+                    </Button>
+
+                </Header>
+
+                {this.state.loading
+                    ? <ActivityIndicator style={{ paddingTop: '2%' }} size='large' color="#C9F60A" />
+                    : this.state.error
+                        ? <View style={{ padding: '5%', alignItems: 'center' }} >
+                            <Text style={{ color: 'red', fontSize: 14 }}>Ops ... algo deu errado! :( </Text>
+                        </View>
+                        : this.state.count === null
+                            ? null
+                            : this.state.count !== 0
+                                ? <PlayerList
+                                    players={this.state.players}
+                                    onPress={(params) => this.props.navigation.navigate('InitAnalyze', params)}
+                                    onLongPress={(uri) => this.setState({ modalPhotoVisible: true, uriSelectPlayer: uri })}
+                                    onFavorited={(playerSelected) => this.setState({
+                                        playerSelected: playerSelected,
+                                        favorited: !playerSelected.favorited
+                                    })}
+                                    type={2}
+                                />
+                                : <View style={{ padding: '5%', alignItems: 'center' }}>
+                                    <Text style={{ fontSize: 14, color: "gray" }}>Você ainda não cadastrou atletas.</Text>
+                                </View>
+
+                }
+                
+                <PhotoModal
+                    uri={this.state.uriSelectPlayer}
+                    onClose={() => this.setState({ modalPhotoVisible: false })}
+                    visible={this.state.modalPhotoVisible}
+                />
+            </Container>
+
+        );
+    }
 }
 

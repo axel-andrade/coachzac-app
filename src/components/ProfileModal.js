@@ -4,12 +4,12 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { Modal, View, StyleSheet, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import api from '../services/api';
-
+const Define = require('../config/Define.js');
 //Funções do Parse
 const Parse = require('parse/react-native');
 Parse.setAsyncStorage(AsyncStorage);
 Parse.initialize('coachzacId');
-Parse.serverURL = 'https://coachzac-v2-api.herokuapp.com/use';
+Parse.serverURL = Define.baseURL;
 
 
 const styles = StyleSheet.create({

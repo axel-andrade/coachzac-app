@@ -81,6 +81,7 @@
 		32E5D4E616C7480691545680 /* libRNAudioRecorderPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4160D1CAF6E64F9981C2D265 /* libRNAudioRecorderPlayer.a */; };
 		D7437C45AEC54C8A9982AAFF /* libRNAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A0E9AFC983241889ADDF471 /* libRNAudio.a */; };
 		D0C985308D354B0F8A8CC226 /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AB518B1B794C73B21FB902 /* libRNSound.a */; };
+		08FB3B056BE941ADA0FEFC5E /* libRNCSlider.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7465C2FD6028416EB06E4425 /* libRNCSlider.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -439,6 +440,8 @@
 		6A0E9AFC983241889ADDF471 /* libRNAudio.a */ = {isa = PBXFileReference; name = "libRNAudio.a"; path = "libRNAudio.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		02986DC3B4474C9EA74577AB /* RNSound.xcodeproj */ = {isa = PBXFileReference; name = "RNSound.xcodeproj"; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		18AB518B1B794C73B21FB902 /* libRNSound.a */ = {isa = PBXFileReference; name = "libRNSound.a"; path = "libRNSound.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		D5A1381D4DBA41EBA1008F6D /* RNCSlider.xcodeproj */ = {isa = PBXFileReference; name = "RNCSlider.xcodeproj"; path = "../node_modules/@react-native-community/slider/ios/RNCSlider.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		7465C2FD6028416EB06E4425 /* libRNCSlider.a */ = {isa = PBXFileReference; name = "libRNCSlider.a"; path = "libRNCSlider.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -475,6 +478,7 @@
 				32E5D4E616C7480691545680 /* libRNAudioRecorderPlayer.a in Frameworks */,
 				D7437C45AEC54C8A9982AAFF /* libRNAudio.a in Frameworks */,
 				D0C985308D354B0F8A8CC226 /* libRNSound.a in Frameworks */,
+				08FB3B056BE941ADA0FEFC5E /* libRNCSlider.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -672,6 +676,7 @@
 				B3A7AC66B6834BE586FF6EFD /* RNAudioRecorderPlayer.xcodeproj */,
 				0266D991FC7A432DA215C87F /* RNAudio.xcodeproj */,
 				02986DC3B4474C9EA74577AB /* RNSound.xcodeproj */,
+				D5A1381D4DBA41EBA1008F6D /* RNCSlider.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1381,6 +1386,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1393,6 +1399,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
+					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios/**",
 				);
 			};
 			name = Debug;
@@ -1421,6 +1428,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1433,6 +1441,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
+					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios/**",
 				);
 			};
 			name = Release;
@@ -1464,6 +1473,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
+					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios/**",
 				);
 			};
 			name = Debug;
@@ -1494,6 +1504,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
+					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios/**",
 				);
 			};
 			name = Release;
@@ -1530,6 +1541,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1542,6 +1554,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
+					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios/**",
 				);
 			};
 			name = Debug;
@@ -1578,6 +1591,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1590,6 +1604,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
+					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios/**",
 				);
 			};
 			name = Release;
@@ -1625,6 +1640,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1637,6 +1653,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
+					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios/**",
 				);
 			};
 			name = Debug;
@@ -1672,6 +1689,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1684,6 +1702,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
+					"$(SRCROOT)\..\node_modules\@react-native-community\slider\ios/**",
 				);
 			};
 			name = Release;

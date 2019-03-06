@@ -5,14 +5,14 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Slider } from 'react-native-elements';
 const Define = require('../config/Define.js');
 import api from '../services/api';
-import AnalyzeDetailModal from '../components/AnalyzeDetailModal';
 import { NavigationActions, StackActions } from 'react-navigation';
+import { Overlay } from 'react-native-elements';
 
 const resetAction = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'Home' })],
+    index: 0,
+    actions: [NavigationActions.navigate({ routeName: 'Home' })],
 });
-   
+
 
 export default class AnalyzeWithoutVideo extends Component {
 
@@ -34,12 +34,11 @@ export default class AnalyzeWithoutVideo extends Component {
         //this.props.navigation.state.params.playerId
         if (sessionToken) {
             this.setState({ sessionToken: sessionToken });
-            alert("Avaliação salva com sucesso!");
             this.calculateAverage(this.props.navigation.state.params.points)
         }
 
         this.renderInfo();
-    
+
     };
 
     calculateAverage(points) {
@@ -69,9 +68,23 @@ export default class AnalyzeWithoutVideo extends Component {
             )
         });
 
-        this.setState({listFields: temp})
+        this.setState({ listFields: temp })
 
     };
+
+    editAnalyze() {
+        this.props.navigation.navigate("UpdateAnalyze", {
+            steps: this.props.navigation.state.params.steps,
+            playerName: this.props.navigation.state.params.playerName,
+            playerId: this.props.navigation.state.params.playerId,
+            values: this.props.navigation.state.params.values,
+            commentText: this.props.navigation.state.params.commentText,
+            commentAudio: this.props.navigation.state.params.commentAudio,
+            analyzeId: this.props.navigation.state.params.analyzeId
+
+        })
+    };
+
     render() {
         return (
 
@@ -82,7 +95,7 @@ export default class AnalyzeWithoutVideo extends Component {
                     </View>
 
                     <Right>
-                        <Button transparent onPress={() =>  this.props.navigation.dispatch(resetAction)}>
+                        <Button transparent onPress={() => this.props.navigation.dispatch(resetAction)}>
                             <Icon name="home" size={22.5} color='#E07A2F' />
                         </Button>
                     </Right>
@@ -99,39 +112,60 @@ export default class AnalyzeWithoutVideo extends Component {
                         </View>
                     </View>
 
-                    <View style={{alignItems: 'center', justifyContent: 'center', paddingTop: '15%' }}>
-                        <TouchableOpacity onPress={()=> this.setState({modalVisible: true})}>
-                            <View style={{borderBottomColor: '#E07A2F', borderBottomWidth:  0.5}}>
-                            <Text style={{ color: '#E07A2F', fontSize: 14 }}>Ver Detalhes</Text>
+                    <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: '15%' }}>
+                        <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
+                            <View style={{ borderBottomColor: '#E07A2F', borderBottomWidth: 0.5 }}>
+                                <Text style={{ color: '#E07A2F', fontSize: 14 }}>Ver Detalhes</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
-                    
-                    <View style={{paddingTop:"10%"}}>
+
+                    <View style={{ paddingTop: "10%" }}>
                         <View style={{ padding: '5%' }}>
-                            <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.props.navigation.navigate("PlayerForAnalyze")}>
+                            <Button block style={{ backgroundColor: '#269cda' }} onPress={()=> this.props.navigation.navigate("PlayerForAnalyze")}>
                                 <Text>NOVA AVALIAÇÃO</Text>
                             </Button>
                         </View>
-                        <View style={{ paddingLeft: '5%', paddingRight: '5%' }}>
-                            <Button block style={{ backgroundColor: '#269cda' }}>
-                                <Text>REPETIR AVALIAÇÃO</Text>
+                        <View style={{ paddingLeft: '5%', paddingRight: '5%' }} >
+                            <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.editAnalyze()}>
+                                <Text>EDITAR AVALIAÇÃO</Text>
                             </Button>
                         </View>
                     </View>
 
                 </Content>
 
-                <AnalyzeDetailModal
-                    navigation={this.props.navigation}
-                    onClose={() => this.setState({modalVisible: false})}
-                    visible={this.state.modalVisible}
-                    codes={this.state.codes}
-                    points={this.state.points}
-                    playerName={this.props.navigation.state.params.playerName}
-                    list={this.state.listFields}
-                    
-                />
+                <Overlay
+                    isVisible={this.state.modalVisible}
+
+                    width='auto'
+                    height='auto'
+                    onBackdropPress={() => this.setState({ modalVisible: false })}
+                //containerStyle={{justifyContent:'center'}}
+                >
+                    <View style={{ padding: '2%' }}>
+                        <View style={{ paddingBottom: '5%' }}>
+                            <Text note style={{ fontSize: 14, color: '#E07A2F' }}>{"Informações: "}</Text>
+                        </View>
+                        <Text note style={{ fontSize: 14, color: "#269cda" }}>
+                            <Text note style={{ fontSize: 14, color: '#696969' }}>{"Atleta: "}</Text>
+                            {this.props.navigation.state.params.playerName}
+                        </Text>
+                        <Text note style={{ fontSize: 14, color: "#269cda" }}>
+                            <Text note style={{ fontSize: 14, color: '#696969' }}>{"Fundamento: "}</Text>
+                            Saque
+                        </Text>
+
+
+                        <View style={{ paddingTop: '5%', paddingBottom: '5%' }}>
+                            <Text note style={{ fontSize: 14, color: '#E07A2F' }}>{"Notas: "}</Text>
+                        </View>
+                        <View style={{ paddingBottom: '5%' }}>
+                            {this.state.listFields}
+                        </View>
+                    </View>
+
+                </Overlay>
 
             </Container >
 

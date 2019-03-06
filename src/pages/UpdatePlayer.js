@@ -17,12 +17,15 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import api from '../services/api';
 import ProfileModal from '../components/ProfileModal';
+import { NavigationActions, StackActions } from 'react-navigation';
+const Define = require('../config/Define.js');
 const profileImage = require('../../assets/profile.png');
+
 //Funções do Parse
 const Parse = require('parse/react-native');
 Parse.setAsyncStorage(AsyncStorage);
 Parse.initialize('coachzacId');
-Parse.serverURL = 'https://coachzac-v2-api.herokuapp.com/use';
+Parse.serverURL = Define.baseURL;
 
 
 export default class UpdatePlayer extends Component {
@@ -121,14 +124,44 @@ export default class UpdatePlayer extends Component {
             //alert(JSON.stringify(res.data.result));
 
             AsyncStorage.setItem('@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true }));
-            this.props.navigation.state.params.onUpdate({player: res.data.result})
-            this.props.navigation.navigate("PlayerProfile")
+            //this.props.navigation.state.params.onUpdate({player: res.data.result})
+            //this.props.navigation.navigate("PlayerProfile")
+            const resetProfile = StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({ routeName: 'PlayerProfile', params: { player: res.data.result } })],
+            });
+
+            this.props.navigation.dispatch(resetProfile);
             //Alert.alert("Atleta editado com sucesso!");
             //params.onChangePage(1);
         }).catch((e) => {
             alert(e.response.data.error.message);
         });
 
+    };
+
+    deletePlayer = async() =>{
+        api.post('/deletePlayer', {
+            _ApplicationId: 'coachzacId',
+            _SessionToken: this.state.sessionToken,
+            playerId: this.state.playerId,
+        }).then((res) => {
+
+            AsyncStorage.multiSet([
+                ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })],
+                ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
+            ]);
+
+            let  resetActionPlayer = StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({ routeName: 'Home', params: {page: 1} })],
+            });
+
+            this.props.navigation.dispatch(resetActionPlayer);
+
+        }).catch((e) => {
+            alert(e.response.data.error.message);
+        });
     };
 
     uploadPhoto = async (response) => {
@@ -265,7 +298,7 @@ export default class UpdatePlayer extends Component {
                     </View>
 
                     <View style={{padding:'5%'}}>
-                        <Button bordered block danger style={{borderColor: '#E07A2F'}}>
+                        <Button bordered block danger style={{borderColor: '#E07A2F'}} onPress={this.deletePlayer}>
                             <Text style={{color:'#E07A2F'}}>EXCLUIR ATLETA</Text>
                         </Button>
                     </View>

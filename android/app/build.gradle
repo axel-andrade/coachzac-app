@@ -99,7 +99,7 @@ android {
 
     defaultConfig {
         applicationId "com.coachzac"
-        minSdkVersion 18
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -150,6 +150,7 @@ android {
 }
 
 dependencies {
+    compile project(':@react-native-community_slider')
     compile project(':react-native-sound')
     compile project(':react-native-audio')
     compile project(':react-native-audio-recorder-player')

@@ -23,29 +23,22 @@ export default class PlayerProfile extends Component {
         modalVisible: false,
         fromListItem: true,
         modalPhotoVisible: false,
-        good: [],
-        medium: [],
-        bad: [],
+        firstName: ""
     };
 
     async componentDidMount() {
 
-        let good = this.getSteps(this.props.navigation.state.params.player.goodSteps);
-        let medium = this.getSteps(this.props.navigation.state.params.player.mediumSteps);
-        let bad = this.getSteps(this.props.navigation.state.params.player.badSteps);
         let existsProfileImage;
+        let firstName =  this.props.navigation.state.params.player.name.split(" ");
         if (this.props.navigation.state.params.player.profileImage != undefined)
             existsProfileImage = true;
         else
             existsProfileImage = false;
 
         this.setState({
-            player: this.props.navigation.state.params.player,
+            //player: this.props.navigation.state.params.player,
             existsProfileImage: existsProfileImage,
-            good: good,
-            medium: medium,
-            bad: bad
-
+            firstName: firstName
         });
         await AsyncStorage.multiSet([
             ['@CoachZac:player', JSON.stringify(this.props.navigation.state.params.player)],
@@ -86,18 +79,9 @@ export default class PlayerProfile extends Component {
 
     };
 
-    getSteps(step) {
-        let data = [];
-        if (step) {
-            for (let i = 0; i < step.length; i++)
-                data.push(<Text note style={{ fontSize: 10, paddingTop: "2%" }}>{"- " + step[i]}</Text>)
-        }
-        else
-            data.push(<Text note style={{ fontSize: 10, paddingTop: "2%" }}>{"- Nenhum"}</Text>)
-        return data;
-    };
-
     render() {
+
+        let{name, username, dateOfBirth,level, weight, height, phone, adress, lastAnalyze,countAnalyze,goodSteps, mediumSteps, badSteps} = this.props.navigation.state.params.player;
 
         return (
             <Container>
@@ -138,15 +122,14 @@ export default class PlayerProfile extends Component {
 
                         </Left>
                         <Body style={{ alignItems: 'flex-start' }}>
-                            <Text style={{ fontWeight: 'bold', fontSize: 20, color: "#269cda" }}>{this.state.player.name}</Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 20, color: "#269cda" }}>{this.state.firstName[0]}</Text>
                             <Text style={{ fontSize: 12, color: '#269cda' }}>Minas Tênis</Text>
                         </Body>
                         <Right style={{ alignItems: 'center' }}>
                             <TouchableOpacity>
                                 <View style={{ padding: 10, backgroundColor: '#F1F9FF', borderRadius: 50 }}>
                                     <Icon name="pencil" size={30} style={{ color: '#269cda' }} onPress={() => this.props.navigation.navigate("UpdatePlayer", {
-                                        player: this.state.player,
-                                        onUpdate: (params) => this.setState(params)
+                                        player: this.props.navigation.state.params.player
                                     })} />
                                 </View>
                             </TouchableOpacity>
@@ -168,34 +151,32 @@ export default class PlayerProfile extends Component {
                             </TouchableOpacity>
                         </Left>
                         <Body style={{ paddingLeft: '30%', flexDirection: 'column' }}>
-                            <Button rounded bordered block style={{ width: '100%', borderColor: "#E07A2F" }} onPress={() => this.props.navigation.push("InitAnalyze", { player: this.state.player })}>
+                            <Button rounded bordered block style={{ width: '100%', borderColor: "#E07A2F" }} onPress={() => this.props.navigation.push("InitAnalyze", { player: this.props.navigation.state.params.player })}>
                                 <Text uppercase={false} style={{ color: '#E07A2F' }}>Avaliar</Text>
                             </Button>
                         </Body>
                     </Item>
                 
                     <View style={{ paddingTop: '5%', paddingBottom: '5%', paddingLeft: '5%', paddingRight: '5%', borderRadius: 10 }}>
-                        {/*this.renderInfo("Nome: ", this.state.player.name)*/}
-                        {this.renderInfo("Email: ", this.state.player.username)}
-                        {this.renderInfo("Idade: ", this.state.player.dateOfBirth)}
-                        {this.renderInfo("Nível: ", parseFloat(this.state.player.level).toFixed(1) + "/10")}
-                        {this.renderInfo("Peso: ", this.state.player.weight + " kg")}
-                        {this.renderInfo("Altura: ", this.state.player.height + " cm")}
-                        {this.renderInfo("Telefone: ", this.state.player.phone)}
-                        {this.renderInfo("Endereço: ", this.state.player.adress)}
-                        {this.state.player.lastAnalyze ? this.renderInfo("Última avaliação: ", this.state.player.lastAnalyze) : this.renderInfo("Última avaliação: ", "Ainda não possui avaliações")}
+                        {this.renderInfo("Nome Completo: ", name)}
+                        {this.renderInfo("Email: ", username)}
+                        {this.renderInfo("Idade: ", dateOfBirth)}
+                        {this.renderInfo("Nível: ", parseFloat(level).toFixed(1) + "/10")}
+                        {this.renderInfo("Peso: ", weight + " kg")}
+                        {this.renderInfo("Altura: ", height + " cm")}
+                        {this.renderInfo("Telefone: ", phone)}
+                        {this.renderInfo("Endereço: ", adress)}
+                        {lastAnalyze ? this.renderInfo("Última avaliação: ", lastAnalyze) : this.renderInfo("Última avaliação: ", "Ainda não possui avaliações")}
                     </View>
 
-                    {this.state.player.countAnalyze > 0
+                    {countAnalyze > 0
                             ? <View style={{padding:'5%'}}>
-                            <Button block style={{backgroundColor:'#269cda'}} onPress={() => this.props.navigation.navigate("ResultByPlayer", { good: this.state.good, medium: this.state.medium, bad: this.state.bad })}>
+                            <Button block style={{backgroundColor:'#269cda'}} onPress={() => this.props.navigation.navigate("ResultByPlayer", { good: goodSteps, medium: mediumSteps, bad: badSteps })}>
                                 <Text style={{ color: "white" }}>Resultados</Text>
                             </Button>
                             </View>
                             : null
                         }
-
-
 
 
                 </Content>

@@ -13,6 +13,7 @@ import AnalyzesByPlayer from './pages/AnalyzesByPlayer';
 import ResultByPlayer from './pages/ResultByPlayer';
 import Main from './pages/Main';
 import Account from './pages/Account';
+import AccountDetail from './pages/AccountDetail';
 import CreatePlayer from './pages/CreatePlayer';
 import InitAnalyze from './pages/InitAnalyze';
 import PlayerForAnalyze from './pages/PlayerForAnalyze';
@@ -20,7 +21,8 @@ import AnalyzeWithoutVideo from './pages/AnalyzeWithoutVideo';
 import NewAnalyze from  './pages/NewAnalyze';
 import UpdatePlayer from './pages/UpdatePlayer';
 import UpdateUser from './pages/UpdateUser';
-import RecorderAudio from './tests/examples/RecorderAudio';
+import UpdatePassword from './pages/UpdatePassword';
+import UpdateAnalyze from './pages/UpdateAnalyze';
 
 //export default createAppContainer(TabNavigator);
 const AppNavigator = createStackNavigator({
@@ -39,6 +41,12 @@ const AppNavigator = createStackNavigator({
     },
     'Account': {  
         screen: Account,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
+    },
+    'AccountDetail': {  
+        screen: AccountDetail,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }
@@ -70,6 +78,18 @@ const AppNavigator = createStackNavigator({
     },
     'UpdateUser': {
         screen: UpdateUser,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
+    },
+    'UpdatePassword': {
+        screen: UpdatePassword,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
+    },
+    'UpdateAnalyze': {
+        screen: UpdateAnalyze,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }

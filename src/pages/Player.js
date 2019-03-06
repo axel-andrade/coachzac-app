@@ -27,7 +27,7 @@ export default class Player extends Component {
     uriSelectPlayer: "",
     playerSelected: [],
     favorited: false,
-    count: ""
+    count: null,
   };
 
   async componentDidMount() {
@@ -39,17 +39,17 @@ export default class Player extends Component {
     const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
     //if (this._isMounted) {
 
-      if (config.hasChangePlayer) {
-        this.setState({ sessionToken: sessionToken, loading: true });
-        this.getPlayers();
-      }
-      else {
-        let players =JSON.parse( await AsyncStorage.getItem('@CoachZac:players'));
-        let total = await AsyncStorage.getItem('@CoachZac:totalPlayer');
-        this.setState({ sessionToken: sessionToken, loading: false, players: players, count: total });
-      }
+    if (config.hasChangePlayer) {
+      this.setState({ sessionToken: sessionToken, loading: true });
+      this.getPlayers();
+    }
+    else {
+      let players = JSON.parse(await AsyncStorage.getItem('@CoachZac:players'));
+      let total = await AsyncStorage.getItem('@CoachZac:totalPlayer');
+      this.setState({ sessionToken: sessionToken, loading: false, players: players, count: parseInt(total) });
+    }
 
-   // }
+    // }
 
   }
 
@@ -61,27 +61,27 @@ export default class Player extends Component {
   getPlayers = async () => {
 
     //if (this._isMounted) {
-      //Alert.alert(this.state.sessionToken);
-      api.post('/getPlayers', {
-        _ApplicationId: 'coachzacId',
-        _SessionToken: this.state.sessionToken
-      }).then((res) => {
-        AsyncStorage.multiSet([
-          ['@CoachZac:players', JSON.stringify(res.data.result.players)],
-          ['@CoachZac:totalPlayer', JSON.stringify(res.data.result.total)],
-          ['@CoachZac:configPlayer', JSON.stringify({hasChangePlayer:false})],
-        ]);
-        this.setState({ loading: false, players: res.data.result.players, count: res.data.result.total });
-      }).catch((e) => {
-        this.setState({ loading: false, error: true });
-        Alert.alert(JSON.stringify(e.response.data.error));
-      });
+    //Alert.alert(this.state.sessionToken);
+    api.post('/getPlayers', {
+      _ApplicationId: 'coachzacId',
+      _SessionToken: this.state.sessionToken
+    }).then((res) => {
+      AsyncStorage.multiSet([
+        ['@CoachZac:players', JSON.stringify(res.data.result.players)],
+        ['@CoachZac:totalPlayer', JSON.stringify(res.data.result.total)],
+        ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: false })],
+      ]);
+      this.setState({ loading: false, players: res.data.result.players, count: parseInt(res.data.result.total) });
+    }).catch((e) => {
+      this.setState({ loading: false, error: true });
+      Alert.alert(JSON.stringify(e.response.data.error));
+    });
     //}
   };
 
   render() {
 
-    const {onChangePage} = this.props;
+    const { onChangePage } = this.props;
     return (
 
 
@@ -89,23 +89,31 @@ export default class Player extends Component {
         {this.state.loading
           ? <ActivityIndicator style={{ paddingTop: '2%' }} size='large' color="#C9F60A" />
           : this.state.error
-            ? <Text style={{ color: 'red', alignSelf: 'center' }}>Ops ... algo deu errado! :( </Text>
-            : <View>
-              <View style={{ paddingRight: 10, alignItems: 'flex-end' }}>
-                <Text style={{ fontSize: 10, color:"#E07A2F"}}>{this.state.count + " atleta(s)"}</Text>
-              </View>
-              <PlayerList
-                players={this.state.players}
-                onPress={(params) => this.props.navigation.navigate('PlayerProfile', params)}
-                onLongPress={(uri) => this.setState({ modalPhotoVisible: true, uriSelectPlayer: uri })}
-                onFavorited={(playerSelected) => this.setState({
-                  playerSelected: playerSelected,
-                  favorited: !playerSelected.favorited
-                })}
-              />
+            ? <View style={{ padding: '5%', alignItems: 'center' }} >
+              <Text style={{ color: 'red', fontSize: 14 }}>Ops ... algo deu errado! :( </Text>
             </View>
-        }
+            : this.state.count === null
+              ? null
+              : this.state.count !== 0
+                ? <View>
+                  <View style={{ paddingRight: 10, alignItems: 'flex-end' }}>
+                    <Text style={{ fontSize: 10}}>{this.state.count + " atleta(s)"}</Text>
+                  </View>
+                  <PlayerList
+                    players={this.state.players}
+                    onPress={(params) => this.props.navigation.navigate('PlayerProfile', params)}
+                    onLongPress={(uri) => this.setState({ modalPhotoVisible: true, uriSelectPlayer: uri })}
+                    onFavorited={(playerSelected) => this.setState({
+                      playerSelected: playerSelected,
+                      favorited: !playerSelected.favorited
+                    })}
+                  />
+                </View>
+                : <View style={{ padding: '5%', alignItems: 'center' }}>
+                  <Text style={{ fontSize: 14, color: "gray" }}>Você ainda não cadastrou atletas.</Text>
+                </View>
 
+        }
         <PhotoModal
           uri={this.state.uriSelectPlayer}
           onClose={() => this.setState({ modalPhotoVisible: false })}

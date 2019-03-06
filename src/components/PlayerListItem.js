@@ -55,9 +55,14 @@ const PlayerListItem = props => {
             </Body>
 
             <Right style={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
-                <TouchableOpacity onPress={() => onFavorited({ player })}>
-                    <Icon name="star-outline" size={27} style={{ color: 'gray'/*'#E07A2F' */ }} />
+               {player.favorited 
+               ? <TouchableOpacity onPress={() => onFavorited({ player })}>
+                    <Icon name="star" size={27} style={{ color: '#E07A2F'/*'#E07A2F' */ }} />
                 </TouchableOpacity>
+                :<TouchableOpacity onPress={() => onFavorited({ player })}>
+                <Icon name="star-outline" size={27} style={{ color: 'gray'/*'#E07A2F' */ }} />
+            </TouchableOpacity>
+               }
             </Right>
         </ListItem >
     }

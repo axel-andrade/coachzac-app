@@ -16,18 +16,7 @@ Parse.setAsyncStorage(AsyncStorage);
 Parse.initialize(Define.appId);
 Parse.serverURL = Define.baseURL;
 
-
-const resetActionHome = StackActions.reset({
-    index: 0,
-    actions: [NavigationActions.navigate({ routeName: 'Home' })],
-});
-
-const resetActionLogin = StackActions.reset({
-    index: 0,
-    actions: [NavigationActions.navigate({ routeName: 'Login' })],
-});
-
-export default class AnalyzeWithoutVideo extends Component {
+export default class UpdateAnalyze extends Component {
 
 
     state = {
@@ -36,8 +25,8 @@ export default class AnalyzeWithoutVideo extends Component {
         sessionToken: "",
         values: [],
         showComments: false,
-        commentText: "",
         commentAudio: "",
+        commentText: "",
         isVisible: false,
         status: "play",
         recordTime: 0,
@@ -71,11 +60,14 @@ export default class AnalyzeWithoutVideo extends Component {
                 sessionToken: sessionToken,
                 //playerId: this.props.navigation.state.params.playerId,
                 //steps: this.props.navigation.state.params.steps,
+                values: this.props.navigation.state.params.values,
+                commentText: this.props.navigation.state.params.commentText,
+                commentAudio: this.props.navigation.state.params.commentAudio
             });
 
             //alert(this.props.navigation.state.params.values);
 
-            this.initValues();
+
         }
 
         AudioRecorder.requestAuthorization().then((isAuthorised) => {
@@ -169,7 +161,7 @@ export default class AnalyzeWithoutVideo extends Component {
                 </Text>
                 <View style={{ paddingLeft: '5%', paddingRight: '10%' }}>
                     <Slider
-                        value={this.state.value}
+                        value={this.state.values[pos]}
                         onValueChange={value => this.changeValues(pos, value)}
                         minimumValue={0}
                         maximumValue={10}
@@ -185,17 +177,7 @@ export default class AnalyzeWithoutVideo extends Component {
         );
     };
 
-    initValues() {
-        let data = [null, null, null, null, null, null, null, null];
-        let steps = this.props.navigation.state.params.steps;
-        for (let i = 0; i < steps.length; i++)
-            if (steps[i])
-                data[i] = 0;
-
-        this.setState({ values: data})
-    };
-
-    uploadAudio = async (points) => {
+    uploadAudio = async (points, op) => {
 
         let parseFile = new Parse.File("sound.aac", { base64: this.state.base64 });
         const result = await parseFile.save();
@@ -204,18 +186,19 @@ export default class AnalyzeWithoutVideo extends Component {
         let url = temp[1];
         url = url.substr(0, (url.length - 2));
         this.setState({ commentAudio: 'https' + url });
-
         let Test = new Parse.Object.extend("Test");
         let test = new Test();
         test.set("uri", 'https' + url);
         test.save();
 
-        this.callRequest(points);
+        if (op === "create")
+            this.saveAnalyze(points);
+        else
+            this.UpdateAnalyze(points)
 
     };
+    createAnalyze(op) {
 
-
-    createAnalyze() {
         let data = this.state.values;
         let points = {};
         for (let i = 0; i < data.length; i++) {
@@ -225,15 +208,21 @@ export default class AnalyzeWithoutVideo extends Component {
 
         }
         if (this.state.status == "finish") {
-            this.uploadAudio(points);
+            if (op === "create")
+                this.uploadAudio(points, "create");
+            else
+                this.uploadAudio(points, "update");
         }
-        else
-            this.callRequest(points);
+        else {
+            if (op === "create")
+                this.saveAnalyze(points);
+            else
+                this.UpdateAnalyze(points);
+        }
+
     };
 
-    callRequest(points) {
-
-        //alert(this.props.navigation.state.params.playerId);
+    saveAnalyze(points) {
 
         api.post('/createAnalyze', {
 
@@ -246,38 +235,110 @@ export default class AnalyzeWithoutVideo extends Component {
             commentAudio: this.state.commentAudio,
 
         }).then((res) => {
+            AsyncStorage.multiSet([
+                ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })],
+                ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
+            ]);
+
+            let resetAnalyze = StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({
+                    routeName: 'NewAnalyze',
+                    params: {
+                        points: points,
+                        playerName: this.props.navigation.state.params.playerName,
+                        steps: this.props.navigation.state.params.steps,
+                        playerId: this.props.navigation.state.params.playerId,
+                        values: this.state.values,
+                        commentText: this.state.commentText,
+                        commentAudio: this.state.commentAudio,
+                        analyzeId: res.data.result.objectId
+                    }
+                })],
+            });
+
+            alert("Avaliação salva com sucesso!");
+            this.props.navigation.dispatch(resetAnalyze);
+
+        }).catch((e) => {
+            //alert("Erro");
+            alert(JSON.stringify(e.response.data.error));
+        });
+    };
+
+    UpdateAnalyze(points) {
+        api.post('/editAnalyze', {
+
+            _ApplicationId: Define.appId,
+            _SessionToken: this.state.sessionToken,
+            analyzeId:  this.props.navigation.state.params.analyzeId,
+            playerId: this.props.navigation.state.params.playerId,
+            points: points,
+            commentText: this.state.commentText,
+            commentAudio: this.state.commentAudio,
+
+        }).then((res) => {
 
             AsyncStorage.multiSet([
                 ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })],
                 ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
             ]);
 
-            const resetAnalyze = StackActions.reset({
+            let resetAnalyze = StackActions.reset({
                 index: 0,
-                actions: [NavigationActions.navigate({ 
+                actions: [NavigationActions.navigate({
                     routeName: 'NewAnalyze',
-                    params: { 
-                        points: points, 
+                    params: {
+                        points: points,
                         playerName: this.props.navigation.state.params.playerName,
-                        steps: this.props.navigation.state.params.steps, 
-                        playerId:  this.props.navigation.state.params.playerId,
+                        steps: this.props.navigation.state.params.steps,
+                        playerId: this.props.navigation.state.params.playerId,
                         values: this.state.values,
                         commentText: this.state.commentText,
                         commentAudio: this.state.commentAudio,
-                        analyzeId:  res.data.result.objectId
+                        analyzeId: this.props.navigation.state.params.analyzeId
                     }
-                 })],
+                })],
             });
 
-            alert("Avaliação salva com sucesso!");
+            alert("Avaliação alterada com sucesso!");
             this.props.navigation.dispatch(resetAnalyze);
-            
 
-            //this.props.navigation.navigate("NewAnalyze", { points: points, playerName: this.props.navigation.state.params.playerName })
         }).catch((e) => {
             //alert("Erro");
             alert(JSON.stringify(e.response.data.error));
         });
+
+    };
+
+    deleteAnalyze(){
+        api.post('/deleteAnalyze', {
+            _ApplicationId: Define.appId,
+            _SessionToken: this.state.sessionToken,
+            analyzeId:  this.props.navigation.state.params.analyzeId
+        }).then((res) => {
+
+            AsyncStorage.multiSet([
+                ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })],
+                ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
+            ]);
+
+            let resetAnalyze = StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({
+                    routeName: 'Home',
+                    params: {page: 3}
+                })],
+            });
+
+            alert("Avaliação deletada com sucesso!");
+            this.props.navigation.dispatch(resetAnalyze);
+
+        }).catch((e) => {
+            //alert("Erro");
+            alert(JSON.stringify(e.response.data.error));
+        });
+
     };
 
     tempRecorder() {
@@ -297,14 +358,12 @@ export default class AnalyzeWithoutVideo extends Component {
                     </Button>
 
                     <Body style={{ paddingLeft: '5%' }}>
-                        <Title style={{ color: '#269cda' }}>Criando Avaliação</Title>
-                        <Text style={{ fontSize: 10, color: '#269cda' }}>Avalie os passos selecionados </Text>
+                        <Title style={{ color: '#269cda' }}>Alterar Avaliação</Title>
                     </Body>
 
-                    <Button transparent onPress={() => this.props.navigation.dispatch(resetActionHome)}>
-                        <Icon name="home" size={22.5} color='#E07A2F' />
-                    </Button>
+                    <Right>
 
+                    </Right>
                 </Header>
 
                 <Content padder>
@@ -322,11 +381,11 @@ export default class AnalyzeWithoutVideo extends Component {
                     <View style={{ paddingTop: '5%', paddingLeft: '5%' }}>
                         <Text style={{ color: "#269cda" }}>Comentários: </Text>
                     </View>
-                    <Form style={{ paddingLeft: '5%', paddingRight: "5%" }}>
+                    <Form style={{ paddingLeft: '5%', paddingRight: "5%", paddingBottom: "3%" }}>
                         <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                             <Text style={{ fontSize: 10, color: 'gray' }}>0/255</Text>
                         </View>
-                        <Textarea value={this.state.commentText} onKeyPress={(text) => this.setState({commentText: text})} rowSpan={5} bordered placeholder="Texto" style={{ borderColor: '#269cda' }} />
+                        <Textarea rowSpan={5} bordered placeholder="Texto" style={{ borderColor: '#269cda' }} />
                     </Form>
 
                     {this.state.status !== "finish"
@@ -378,12 +437,27 @@ export default class AnalyzeWithoutVideo extends Component {
                     }
 
 
+                    <View style={{ paddingLeft: '5%', paddingRight: '5%', paddingTop: '5%' }}>
+                        <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createAnalyze("update")}>
+                            <Text>ALTERAR AVALIAÇÃO</Text>
+                        </Button>
+                    </View>
+
+                    <View style={{ paddingLeft: '5%', paddingRight: '5%', paddingTop: '5%' }}>
+                        <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createAnalyze("create")}>
+                            <Text>SALVAR NOVA AVALIAÇÃO</Text>
+                        </Button>
+                    </View>
+
+                    <View style={{ padding: '5%' }}>
+                        <Button bordered block danger style={{ borderColor: '#E07A2F' }} onPress={()=>this.deleteAnalyze()}>  
+                            <Text style={{ color: '#E07A2F' }}>EXCLUIR AVALIAÇÃO</Text>
+                        </Button>
+                    </View>
+
+
                 </Content>
-                <View style={{ padding: '5%' }}>
-                    <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createAnalyze()}>
-                        <Text>SALVAR AVALIAÇÃO</Text>
-                    </Button>
-                </View>
+
 
                 <Overlay
                     isVisible={this.state.isVisible}

@@ -76,9 +76,6 @@ export default class updateUser extends Component {
 
             Alert.alert(JSON.stringify(e.response.data.error));
         });
-
-
-
     };
 
     render() {

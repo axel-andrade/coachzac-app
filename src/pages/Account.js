@@ -1,6 +1,5 @@
 
 import React, { Component } from 'react';
-import { NavigationActions } from 'react-navigation';
 import { TouchableOpacity, Text, View, AsyncStorage, Alert, ActivityIndicator, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Container, Header, Item, Input, Content, InputGroup, Left, Right, Thumbnail, Body } from 'native-base';
@@ -8,6 +7,7 @@ import HeaderPlayer from '../components/HeaderPlayer';
 import api from '../services/api';
 import ProfileModal from '../components/ProfileModal';
 import PhotoModal from '../components/PhotoModal';
+import { NavigationActions, StackActions } from 'react-navigation';
 
 const profileImage = require('../../assets/profile.png');
 
@@ -21,6 +21,7 @@ export default class Account extends Component {
         error: false,
         modalVisible: false,
         modalPhotoVisible: false,
+        firstName: ""
     };
 
     async componentDidMount() {
@@ -32,8 +33,10 @@ export default class Account extends Component {
     refreshProfile = async () => {
 
         const user = JSON.parse(await AsyncStorage.getItem('@CoachZac:user'));
-        if (user)
-            this.setState({ user: user });
+        if (user){
+            let firstName =  user.name.split(" ");
+            this.setState({ user: user, firstName: firstName});
+        }
         else
             this.setState({ error: true });
 
@@ -47,8 +50,6 @@ export default class Account extends Component {
     renderOption = (iconName, optionName, page) => {
 
         return (
-
-
             <View style={{ backgroundColor: '#F1F9FF', borderColor: 'white', padding: 10, flexDirection: 'row' }}>
 
                 <View>
@@ -61,14 +62,16 @@ export default class Account extends Component {
                 </View>
 
             </View>
-
-
         );
     };
 
     logOut = async () => {
         await AsyncStorage.clear();
-        this.props.navigation.navigate("Login");
+        let  resetActionLogin = StackActions.reset({
+            index: 0,
+            actions: [NavigationActions.navigate({ routeName: 'Login' })],
+        });
+        this.props.navigation.dispatch(resetActionLogin);
     }
 
     render() {
@@ -99,7 +102,7 @@ export default class Account extends Component {
 
                     </Left>
                     <Body style={{ alignItems: 'flex-start' }}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: "#269cda" }}>{this.state.user.name}</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, color: "#269cda" }}>{this.state.firstName[0]}</Text>
                         <Text style={{ fontSize: 12, color: '#269cda' }}>{this.state.user.team}</Text>
                     </Body>
                     <Right style={{ alignItems: 'center' }}>
@@ -119,7 +122,7 @@ export default class Account extends Component {
                         <TouchableOpacity>
                             {this.renderOption("settings", "Configurações", "Settings")}
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={()=>this.props.navigation.navigate("AccountDetail")}>
                             {this.renderOption("account", "Conta", "AccountDetail")}
                         </TouchableOpacity>
                         <TouchableOpacity>

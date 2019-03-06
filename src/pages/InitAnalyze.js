@@ -42,7 +42,7 @@ export default class InitAnalyze extends Component {
     renderInfo = (name, state) => {
         return (
             <Text note style={styles.note}>
-                <Text note style={styles.step}>{name}</Text>
+                <Text note style={styles.noteTitle}>{name}</Text>
                 {state}
             </Text>
         );
@@ -210,6 +210,7 @@ export default class InitAnalyze extends Component {
 const styles = StyleSheet.create({
     note: {
         fontSize: 14,
+        color: "#555555"
     },
     noteBold: {
         fontWeight: 'bold',
@@ -218,5 +219,10 @@ const styles = StyleSheet.create({
     step: {
         fontSize: 14,
         color: '#555555'
+    },
+    noteTitle: {
+            fontSize: 14,
+            color: '#269cda'
     }
+    
 });

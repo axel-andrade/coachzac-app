@@ -17,6 +17,9 @@ import {
     Footer
 } from "native-base";
 
+import { NavigationActions, StackActions } from 'react-navigation';
+import { TextField } from 'react-native-material-textfield';
+
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -51,29 +54,34 @@ export default class Login extends Component {
             AsyncStorage.multiSet([
                 ['@CoachZac:sessionToken', JSON.stringify(user.sessionToken)],
                 ['@CoachZac:user', JSON.stringify(user)],
-                ['@CoachZac:configPlayer', JSON.stringify({hasChangePlayer:  true})],
-                ['@CoachZac:configAnalyze', JSON.stringify({hasChangeAnalyze:  true})]
+                ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })],
+                ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
             ]);
 
-            this.props.navigation.navigate('Home');
+            const actionHome = StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({ routeName: 'Home', params: { page: 3 } })],
+            });
+
+            this.props.navigation.dispatch(actionHome)
 
         }).catch((e) => {
-            this.setState({ loggedIn: false, login: "", password:""});
+            this.setState({ loggedIn: false, login: "", password: "" });
             Alert.alert(JSON.stringify(e.response.data.error));
         });
 
     };
 
     render() {
+
+        let { login } = this.state;
         return (
             <Container style={{ backgroundColor: 'white' }}>
-
-                <Container style={styles.viewLogo}>
-                    <Image style={styles.logoSize} source={require('../../assets/logo.png')} />
-                </Container>
-
-                <Container >
-                    <Form>
+                <Content>
+                    <View style={{alignItems:'center',paddingTop:  hp('15%'), paddingBottom: hp('5%') }}>
+                        <Image style={styles.logoSize} source={require('../../assets/logomini.png')} />
+                    </View>
+                    <View style={{ paddingLeft: '5%', paddingRight: '5%' }}>
                         <Item style={{ borderColor: '#269cda' }}>
                             <Icon active name='account' size={23} style={{ color: '#269cda' }} />
                             <Input
@@ -84,9 +92,9 @@ export default class Login extends Component {
                                 onChangeText={text => this.setState({ login: text })}
                             />
                         </Item>
-                    </Form>
+                    </View>
 
-                    <Form>
+                    <View style={{ paddingLeft: '5%', paddingRight: '5%', paddingBottom: '3%' }}>
                         <Item style={{ borderColor: '#269cda', paddingTop: 5 }}>
                             <Icon active name='lock' size={23} style={{ color: '#269cda' }} />
                             <Input
@@ -97,50 +105,43 @@ export default class Login extends Component {
                                 onChangeText={text => this.setState({ password: text })}
                             />
                         </Item>
-                    </Form>
-                    <Form>
-
-                        <View style={styles.viewCadastrarEsqueci}>
-
-                            <TouchableOpacity>
-                                <Text style={styles.textCadastrar} onPress={() => this.props.navigation.navigate('SignUp')}>Cadastrar</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Text style={styles.textEsqueci} onPress={() => this.props.navigation.navigate('RecoverPassword')}>Esqueci minha senha?</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </Form>
-
-
-
-                </Container>
-
-                <Container padder>
-                    <View style={{ alignItems: 'center' }}>
-
-                        <TouchableOpacity onPress={this.logIn}>
-                            <View style={[styles.buttonEnviar, styles.corLaranja]} >
-
-                                <Text style={{ fontFamily: 'Exo Bold', color: 'white' }}>Login</Text>
-
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ alignItems: 'center', paddingTop: 5 }}>
-
-                        <TouchableOpacity>
-                            <View style={[styles.buttonEnviar, styles.corAzul]}>
-
-                                <Text style={{ fontFamily: 'Exo Bold', color: 'white' }}>f</Text>
-
-                            </View>
-                        </TouchableOpacity>
                     </View>
 
-                    {this.state.loggedIn ? <Spinner color='#C9F60A' /> : null}
-                </Container>
 
 
+                    <Item style={{ borderColor: 'transparent', alignItems: 'center', justifyContent: 'center' }}>
+                        <Left>
+                            <Button transparent onPress={() => this.props.navigation.navigate('SignUp')}>
+                                <Text uppercase={false} style={{ fontSize: 12, color: 'gray' }}>Cadastrar</Text>
+                            </Button>
+                        </Left>
+                        <Body></Body>
+
+                        <Button transparent onPress={() => this.props.navigation.navigate('RecoverPassword')}>
+                            <Text uppercase={false} style={{ fontSize: 12, color: 'gray' }}>Esqueci minha senha ?</Text>
+                        </Button>
+
+                    </Item>
+
+
+
+
+
+
+                    <View style={{ padding: '5%', paddingBottom: '2%' }}>
+                        <Button block style={{ backgroundColor: '#E07A2F' }} onPress={this.logIn}>
+                            <Text uppercase={false}>Login</Text>
+                        </Button>
+                    </View>
+
+                    <View style={{ padding: '5%', paddingTop: 0 }}>
+                        <Button block style={{ backgroundColor: '#269cda' }} onPress={this.logIn}>
+                            <Text uppercase={false}>f</Text>
+                        </Button>
+                    </View>
+                </Content>
+
+                {this.state.loggedIn ? <Spinner color='#C9F60A' /> : null}
 
             </Container>
 
@@ -153,35 +154,6 @@ export default class Login extends Component {
 
 const styles = StyleSheet.create({
 
-    buttonEnviar: {
-        borderWidth: 1,
-        borderColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 115, height: 49,
-
-        borderRadius: 23,
-    },
-    corLaranja: {
-        backgroundColor: '#E07A2F',
-    },
-    corAzul: {
-        backgroundColor: '#269cda',
-    },
-    textEsqueci: {
-        paddingLeft: '28%', fontSize: 14, fontFamily: 'Exo Medium', color: '#269cda'
-    },
-    textCadastrar: {
-        paddingRight: '9%', fontSize: 14, fontFamily: 'Exo Medium', color: '#269cda'
-    },
-    viewCadastrarEsqueci: {
-        paddingTop: '10%',
-        flexDirection: 'row',
-        justifyContent: 'center'
-    },
-    viewLogo: {
-        alignItems: 'center', justifyContent: 'center'
-    },
     logoSize: {
         width: wp('75%'), height: hp('13%'),
     },

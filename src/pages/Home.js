@@ -111,7 +111,7 @@ export default class Home extends Component {
 
                         : <View style={{ alignItems: 'flex-end', position: "absolute", backgroundColor: 'transparent', top: '73%', left: '65%' }}>
                             <Button rounded style={{ backgroundColor: '#E07A2F' }} onPress={() => this.props.navigation.navigate("PlayerForAnalyze")}>
-                                <Text style={{ color: 'white' }}>Começar</Text>
+                                <Text uppercase={false} style={{ color: 'white' }}>Começar</Text>
                             </Button>
                         </View>
                     : null

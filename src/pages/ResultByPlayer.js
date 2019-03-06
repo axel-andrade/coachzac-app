@@ -28,7 +28,10 @@ export default class ResultByPlayer extends Component {
         count: "",
         genre: "",
         data: [],
-        keys: []
+        keys: [],
+        good: [],
+        medium: [],
+        bad: []
     };
 
     async componentDidMount() {
@@ -38,6 +41,10 @@ export default class ResultByPlayer extends Component {
         let player = JSON.parse(await AsyncStorage.getItem('@CoachZac:player'));
         let data = this.getValues(player.points);
         let keys = this.getKeys(player.points);
+        let good = this.getSteps(this.props.navigation.state.params.good);
+        let medium = this.getSteps(this.props.navigation.state.params.medium);
+        let bad = this.getSteps(this.props.navigation.state.params.bad);
+
         //alert(JSON.stringify(data));
 
         this.setState({
@@ -45,7 +52,10 @@ export default class ResultByPlayer extends Component {
             player: player,
             loading: true,
             data: data,
-            keys: keys
+            keys: keys,
+            good: good,
+            medium: medium,
+            bad:  bad  
         });
     }
 
@@ -53,7 +63,20 @@ export default class ResultByPlayer extends Component {
 
     }
 
+    getSteps(step) {
+        let data = [];
+        if (step[0]) {
+            for (let i = 0; i < step.length; i++)
+                data.push(<Text style={{ color: '#555555',fontSize: 12, paddingTop: "2%" }}>{"- " + step[i]}</Text>)
+        }
+        else
+            data.push(<Text style={{ color: '#555555',fontSize: 12, paddingTop: "2%" }}>{"- Nenhum"}</Text>)
+        return data;
+    };
+
     renderFundaments = (borderColor, color, step, nameStep) => {
+
+       
         return (
 
             <View style={{ paddingTop: '3%', paddingLeft: '5%', paddingRight: '5%' }}>
@@ -92,6 +115,8 @@ export default class ResultByPlayer extends Component {
 
     render() {
 
+        let {good, medium, bad} = this.state;
+
         return (
 
             <Container>
@@ -111,18 +136,21 @@ export default class ResultByPlayer extends Component {
                     </Right>
                 </Header>
 
+                <Content>
 
                 <View style={{ paddingTop: 10 }}>
-                    {this.renderFundaments('green', 'green', this.props.navigation.state.params.good, 'Bons')}
-                    {this.renderFundaments('#FFD700', '#FFD700', this.props.navigation.state.params.medium, "Médios")}
-                    {this.renderFundaments('red', 'red', this.props.navigation.state.params.bad, "Ruins")}
+                    {this.renderFundaments('green', 'green', good, 'Bons')}
+                    {this.renderFundaments('#FFD700', '#FFD700', medium, "Médios")}
+                    {this.renderFundaments('red', 'red', bad, "Ruins")}
                 </View>
 
                 <ChartScaleBand
                     data={this.state.data}
                     keys={this.state.keys}
                 />
-
+                
+               
+            </Content>
         
             </Container>
 
