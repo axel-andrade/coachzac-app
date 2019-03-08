@@ -17,20 +17,23 @@ export default class UpdatePassword extends Component {
         sessionToken: "",
         oldPassword: "",
         newPassword: "",
-        repeatNewPassword: ""
+        repeatNewPassword: "",
+        hidePassword1: true,
+        hidePassword2: true,
+        hidePassword3: true
     };
 
     async componentDidMount() {
-        const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));      
-        this.setState({sessionToken: sessionToken});
+        const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
+        this.setState({ sessionToken: sessionToken });
     };
 
-    editPassword(){
-        if(this.state.newPassword !== this.state.repeatNewPassword){
+    editPassword() {
+        if (this.state.newPassword !== this.state.repeatNewPassword) {
             alert("As senhas não conferem.")
         }
         else
-          this.callRequest();
+            this.callRequest();
     };
 
     callRequest = async () => {
@@ -77,40 +80,69 @@ export default class UpdatePassword extends Component {
                     </Right>
                 </Header>
                 <Content>
-                    <View style={{padding: '5%'}}>
-                    <TextField
-                        label="Senha antiga"
-                        textColor='#555555'
-                        labelHeight={20}
-                        tintColor='#E07A2F'
-                        baseColor='#269cda'
-                        value={this.state.oldPassword}
-                        onChangeText={(text) => this.setState({ oldPassword:  text})}
-                    />
-                    <TextField
-                        label="Nova senha"
-                        textColor='#555555'
-                        labelHeight={20}
-                        tintColor='#E07A2F'
-                        baseColor='#269cda'
-                        value={this.state.newPassword}
-                        onChangeText={(text) => this.setState({ newPassword: text })}
-                    />
-                    <TextField
-                        label="Confirma senha"
-                        textColor='#555555'
-                        labelHeight={20}
-                        tintColor='#E07A2F'
-                        baseColor='#269cda'
-                        value={this.state.repeatNewPassword}
-                        onChangeText={(text) => this.setState({repeatNewPassword: text})}
-                    />
+                    <View style={{ padding: '5%' }}>
+                        <View >
+                            <TextField
+                                secureTextEntry={this.state.hidePassword1}
+                                label="Senha antiga"
+                                textColor='#555555'
+                                labelHeight={20}
+                                tintColor='#E07A2F'
+                                baseColor='#269cda'
+                                value={this.state.oldPassword}
+                                onChangeText={(text) => this.setState({ oldPassword: text })}
+                            />
+                            
+                            {this.state.hidePassword1
+                                ? <Icon active name='eye' size={23} style={{ color: '#269cda',backgroundColor: 'transparent', position:'absolute',left:'92%',top:'30%'}} onPress={() => this.setState({ hidePassword1: !this.state.hidePassword1 })} />
+                                : <Icon active name='eye-off' size={23} style={{ color: '#269cda',backgroundColor: 'transparent', position:'absolute',left:'92%',top:'30%'}} onPress={() => this.setState({ hidePassword1: !this.state.hidePassword1 })} />
+                            }
+                            
+                        </View>
+
+                        <View >
+                            <TextField
+                                secureTextEntry={this.state.hidePassword2}
+                                label="Nova senha"
+                                textColor='#555555'
+                                labelHeight={20}
+                                tintColor='#E07A2F'
+                                baseColor='#269cda'
+                                value={this.state.newPassword}
+                                onChangeText={(text) => this.setState({ newPassword: text })}
+                            />
+                            
+                            {this.state.hidePassword2
+                                ? <Icon active name='eye' size={23} style={{ color: '#269cda',backgroundColor: 'transparent', position:'absolute',left:'92%',top:'30%'}} onPress={() => this.setState({ hidePassword2: !this.state.hidePassword2})} />
+                                : <Icon active name='eye-off' size={23} style={{ color: '#269cda',backgroundColor: 'transparent', position:'absolute',left:'92%',top:'30%'}} onPress={() => this.setState({ hidePassword2: !this.state.hidePassword2 })} />
+                            }
+                            
+                        </View>
+
+                        <View >
+                            <TextField
+                                secureTextEntry={this.state.hidePassword3}
+                                label="Confirma senha"
+                                textColor='#555555'
+                                labelHeight={20}
+                                tintColor='#E07A2F'
+                                baseColor='#269cda'
+                                value={this.state.repeatNewPassword}
+                                onChangeText={(text) => this.setState({ repeatNewPassword: text })}
+                            />
+                            
+                            {this.state.hidePassword3
+                                ? <Icon active name='eye' size={23} style={{ color: '#269cda',backgroundColor: 'transparent', position:'absolute',left:'92%',top:'30%'}} onPress={() => this.setState({ hidePassword3: !this.state.hidePassword3})} />
+                                : <Icon active name='eye-off' size={23} style={{ color: '#269cda',backgroundColor: 'transparent', position:'absolute',left:'92%',top:'30%'}} onPress={() => this.setState({ hidePassword3: !this.state.hidePassword3 })} />
+                            }
+                            
+                        </View>
                     </View>
                 </Content>
 
                 <View style={{ padding: '5%' }}>
-                    <Button block style={{ backgroundColor: '#269cda' }} onPress={()=>this.editPassword()}>
-                        <Text style={{color:'white'}}>SALVAR</Text>
+                    <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.editPassword()}>
+                        <Text style={{ color: 'white' }}>SALVAR</Text>
                     </Button>
                 </View>
 

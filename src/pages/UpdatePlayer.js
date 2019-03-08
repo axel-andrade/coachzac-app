@@ -164,7 +164,7 @@ export default class UpdatePlayer extends Component {
             this.props.navigation.dispatch(resetActionPlayer);
 
         }).catch((e) => {
-            alert(e.response.data.error.message);
+            alert(e.response.data.error);
         });
     };
 
@@ -292,7 +292,7 @@ export default class UpdatePlayer extends Component {
                             data={data}
                         />
 
-                        <View style={{ borderColor: '#269cda', borderBottomWidth: 0.5, paddingTop: '2%' }}>
+                        <View style={{ borderColor: '#269cda', borderBottomWidth: 0.5, paddingTop: '4%' }}>
                             <Item style={{ borderColor: 'white', alignItems: 'flex-start' }}>
                                 <Left style={{ alignItems: "flex-start" }}>
                                     <Text style={{ color: "#269cda", fontSize: this.state.hasDate ? 12 : 16 }}>{"Data de nascimento: "}</Text>

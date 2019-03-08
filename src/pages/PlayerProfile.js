@@ -23,7 +23,8 @@ export default class PlayerProfile extends Component {
         modalVisible: false,
         fromListItem: true,
         modalPhotoVisible: false,
-        firstName: ""
+        firstName: "",
+        profileImage: ""
     };
 
     async componentDidMount() {
@@ -37,6 +38,7 @@ export default class PlayerProfile extends Component {
 
         this.setState({
             //player: this.props.navigation.state.params.player,
+            profileImage: this.props.navigation.state.params.player.profileImage,
             existsProfileImage: existsProfileImage,
             firstName: firstName
         });
@@ -72,9 +74,9 @@ export default class PlayerProfile extends Component {
 
     };
 
-    imageCreated = async () => {
+    imageCreated = async (profileImage) => {
 
-        this.setState({ existsProfileImage: true, fromListItem: false });
+        this.setState({ existsProfileImage: true, profileImage: profileImage});
         this.getNewDataStorage();
 
     };
@@ -119,7 +121,7 @@ export default class PlayerProfile extends Component {
 
                                 ? <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} onLongPress={() => this.setState({ modalPhotoVisible: true })}>
                                     <View style={{ borderColor: '#F1F9FF', borderWidth: 3, borderRadius: 50 }}>
-                                        <Thumbnail large source={{ uri: profileImage }} />
+                                        <Thumbnail large source={{ uri: this.state.profileImage }} />
                                     </View>
                                 </TouchableOpacity>
 
@@ -184,14 +186,11 @@ export default class PlayerProfile extends Component {
                         : null
                     }
 
-                    <Text>{dateOfBirth}</Text>
-
-
                 </Content>
 
                 <ProfileModal
 
-                    onCreated={this.imageCreated}
+                    onCreated={(profileImage) => this.imageCreated(profileImage)}
                     onDeleted={this.imageDeleted}
                     existsProfileImage={this.state.existsProfileImage}
                     player={this.props.navigation.state.params.player}

@@ -36,7 +36,8 @@ export default class Login extends Component {
         sessionToken: null,
         loggedIn: false,
         login: "",
-        password: ""
+        password: "",
+        hidePassword: true
     };
 
     logIn = async () => {
@@ -98,12 +99,17 @@ export default class Login extends Component {
                         <Item style={{ borderColor: '#269cda', paddingTop: 5 }}>
                             <Icon active name='lock' size={23} style={{ color: '#269cda' }} />
                             <Input
+                                secureTextEntry={this.state.hidePassword}
                                 placeholder='Password'
                                 style={{ fontFamily: 'Exo Medium', color: '#269cda' }}
                                 placeholderTextColor='#269cda'
                                 value={this.state.password}
                                 onChangeText={text => this.setState({ password: text })}
                             />
+                             {this.state.hidePassword
+                             ?<Icon active name='eye' size={23} style={{ color: '#269cda' }} onPress={()=> this.setState({hidePassword: !this.state.hidePassword})} />
+                             : <Icon active name='eye-off' size={23} style={{ color: '#269cda' }} onPress={()=> this.setState({hidePassword: !this.state.hidePassword})} /> 
+                             }
                         </Item>
                     </View>
 

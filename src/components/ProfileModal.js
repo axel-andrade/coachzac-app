@@ -164,13 +164,13 @@ export default class ProfileModal extends Component {
             profileImage: this.state.photo
 
         }).then((res) => {
-            const player = res.data.result;
+            let player = res.data.result;
             AsyncStorage.multiSet([
                 ['@CoachZac:player', JSON.stringify(player)],
                 ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })]
             ]);
             this.props.onClose();
-            this.props.onCreated();
+            this.props.onCreated(player.profileImage);
             Alert.alert("Foto alterada com sucesso!");
         }).catch((e) => {
         });

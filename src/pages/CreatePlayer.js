@@ -13,12 +13,16 @@ import {
     Right,
     Thumbnail,
     DatePicker,
-    Item
+    Item,
+    Form,
+    Label,
+    Input
 } from "native-base";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import api from '../services/api';
 import ProfileModal from '../components/ProfileModal';
 import { NavigationActions, StackActions } from 'react-navigation';
+import { TextInputMask } from 'react-native-masked-text'
 
 const resetAction = StackActions.reset({
     index: 0,
@@ -142,12 +146,12 @@ export default class CreatePlayer extends Component {
 
     };
 
-    setDate(date){
-       this.setState({
+    setDate(date) {
+        this.setState({
             chosenDate: date,
             dateOfBirth: date,
             hasDate: true
-       });
+        });
 
     }
 
@@ -220,6 +224,7 @@ export default class CreatePlayer extends Component {
                         />
 
                         <TextField
+
                             label="Telefone"
                             textColor='#555555'
                             labelHeight={20}
@@ -228,6 +233,17 @@ export default class CreatePlayer extends Component {
                             value={phone}
                             onChangeText={(phone) => this.setState({ phone })}
                         />
+
+                        {/* <TextInputMask
+                            type={'cel-phone'}
+                            options={{
+                                maskType: 'BRL',
+                                withDDD: true,
+                                dddMask: '(99) '
+                            }}
+                            value={phone}
+                            onChangeText={(phone) => this.setState({ phone })}
+                        /> */}
 
                         <TextField
                             label="Endereço"
@@ -250,10 +266,10 @@ export default class CreatePlayer extends Component {
                             onChangeText={(genre) => this.onValueChange(genre)}
                             data={data}
                         />
-                        <View style={{ borderColor: '#269cda', borderBottomWidth: 0.5, paddingTop: '2%' }}>
-                            <Item style={{ borderColor: 'white', alignItems:'flex-start'}}>
-                                <Left style={{alignItems:"flex-start"}}>
-                                    <Text style={{ color: "#269cda", fontSize: this.state.hasDate ? 12:16}}>{"Data de nascimento: "}</Text>
+                        <View style={{ borderColor: '#269cda', borderBottomWidth: 0.5, paddingTop: '4%' }}>
+                            <Item style={{ borderColor: 'white', alignItems: 'flex-start' }}>
+                                <Left style={{ alignItems: "flex-start" }}>
+                                    <Text style={{ color: "#269cda", fontSize: this.state.hasDate ? 12 : 16 }}>{"Data de nascimento: "}</Text>
                                 </Left>
 
                                 <DatePicker

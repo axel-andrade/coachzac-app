@@ -29,7 +29,7 @@ import SliderExample from './tests/examples/SliderExample';
 const AppNavigator = createStackNavigator({
 
     'Main': {  
-        screen: Home,
+        screen: UpdatePassword,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }
