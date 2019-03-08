@@ -11,7 +11,9 @@ import {
     Text,
     Left,
     Right,
-    Thumbnail
+    Thumbnail,
+    DatePicker,
+    Item
 } from "native-base";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import api from '../services/api';
@@ -19,10 +21,10 @@ import ProfileModal from '../components/ProfileModal';
 import { NavigationActions, StackActions } from 'react-navigation';
 
 const resetAction = StackActions.reset({
-            index: 0,
-            actions: [NavigationActions.navigate({ routeName: 'Home', params: {page: 1}})],
+    index: 0,
+    actions: [NavigationActions.navigate({ routeName: 'Home', params: { page: 1 } })],
 });
-   
+
 const profileImage = require('../../assets/profile.png');
 //Funções do Parse
 const Parse = require('parse/react-native');
@@ -47,7 +49,9 @@ export default class CreatePlayer extends Component {
         modalVisible: false,
         existsProfileImage: false,
         photoURL: "",
-        sessionToken: ""
+        sessionToken: "",
+        chosenDate: new Date(),
+        hasDate: false
     };
 
     onValueChange(value) {
@@ -71,11 +75,11 @@ export default class CreatePlayer extends Component {
         const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
         if (sessionToken != null)
             this.setState({
-                 sessionToken: sessionToken ? sessionToken : null,
-                 existsProfileImage: this.state.profileImage? true: null,
-             });
+                sessionToken: sessionToken ? sessionToken : null,
+                existsProfileImage: this.state.profileImage ? true : null,
+            });
 
-      
+
 
     };
 
@@ -109,7 +113,7 @@ export default class CreatePlayer extends Component {
             profileImage: url
 
         }).then((res) => {
-            AsyncStorage.setItem('@CoachZac:configPlayer', JSON.stringify({hasChangePlayer: true}));
+            AsyncStorage.setItem('@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true }));
             this.props.navigation.dispatch(resetAction)
             Alert.alert("Atleta cadastrado com sucesso!");
         }).catch((e) => {
@@ -138,6 +142,15 @@ export default class CreatePlayer extends Component {
 
     };
 
+    setDate(date){
+       this.setState({
+            chosenDate: date,
+            dateOfBirth: date,
+            hasDate: true
+       });
+
+    }
+
     render() {
 
         let { name, email, dateOfBirth, weight, height, phone, address, genre } = this.state;
@@ -146,15 +159,15 @@ export default class CreatePlayer extends Component {
 
             <Container>
                 <Header style={{ backgroundColor: 'white' }}>
-                    
-                        <Button transparent onPress={() => this.props.navigation.goBack()}>
-                            <Icon name="arrow-left" size={22.5} color='#269cda' />
-                        </Button>
-                    
-                    <Body style={{paddingLeft:'5%'}}>
+
+                    <Button transparent onPress={() => this.props.navigation.goBack()}>
+                        <Icon name="arrow-left" size={22.5} color='#269cda' />
+                    </Button>
+
+                    <Body style={{ paddingLeft: '5%' }}>
                         <Text style={{ color: '#269cda', fontSize: 20, fontWeight: 'bold' }}>Cadastrar Atleta</Text>
                     </Body>
-                  
+
                 </Header>
                 <Content>
                     <View style={{ padding: '5%', }}>
@@ -184,16 +197,6 @@ export default class CreatePlayer extends Component {
                             baseColor='#269cda'
                             value={email}
                             onChangeText={(email) => this.setState({ email })}
-                        />
-
-                        <TextField
-                            label="Data de nascimento"
-                            textColor='#555555'
-                            labelHeight={20}
-                            tintColor='#E07A2F'
-                            baseColor='#269cda'
-                            value={dateOfBirth}
-                            onChangeText={(dateOfBirth) => this.setState({ dateOfBirth })}
                         />
 
                         <TextField
@@ -247,14 +250,41 @@ export default class CreatePlayer extends Component {
                             onChangeText={(genre) => this.onValueChange(genre)}
                             data={data}
                         />
+                        <View style={{ borderColor: '#269cda', borderBottomWidth: 0.5, paddingTop: '2%' }}>
+                            <Item style={{ borderColor: 'white', alignItems:'flex-start'}}>
+                                <Left style={{alignItems:"flex-start"}}>
+                                    <Text style={{ color: "#269cda", fontSize: this.state.hasDate ? 12:16}}>{"Data de nascimento: "}</Text>
+                                </Left>
+
+                                <DatePicker
+                                    defaultDate={new Date(2009, 12, 31)}
+                                    minimumDate={new Date(1930, 1, 1)}
+                                    maximumDate={new Date(2012, 12, 31)}
+                                    locale={"pt-BR"}
+                                    timeZoneOffsetInMinutes={undefined}
+                                    modalTransparent={false}
+                                    animationType={"fade"}
+                                    androidMode={"default"}
+                                    placeHolderText="Selecione uma data"
+                                    textStyle={{ color: "#555555" }}
+                                    placeHolderTextStyle={{ color: "#E07A2F", fontSize: 12 }}
+                                    onDateChange={(newDate) => this.setDate(newDate)}
+                                    disabled={false}
+                                />
+
+                            </Item>
+                        </View>
 
                     </View>
+
+
+
                 </Content>
-                
-                <View style={{padding:'5%'}}>
-                <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createPlayer()}>
-                    <Text uppercase={false}>Salvar</Text>
-                </Button>
+
+                <View style={{ padding: '5%' }}>
+                    <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createPlayer()}>
+                        <Text uppercase={false}>Salvar</Text>
+                    </Button>
                 </View>
 
                 <ProfileModal

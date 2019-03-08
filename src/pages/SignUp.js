@@ -18,7 +18,8 @@ import {
     Left,
     Right,
     Label,
-    Footer
+    Footer,
+    DatePicker
 } from "native-base";
 
 import api from '../services/api';
@@ -34,6 +35,8 @@ export default class SignUp extends Component {
         repeatPassword: "",
         error: false,
         errorMessage: "",
+        chosenDate: new Date(),
+        hasDate: false
     };
 
     signUp = async () => {
@@ -75,6 +78,16 @@ export default class SignUp extends Component {
         });
 
 
+
+    };
+
+
+    setDate(date) {
+        this.setState({
+            chosenDate: date,
+            dateOfBirth: date,
+            hasDate: true
+        });
 
     };
 
@@ -127,15 +140,31 @@ export default class SignUp extends Component {
                             onChangeText={(club) => this.setState({ club })}
                         />
 
-                        <TextField
-                            label="Data de nascimento"
-                            textColor='#555555'
-                            labelHeight={20}
-                            tintColor='#E07A2F'
-                            baseColor='#269cda'
-                            value={dateOfBirth}
-                            onChangeText={(dateOfBirth) => this.setState({ dateOfBirth })}
-                        />
+                        <View style={{ borderColor: '#269cda', borderBottomWidth: 0.5, paddingTop: '2%' }}>
+                            <Item style={{ borderColor: 'white', alignItems: 'flex-start' }}>
+                                <Left style={{ alignItems: "flex-start" }}>
+                                    <Text style={{ color: "#269cda", fontSize: this.state.hasDate ? 12 : 16 }}>{"Data de nascimento: "}</Text>
+                                </Left>
+
+                                <DatePicker
+                                    defaultDate={new Date(2009, 12, 31)}
+                                    minimumDate={new Date(1930, 1, 1)}
+                                    maximumDate={new Date(2012, 12, 31)}
+                                    locale={"pt-BR"}
+                                    timeZoneOffsetInMinutes={undefined}
+                                    modalTransparent={false}
+                                    animationType={"fade"}
+                                    androidMode={"default"}
+                                    placeHolderText="Selecione uma data"
+                                    textStyle={{ color: "#555555" }}
+                                    placeHolderTextStyle={{ color: "#E07A2F", fontSize: 12 }}
+                                    onDateChange={(newDate) => this.setDate(newDate)}
+                                    disabled={false}
+                                />
+
+                            </Item>
+                        </View>
+
 
                         <TextField
                             label="Senha"
@@ -156,6 +185,7 @@ export default class SignUp extends Component {
                             value={repeatPassword}
                             onChangeText={(repeatPassword) => this.setState({ repeatPassword })}
                         />
+
 
                     </View>
 

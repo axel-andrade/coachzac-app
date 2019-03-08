@@ -30,7 +30,7 @@ export default class InitAnalyze extends Component {
         else
             existsProfileImage = false;
         this.setState({
-            player: this.props.navigation.state.params.player,
+            //player: this.props.navigation.state.params.player,
             existsProfileImage: existsProfileImage,
             steps:[true, true, true, true, true, true, true, true]
         });
@@ -93,7 +93,13 @@ export default class InitAnalyze extends Component {
         this.setState({ modalVisible: true });
     };
 
+    calculateAge(dateOfBirth, today) {
+        return Math.floor(Math.ceil(Math.abs(dateOfBirth.getTime() - today.getTime()) / (1000 * 3600 * 24)) / 365.25);
+    };
+
     render() {
+
+        let {name, dateOfBirth, level,weight,height,objectId}= this.props.navigation.state.params.player;
 
         return (
 
@@ -120,7 +126,7 @@ export default class InitAnalyze extends Component {
                         <View style={{ paddingLeft: '5%', paddingTop: '5%' }}>
                             {this.state.existsProfileImage
                                 ? <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} onLongPress={() => this.setState({ modalPhotoVisible: true })}>
-                                    <Thumbnail source={{ uri: this.state.player.profileImage }} />
+                                    <Thumbnail source={{ uri: this.props.navigation.state.params.player.profileImage }} />
                                 </TouchableOpacity>
                                 : <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
                                     <Thumbnail source={profileImage} />
@@ -129,11 +135,11 @@ export default class InitAnalyze extends Component {
                         </View>
 
                         <View style={{ paddingLeft: '5%', paddingTop: '2%' }}>
-                            {this.renderInfo("Name: ", this.state.player.name)}
-                            {this.renderInfo("Idade: ", this.state.player.dateOfBirth)}
-                            {this.renderInfo("Saque: ", parseFloat(this.state.player.level).toFixed(1) + "/10")}
-                            {this.renderInfo("Peso: ", this.state.player.weight + " kg")}
-                            {this.renderInfo("Altura: ", this.state.player.height + " cm")}
+                            {this.renderInfo("Name: ", name)}
+                            {this.renderInfo("Idade: ", this.calculateAge(new Date(dateOfBirth),new Date())+" anos")}
+                            {this.renderInfo("Saque: ", parseFloat(level).toFixed(1) + "/10")}
+                            {this.renderInfo("Peso: ", weight + " kg")}
+                            {this.renderInfo("Altura: ", height + " cm")}
                             {this.renderInfo("Fundamento: ", "Saque")}
                         </View>
                     </View>
@@ -196,8 +202,8 @@ export default class InitAnalyze extends Component {
                     onClose={() => {this.setState({ showSteps: false,modalVisible: false, steps: [true, true, true, true, true, true, true, true]})}}
                     visible={this.state.modalVisible}
                     steps={this.state.steps}
-                    playerId={this.state.player.objectId}
-                    playerName={this.state.player.name}
+                    playerId={objectId}
+                    playerName={name}
                     
                 />
 

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { ListView, View, StyleSheet, TouchableOpacity, Platform, TextInput, ScrollView, Alert, AsyncStorage } from 'react-native';
+import {Slider,ListView, View, StyleSheet, TouchableOpacity, Platform, TextInput, ScrollView, Alert, AsyncStorage } from 'react-native';
 import { Container, Textarea, Form, Item, Thumbnail, Header, Content, CheckBox, Button, List, ListItem, Text, Left, Body, Right, Title } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Slider } from 'react-native-elements';
 
 import api from '../services/api';
 import { NavigationActions, StackActions } from 'react-navigation';
@@ -154,12 +153,12 @@ export default class UpdateAnalyze extends Component {
 
     renderSliders(pos) {
         return (
-            <View style={{ paddingLeft: '10%' }}>
+            <View style={{ paddingLeft: '10%',paddingTop:'3%'}}>
                 <Text style={{ fontSize: 16, color: '#E07A2F' }}>
                     <Text style={{ fontSize: 14, color: '#696969' }}>{Define.nameSteps[pos] + ": "}</Text>
                     {this.state.values[pos]}
                 </Text>
-                <View style={{ paddingLeft: '5%', paddingRight: '10%' }}>
+                <View style={{paddingRight: '10%', paddingTop:'3%' }}>
                     <Slider
                         value={this.state.values[pos]}
                         onValueChange={value => this.changeValues(pos, value)}
@@ -167,8 +166,8 @@ export default class UpdateAnalyze extends Component {
                         maximumValue={10}
                         maximumTrackTintColor={"#269cda"}
                         minimumTrackTintColor={'#269cda'}
-                        thumbTintColor={"#E07A2F"}
-                        thumbTouchSize={{ width: 25, height: 25 }}
+                        thumbTintColor={"#C9F60A"}
+                        thumbTouchSize={{ width: 50, height: 40 }}
                         step={0.5}
                     />
                 </View>

@@ -23,6 +23,7 @@ import UpdatePlayer from './pages/UpdatePlayer';
 import UpdateUser from './pages/UpdateUser';
 import UpdatePassword from './pages/UpdatePassword';
 import UpdateAnalyze from './pages/UpdateAnalyze';
+import SliderExample from './tests/examples/SliderExample';
 
 //export default createAppContainer(TabNavigator);
 const AppNavigator = createStackNavigator({

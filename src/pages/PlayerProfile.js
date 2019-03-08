@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ListView, View, StyleSheet, TouchableOpacity, ScrollView, Alert, AsyncStorage } from 'react-native';
 import { Container, Item, Thumbnail, Header, Content, Button, List, ListItem, Text, Left, Body, Right, Title } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-const profileImage = require('../../assets/profile.png');
+const profileImageDefault = require('../../assets/profile.png');
 import ProfileModal from '../components/ProfileModal';
 import PhotoModal from '../components/PhotoModal';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
@@ -29,7 +29,7 @@ export default class PlayerProfile extends Component {
     async componentDidMount() {
 
         let existsProfileImage;
-        let firstName =  this.props.navigation.state.params.player.name.split(" ");
+        let firstName = this.props.navigation.state.params.player.name.split(" ");
         if (this.props.navigation.state.params.player.profileImage != undefined)
             existsProfileImage = true;
         else
@@ -79,9 +79,19 @@ export default class PlayerProfile extends Component {
 
     };
 
+
+    calculateAge(dateOfBirth, today) {
+        return Math.floor(Math.ceil(Math.abs(dateOfBirth.getTime() - today.getTime()) / (1000 * 3600 * 24)) / 365.25);
+    };
+
+    renderDate(date) {
+        return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+    }
+
+
     render() {
 
-        let{name, username, dateOfBirth,level, weight, height, phone, adress, lastAnalyze,countAnalyze,goodSteps, mediumSteps, badSteps} = this.props.navigation.state.params.player;
+        let { name, username, dateOfBirth, level, weight, height, phone, adress, lastAnalyze, countAnalyze, goodSteps, mediumSteps, badSteps, profileImage } = this.props.navigation.state.params.player;
 
         return (
             <Container>
@@ -109,13 +119,13 @@ export default class PlayerProfile extends Component {
 
                                 ? <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} onLongPress={() => this.setState({ modalPhotoVisible: true })}>
                                     <View style={{ borderColor: '#F1F9FF', borderWidth: 3, borderRadius: 50 }}>
-                                        <Thumbnail large source={{ uri: this.state.player.profileImage }} />
+                                        <Thumbnail large source={{ uri: profileImage }} />
                                     </View>
                                 </TouchableOpacity>
 
                                 : <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} >
                                     <View style={{ borderColor: '#F1F9FF', borderWidth: 3, borderRadius: 50 }}>
-                                        <Thumbnail large source={profileImage} />
+                                        <Thumbnail large source={profileImageDefault} />
                                     </View>
                                 </TouchableOpacity>
                             }
@@ -138,17 +148,13 @@ export default class PlayerProfile extends Component {
 
 
 
-                    <Item style={{ borderColor: 'white', paddingTop: '10%', justifyContent: 'center', alignItems: 'center', paddingLeft: '5%', paddingRight: '5%' }}>
+                    <Item style={{ borderColor: 'white', paddingTop: '10%', justifyContent: 'center', alignItems: 'flex-start', paddingLeft: '5%', paddingRight: '5%' }}>
                         <Left style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity>
-                                <Icon name="email" size={25} style={styles.icon} />
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Icon name="share-variant" size={25} style={styles.icon} />
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <Icon name="forum" size={24} style={styles.icon} />
-                            </TouchableOpacity>
+
+                            <Icon name="email" size={25} style={styles.icon} />
+                            <Icon name="share-variant" size={25} style={styles.icon} />
+                            <Icon name="forum" size={24} style={styles.icon} />
+
                         </Left>
                         <Body style={{ paddingLeft: '30%', flexDirection: 'column' }}>
                             <Button rounded bordered block style={{ width: '100%', borderColor: "#E07A2F" }} onPress={() => this.props.navigation.push("InitAnalyze", { player: this.props.navigation.state.params.player })}>
@@ -156,27 +162,29 @@ export default class PlayerProfile extends Component {
                             </Button>
                         </Body>
                     </Item>
-                
+
                     <View style={{ paddingTop: '5%', paddingBottom: '5%', paddingLeft: '5%', paddingRight: '5%', borderRadius: 10 }}>
                         {this.renderInfo("Nome Completo: ", name)}
                         {this.renderInfo("Email: ", username)}
-                        {this.renderInfo("Idade: ", dateOfBirth)}
+                        {this.renderInfo("Idade: ", this.calculateAge(new Date(dateOfBirth), new Date()) + " anos")}
                         {this.renderInfo("Nível: ", parseFloat(level).toFixed(1) + "/10")}
                         {this.renderInfo("Peso: ", weight + " kg")}
                         {this.renderInfo("Altura: ", height + " cm")}
                         {this.renderInfo("Telefone: ", phone)}
                         {this.renderInfo("Endereço: ", adress)}
-                        {lastAnalyze ? this.renderInfo("Última avaliação: ", lastAnalyze) : this.renderInfo("Última avaliação: ", "Ainda não possui avaliações")}
+                        {lastAnalyze ? this.renderInfo("Última avaliação: ", this.renderDate(new Date(lastAnalyze))) : this.renderInfo("Última avaliação: ", "Ainda não possui avaliações")}
                     </View>
 
                     {countAnalyze > 0
-                            ? <View style={{padding:'5%'}}>
-                            <Button block style={{backgroundColor:'#269cda'}} onPress={() => this.props.navigation.navigate("ResultByPlayer", { good: goodSteps, medium: mediumSteps, bad: badSteps })}>
+                        ? <View style={{ padding: '5%' }}>
+                            <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.props.navigation.navigate("ResultByPlayer", { good: goodSteps, medium: mediumSteps, bad: badSteps })}>
                                 <Text style={{ color: "white" }}>Resultados</Text>
                             </Button>
-                            </View>
-                            : null
-                        }
+                        </View>
+                        : null
+                    }
+
+                    <Text>{dateOfBirth}</Text>
 
 
                 </Content>

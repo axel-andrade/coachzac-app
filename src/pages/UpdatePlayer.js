@@ -11,7 +11,9 @@ import {
     Text,
     Left,
     Right,
-    Thumbnail
+    Thumbnail,
+    DatePicker,
+    Item
 } from "native-base";
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -46,7 +48,9 @@ export default class UpdatePlayer extends Component {
         modalVisible: false,
         existsProfileImage: false,
         photoURL: "",
-        sessionToken: ""
+        sessionToken: "",
+        chosenDate: new Date(),
+        hasDate: false
     };
 
     onValueChange(value) {
@@ -140,7 +144,7 @@ export default class UpdatePlayer extends Component {
 
     };
 
-    deletePlayer = async() =>{
+    deletePlayer = async () => {
         api.post('/deletePlayer', {
             _ApplicationId: 'coachzacId',
             _SessionToken: this.state.sessionToken,
@@ -152,9 +156,9 @@ export default class UpdatePlayer extends Component {
                 ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
             ]);
 
-            let  resetActionPlayer = StackActions.reset({
+            let resetActionPlayer = StackActions.reset({
                 index: 0,
-                actions: [NavigationActions.navigate({ routeName: 'Home', params: {page: 1} })],
+                actions: [NavigationActions.navigate({ routeName: 'Home', params: { page: 1 } })],
             });
 
             this.props.navigation.dispatch(resetActionPlayer);
@@ -175,6 +179,15 @@ export default class UpdatePlayer extends Component {
         url = "https" + url;
 
         this.callRequest(url);
+
+    };
+
+    setDate(date) {
+        this.setState({
+            chosenDate: date,
+            dateOfBirth: date,
+            hasDate: true
+        });
 
     };
 
@@ -225,16 +238,6 @@ export default class UpdatePlayer extends Component {
                             baseColor='#269cda'
                             value={email}
                             onChangeText={(email) => this.setState({ email })}
-                        />
-
-                        <TextField
-                            label="Data de nascimento"
-                            textColor='#555555'
-                            labelHeight={20}
-                            tintColor='#E07A2F'
-                            baseColor='#269cda'
-                            value={dateOfBirth}
-                            onChangeText={(dateOfBirth) => this.setState({ dateOfBirth })}
                         />
 
                         <TextField
@@ -289,19 +292,46 @@ export default class UpdatePlayer extends Component {
                             data={data}
                         />
 
+                        <View style={{ borderColor: '#269cda', borderBottomWidth: 0.5, paddingTop: '2%' }}>
+                            <Item style={{ borderColor: 'white', alignItems: 'flex-start' }}>
+                                <Left style={{ alignItems: "flex-start" }}>
+                                    <Text style={{ color: "#269cda", fontSize: this.state.hasDate ? 12 : 16 }}>{"Data de nascimento: "}</Text>
+                                </Left>
+
+                                <DatePicker
+                                    defaultDate={new Date(2009, 12, 31)}
+                                    minimumDate={new Date(1930, 1, 1)}
+                                    maximumDate={new Date(2012, 12, 31)}
+                                    locale={"pt-BR"}
+                                    timeZoneOffsetInMinutes={undefined}
+                                    modalTransparent={false}
+                                    animationType={"fade"}
+                                    androidMode={"default"}
+                                    placeHolderText="Selecione uma data"
+                                    textStyle={{ color: "#555555" }}
+                                    placeHolderTextStyle={{ color: "#E07A2F", fontSize: 12 }}
+                                    onDateChange={(newDate) => this.setDate(newDate)}
+                                    disabled={false}
+                                />
+
+                            </Item>
+                        </View>
+
                     </View>
 
-                    <View style={{paddingLeft:'5%',paddingRight:'5%'}}>
+                    <View style={{ paddingLeft: '5%', paddingRight: '5%' }}>
                         <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.UpdatePlayer()}>
                             <Text>SALVAR</Text>
                         </Button>
                     </View>
 
-                    <View style={{padding:'5%'}}>
-                        <Button bordered block danger style={{borderColor: '#E07A2F'}} onPress={this.deletePlayer}>
-                            <Text style={{color:'#E07A2F'}}>EXCLUIR ATLETA</Text>
+                    <View style={{ padding: '5%' }}>
+                        <Button bordered block danger style={{ borderColor: '#E07A2F' }} onPress={this.deletePlayer}>
+                            <Text style={{ color: '#E07A2F' }}>EXCLUIR ATLETA</Text>
                         </Button>
                     </View>
+
+                   
                 </Content>
 
 

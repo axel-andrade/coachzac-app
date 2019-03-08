@@ -26,6 +26,10 @@ const styles = StyleSheet.create({
 const profileImage = require('../../assets/profile.png');
 import PhotoModal from '../components/PhotoModal';
 
+function calculateAge(dateOfBirth, today){
+    return Math.floor(Math.ceil(Math.abs(dateOfBirth.getTime() - today.getTime()) / (1000 * 3600 * 24)) / 365.25);
+};
+
 const PlayerListItem = props => {
 
     const { player, onPress, onLongPress, onFavorited, type} = props;
@@ -49,8 +53,8 @@ const PlayerListItem = props => {
             <Body>
                 <TouchableOpacity onPress={() => onPress({ player })}>
                     <Text style={{ color: '#269cda', fontWeight: 'bold' }}>{player.name}</Text>
-                    <Text note style={styles.note}>{player.dateOfBirth}</Text>
-                    <Text note style={styles.note}>{parseFloat(player.level).toFixed(1)}</Text>
+                    <Text note style={styles.note}>{calculateAge(new Date(player.dateOfBirth), new Date())+" anos"}</Text>
+                    <Text note style={styles.note}>{parseFloat(player.level).toFixed(1)+"/10"}</Text>
                 </TouchableOpacity>
             </Body>
 
