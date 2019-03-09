@@ -19,6 +19,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import api from '../services/api';
 import { NavigationActions, StackActions } from 'react-navigation';
+import { TapGestureHandler } from 'react-native-gesture-handler';
 
 const resetAction = StackActions.reset({
     index: 0,
@@ -35,8 +36,8 @@ export default class updateUser extends Component {
         sessionToken: "",
         error: false,
         errorMessage: "",
-        chosenDate: new Date(),
-        hasDate: false
+        chosenDate: null,
+        hasDate: true,
     };
 
     async componentDidMount() {
@@ -49,11 +50,8 @@ export default class updateUser extends Component {
             name: user.name,
             email: user.email,
             club: user.team,
-            dateOfBirth: user.dateOfBirth
+            dateOfBirth: user.dateOfBirth,
         });
-
-
-
     };
 
 
@@ -110,7 +108,7 @@ export default class updateUser extends Component {
 
                 <Content>
 
-                    <View style={{ padding: '5%', }}>
+                    <View style={{ paddingLeft: '5%', paddingRight: '5%' }}>
                         <TextField
                             label="Nome"
                             textColor='#555555'
@@ -139,31 +137,33 @@ export default class updateUser extends Component {
                             onChangeText={(club) => this.setState({ club })}
                         />
 
-                        <View style={{ borderColor: '#269cda', borderBottomWidth: 0.5, paddingTop: '4%' }}>
-                            <Item style={{ borderColor: 'white', alignItems:'flex-start'}}>
-                                <Left style={{alignItems:"flex-start"}}>
-                                    <Text style={{ color: "#269cda", fontSize: this.state.hasDate ? 12:16}}>{"Data de nascimento: "}</Text>
-                                </Left>
+                    </View>
+                    
+                    <View style={{paddingLeft:'5%',paddingRight:'5%', paddingBottom:0}}>
+                    <Text style={{ color: "#269cda", fontSize: 12 }}>{"Data de nascimento "}</Text>
+                    </View>
+                    <View style={{ paddingRight: '5%', paddingLeft: '2%' }}>
+                        <DatePicker
+                            defaultDate={this.props.navigation.state.params.chosenDate}
+                            minimumDate={new Date(1930, 1, 1)}
+                            maximumDate={new Date(2012, 12, 31)}
+                            locale={"pt-BR"}
+                            timeZoneOffsetInMinutes={undefined}
+                            modalTransparent={false}
+                            animationType={"fade"}
+                            androidMode={"default"}
+                            //placeHolderText="Selecione uma data"
+                            textStyle={{ color: "#555555" }}
+                            // placeHolderTextStyle={{ color: "#E07A2F", fontSize: 12 }}
+                            onDateChange={(newDate) => this.setDate(newDate)}
+                            disabled={false}
 
-                                <DatePicker
-                                    defaultDate={new Date(2009, 12, 31)}
-                                    minimumDate={new Date(1930, 1, 1)}
-                                    maximumDate={new Date(2012, 12, 31)}
-                                    locale={"pt-BR"}
-                                    timeZoneOffsetInMinutes={undefined}
-                                    modalTransparent={false}
-                                    animationType={"fade"}
-                                    androidMode={"default"}
-                                    placeHolderText="Selecione uma data"
-                                    textStyle={{ color: "#555555" }}
-                                    placeHolderTextStyle={{ color: "#E07A2F", fontSize: 12 }}
-                                    onDateChange={(newDate) => this.setDate(newDate)}
-                                    disabled={false}
-                                />
 
-                            </Item>
-                        </View>
-
+                        />
+                        
+                    </View>
+                    <View style={{ paddingLeft: '5%',paddingRight:'5%', width: "100%"}}>
+                        <View style={{ borderBottomColor: '#269cda', borderBottomWidth: 0.5 }} />
                     </View>
 
                 </Content>

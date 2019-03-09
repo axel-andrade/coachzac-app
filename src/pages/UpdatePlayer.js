@@ -211,15 +211,15 @@ export default class UpdatePlayer extends Component {
                     </Right>
                 </Header>
                 <Content>
-                    <View style={{ padding: '5%', }}>
-                        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ paddingLeft: '5%', paddingRight:'5%', paddingTop:'10%'}}>
+                        {/* <View style={{ alignItems: 'center', justifyContent: 'center' }}>
                             <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
                                 {this.state.existsProfileImage
                                     ? <Thumbnail large source={{ uri: this.state.profileImage.path }} />
                                     : <Thumbnail large source={profileImage} />
                                 }
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
 
                         <TextField
                             label="Nome"
@@ -291,35 +291,34 @@ export default class UpdatePlayer extends Component {
                             onChangeText={(genre) => this.onValueChange(genre)}
                             data={data}
                         />
-
-                        <View style={{ borderColor: '#269cda', borderBottomWidth: 0.5, paddingTop: '4%' }}>
-                            <Item style={{ borderColor: 'white', alignItems: 'flex-start' }}>
-                                <Left style={{ alignItems: "flex-start" }}>
-                                    <Text style={{ color: "#269cda", fontSize: this.state.hasDate ? 12 : 16 }}>{"Data de nascimento: "}</Text>
-                                </Left>
-
-                                <DatePicker
-                                    defaultDate={new Date(2009, 12, 31)}
-                                    minimumDate={new Date(1930, 1, 1)}
-                                    maximumDate={new Date(2012, 12, 31)}
-                                    locale={"pt-BR"}
-                                    timeZoneOffsetInMinutes={undefined}
-                                    modalTransparent={false}
-                                    animationType={"fade"}
-                                    androidMode={"default"}
-                                    placeHolderText="Selecione uma data"
-                                    textStyle={{ color: "#555555" }}
-                                    placeHolderTextStyle={{ color: "#E07A2F", fontSize: 12 }}
-                                    onDateChange={(newDate) => this.setDate(newDate)}
-                                    disabled={false}
-                                />
-
-                            </Item>
-                        </View>
-
+                    </View>
+                    <View style={{paddingLeft:'5%',paddingRight:'5%', paddingBottom:0}}>
+                    <Text style={{ color: "#269cda", fontSize: 12 }}>{"Data de nascimento "}</Text>
+                    </View>
+                    <View style={{ paddingRight: '5%', paddingLeft: '2%' }}>
+                        <DatePicker
+                            
+                            defaultDate={this.props.navigation.state.params.chosenDate}
+                            minimumDate={new Date(1930, 1, 1)}
+                            maximumDate={new Date(2012, 12, 31)}
+                            locale={"pt-BR"}
+                            timeZoneOffsetInMinutes={undefined}
+                            modalTransparent={false}
+                            animationType={"fade"}
+                            androidMode={"default"}
+                            //placeHolderText="Selecione uma data"
+                            textStyle={{ color: "#555555" }}
+                            // placeHolderTextStyle={{ color: "#E07A2F", fontSize: 12 }}
+                            onDateChange={(newDate) => this.setDate(newDate)}
+                            disabled={false}
+                        />
+                        
+                    </View>
+                    <View style={{ paddingLeft: '5%',paddingRight:'5%',paddingBottom:'5%', width: "100%"}}>
+                        <View style={{ borderBottomColor: '#269cda', borderBottomWidth: 0.5 }} />
                     </View>
 
-                    <View style={{ paddingLeft: '5%', paddingRight: '5%' }}>
+                    <View style={{ paddingTop:"5%",paddingLeft: '5%', paddingRight: '5%' }}>
                         <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.UpdatePlayer()}>
                             <Text>SALVAR</Text>
                         </Button>

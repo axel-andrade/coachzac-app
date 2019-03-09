@@ -21,7 +21,8 @@ export default class Account extends Component {
         error: false,
         modalVisible: false,
         modalPhotoVisible: false,
-        firstName: ""
+        firstName: "",
+        chosenDate: null
     };
 
     async componentDidMount() {
@@ -33,9 +34,13 @@ export default class Account extends Component {
     refreshProfile = async () => {
 
         const user = JSON.parse(await AsyncStorage.getItem('@CoachZac:user'));
+        
         if (user){
+            let date = user.dateOfBirth.split("T");
+            alert(date[0]);
+    
             let firstName =  user.name.split(" ");
-            this.setState({ user: user, firstName: firstName});
+            this.setState({ user: user, firstName: firstName, chosenDate: new Date(date[0]+"T12:00:00")});
         }
         else
             this.setState({ error: true });
@@ -108,7 +113,7 @@ export default class Account extends Component {
                     <Right style={{ alignItems: 'center' }}>
                         <TouchableOpacity>
                             <View style={{ padding: 10, backgroundColor: '#F1F9FF', borderRadius: 50 }}>
-                                <Icon name="pencil" size={30} style={{ color: '#269cda' }} onPress={()=>this.props.navigation.navigate("UpdateUser")}/>
+                                <Icon name="pencil" size={30} style={{ color: '#269cda' }} onPress={()=>this.props.navigation.navigate("UpdateUser", {chosenDate: this.state.chosenDate})}/>
                             </View>
                         </TouchableOpacity>
                     </Right>

@@ -24,13 +24,16 @@ export default class PlayerProfile extends Component {
         fromListItem: true,
         modalPhotoVisible: false,
         firstName: "",
-        profileImage: ""
+        profileImage: "",
+        chosenDate: null
     };
 
     async componentDidMount() {
 
         let existsProfileImage;
         let firstName = this.props.navigation.state.params.player.name.split(" ");
+        let date = this.props.navigation.state.params.player.dateOfBirth.split("T");
+
         if (this.props.navigation.state.params.player.profileImage != undefined)
             existsProfileImage = true;
         else
@@ -40,7 +43,8 @@ export default class PlayerProfile extends Component {
             //player: this.props.navigation.state.params.player,
             profileImage: this.props.navigation.state.params.player.profileImage,
             existsProfileImage: existsProfileImage,
-            firstName: firstName
+            firstName: firstName,
+            chosenDate: new Date(date[0]+"T12:00:00")
         });
         await AsyncStorage.multiSet([
             ['@CoachZac:player', JSON.stringify(this.props.navigation.state.params.player)],
@@ -141,7 +145,8 @@ export default class PlayerProfile extends Component {
                             <TouchableOpacity>
                                 <View style={{ padding: 10, backgroundColor: '#F1F9FF', borderRadius: 50 }}>
                                     <Icon name="pencil" size={30} style={{ color: '#269cda' }} onPress={() => this.props.navigation.navigate("UpdatePlayer", {
-                                        player: this.props.navigation.state.params.player
+                                        player: this.props.navigation.state.params.player,
+                                        chosenDate: this.state.chosenDate
                                     })} />
                                 </View>
                             </TouchableOpacity>
