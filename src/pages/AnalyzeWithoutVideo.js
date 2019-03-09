@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Slider,ListView, View, StyleSheet, TouchableOpacity, Platform, TextInput, ScrollView, Alert, AsyncStorage } from 'react-native';
+import { Slider, ListView, View, StyleSheet, TouchableOpacity, Platform, TextInput, ScrollView, Alert, AsyncStorage } from 'react-native';
 import { Container, Textarea, Form, Item, Thumbnail, Header, Content, CheckBox, Button, List, ListItem, Text, Left, Body, Right, Title } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -7,6 +7,7 @@ import api from '../services/api';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { AudioRecorder, AudioUtils } from 'react-native-audio';
 import { Overlay } from 'react-native-elements';
+import Sound from 'react-native-sound';
 
 const Define = require('../config/Define.js');
 
@@ -25,6 +26,8 @@ const resetActionLogin = StackActions.reset({
     index: 0,
     actions: [NavigationActions.navigate({ routeName: 'Login' })],
 });
+
+var sound = null;
 
 export default class AnalyzeWithoutVideo extends Component {
 
@@ -47,7 +50,8 @@ export default class AnalyzeWithoutVideo extends Component {
         finished: false,
         audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',
         hasPermission: undefined,
-        base64: ""
+        base64: "",
+        statusAudio: "play"
 
     };
 
@@ -161,12 +165,12 @@ export default class AnalyzeWithoutVideo extends Component {
 
     renderSliders(pos) {
         return (
-            <View style={{ paddingLeft: '10%', paddingTop: '3%'}}>
+            <View style={{ paddingLeft: '10%', paddingTop: '3%' }}>
                 <Text style={{ fontSize: 16, color: '#E07A2F' }}>
                     <Text style={{ fontSize: 14, color: '#696969' }}>{Define.nameSteps[pos] + ": "}</Text>
                     {this.state.values[pos]}
                 </Text>
-                <View style={{paddingRight: '10%', paddingTop:'3%'}}>
+                <View style={{ paddingRight: '10%', paddingTop: '3%' }}>
                     <Slider
                         value={this.state.value}
                         onValueChange={value => this.changeValues(pos, value)}
@@ -183,7 +187,6 @@ export default class AnalyzeWithoutVideo extends Component {
 
         );
     };
-
     initValues() {
         let data = [null, null, null, null, null, null, null, null];
         let steps = this.props.navigation.state.params.steps;
@@ -191,9 +194,8 @@ export default class AnalyzeWithoutVideo extends Component {
             if (steps[i])
                 data[i] = 0;
 
-        this.setState({ values: data})
+        this.setState({ values: data })
     };
-
     uploadAudio = async (points) => {
 
         let parseFile = new Parse.File("sound.aac", { base64: this.state.base64 });
@@ -212,8 +214,6 @@ export default class AnalyzeWithoutVideo extends Component {
         this.callRequest(points);
 
     };
-
-
     createAnalyze() {
         let data = this.state.values;
         let points = {};
@@ -229,7 +229,6 @@ export default class AnalyzeWithoutVideo extends Component {
         else
             this.callRequest(points);
     };
-
     callRequest(points) {
 
         //alert(this.props.navigation.state.params.playerId);
@@ -253,24 +252,24 @@ export default class AnalyzeWithoutVideo extends Component {
 
             const resetAnalyze = StackActions.reset({
                 index: 0,
-                actions: [NavigationActions.navigate({ 
+                actions: [NavigationActions.navigate({
                     routeName: 'NewAnalyze',
-                    params: { 
-                        points: points, 
+                    params: {
+                        points: points,
                         playerName: this.props.navigation.state.params.playerName,
-                        steps: this.props.navigation.state.params.steps, 
-                        playerId:  this.props.navigation.state.params.playerId,
+                        steps: this.props.navigation.state.params.steps,
+                        playerId: this.props.navigation.state.params.playerId,
                         values: this.state.values,
                         commentText: this.state.commentText,
                         commentAudio: this.state.commentAudio,
-                        analyzeId:  res.data.result.objectId
+                        analyzeId: res.data.result.objectId
                     }
-                 })],
+                })],
             });
 
             alert("Avaliação salva com sucesso!");
             this.props.navigation.dispatch(resetAnalyze);
-            
+
 
             //this.props.navigation.navigate("NewAnalyze", { points: points, playerName: this.props.navigation.state.params.playerName })
         }).catch((e) => {
@@ -278,10 +277,41 @@ export default class AnalyzeWithoutVideo extends Component {
             alert(JSON.stringify(e.response.data.error));
         });
     };
-
     tempRecorder() {
         this.setState({ status: "recorder" })
         this._record();
+    };
+
+    _playAudio() {
+
+
+        this.setState({ statusAudio: "listen" })
+        //alert(this.state.audioPath);
+        sound = new Sound(this.state.audioPath, null, (error) => {
+            if (error) {
+                // do something
+            }
+
+            // play when loaded
+            sound.play();
+
+        });
+
+
+    };
+
+    _pauseAudio() {
+        if (sound !== null) {
+            // this.setState({ statusAudio: "play" })
+            // sound.pause();
+            alert(sound.getCurrentTime())
+        } else alert("sound null")
+    }
+
+    _stopAudio() {
+        this.setState({ statusAudio: "play" })
+        if (sound)
+            sound.stop();
     };
 
     render() {
@@ -325,49 +355,51 @@ export default class AnalyzeWithoutVideo extends Component {
                         <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                             <Text style={{ fontSize: 10, color: 'gray' }}>0/255</Text>
                         </View>
-                        <Textarea value={this.state.commentText} onKeyPress={(text) => this.setState({commentText: text})} rowSpan={5} bordered placeholder="Texto" style={{ borderColor: '#269cda' }} />
+                        <Textarea value={this.state.commentText} onKeyPress={(text) => this.setState({ commentText: text })} rowSpan={5} bordered placeholder="Texto" style={{ borderColor: '#269cda' }} />
                     </Form>
-
+                    <View style={{ paddingTop: '5%', paddingLeft: '5%' }}>
+                        <Text style={{ color: "#269cda" }}>Aúdio: </Text>
+                    </View>
                     {this.state.status !== "finish"
-                        ? <Item style={{ borderColor: 'white', paddingTop: '7%', paddingLeft: '5%', flexDirection: 'row' }}>
-
-                            <Text style={{ color: "#269cda" }}>Aúdio: </Text>
-
-                            <Body style={{ alignItems: 'flex-start', paddingLeft: '5%' }}>
+                        ? <Item style={{ borderColor: 'white', paddingTop: '5%', paddingLeft: '5%', flexDirection: 'row' }}>
 
 
-                                <Button transparent onPress={() => this.setState({ isVisible: true })}>
-                                    <View style={styles.CircleShapeView2}>
-                                        <Icon name="microphone" size={30} color="white" />
-                                    </View>
-                                </Button>
 
-                            </Body>
-                            <Right>
-                            </Right>
+                            <Button transparent onPress={() => this.setState({ isVisible: true })}>
+                                <View style={styles.CircleShapeView2}>
+                                    <Icon name="microphone" size={30} color="white" />
+                                </View>
+                            </Button>
+
+
                         </Item>
-                        : <Item style={{ borderColor: 'white', paddingTop: '7%', paddingLeft: '5%', flexDirection: 'row' }}>
+                        : <Item style={{ borderColor: 'white', paddingTop: '5%', paddingLeft: '5%', flexDirection: 'row' }}>
 
-                            <Text style={{ color: "#269cda" }}>Aúdio: </Text>
+                
+                               
+                                    {this.state.statusAudio === "play" ?
 
-                            <Body style={{ alignItems: 'flex-start', paddingLeft: '5%' }}>
-
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Button transparent onPress={() => this.setState({ isVisible: true })}>
-                                        <View style={styles.CircleShapeView2}>
-                                            <Icon name="play" size={30} color="white" />
-                                        </View>
-                                    </Button>
+                                        <Button transparent onPress={() => this._playAudio()}>
+                                            <View style={styles.CircleShapeView2}>
+                                                <Icon name="play" size={30} color="white" />
+                                            </View>
+                                        </Button>
+                                        : <Button transparent onPress={() => this._pauseAudio()}>
+                                            <View style={styles.CircleShapeView2}>
+                                                <Icon name="pause" size={30} color="white" />
+                                            </View>
+                                        </Button>
+                                    }
 
                                     <Button style={{ paddingLeft: 10 }} transparent onPress={() => this.setState({ status: "play", currentTime: 0.0, base64: "", commentsAudio: "" })}>
                                         <View style={styles.CircleShapeView}>
                                             <Icon name="delete" size={30} color="white" />
                                         </View>
                                     </Button>
-                                </View>
+                                
 
 
-                            </Body>
+                            
                             <Right style={{ borderBottomColor: '#E07A2F' }}>
                                 {/* <TouchableOpacity onPress={() => this.setState({ status: "play", currentTime: 0.0, base64: "", commentsAudio: "" })}>
                                     <Text style={{ fontSize: 12, color: '#E07A2F' }}> Limpar </Text>
@@ -462,6 +494,17 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 50 / 2,
         backgroundColor: '#269cda',
+        borderColor: 'white',
+        borderWidth: 0.5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    CircleShapeView3: {
+        width: 50,
+        height: 50,
+        borderRadius: 50 / 2,
+        backgroundColor: 'gray',
         borderColor: 'white',
         borderWidth: 0.5,
         justifyContent: 'center',

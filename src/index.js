@@ -29,7 +29,7 @@ import SliderExample from './tests/examples/SliderExample';
 const AppNavigator = createStackNavigator({
 
     'Main': {  
-        screen: Login,
+        screen: PlayerForAnalyze,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }

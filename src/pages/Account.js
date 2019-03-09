@@ -37,8 +37,6 @@ export default class Account extends Component {
         
         if (user){
             let date = user.dateOfBirth.split("T");
-            alert(date[0]);
-    
             let firstName =  user.name.split(" ");
             this.setState({ user: user, firstName: firstName, chosenDate: new Date(date[0]+"T12:00:00")});
         }
