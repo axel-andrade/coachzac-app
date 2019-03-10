@@ -187,6 +187,7 @@ export default class AnalyzeWithoutVideo extends Component {
 
         );
     };
+
     initValues() {
         let data = [null, null, null, null, null, null, null, null];
         let steps = this.props.navigation.state.params.steps;
@@ -196,6 +197,7 @@ export default class AnalyzeWithoutVideo extends Component {
 
         this.setState({ values: data })
     };
+
     uploadAudio = async (points) => {
 
         let parseFile = new Parse.File("sound.aac", { base64: this.state.base64 });
@@ -214,7 +216,13 @@ export default class AnalyzeWithoutVideo extends Component {
         this.callRequest(points);
 
     };
+
     createAnalyze() {
+        if (sound !== null) {
+            sound.stop();
+            sound.setVolume(0.0);
+        }
+
         let data = this.state.values;
         let points = {};
         for (let i = 0; i < data.length; i++) {
@@ -229,6 +237,7 @@ export default class AnalyzeWithoutVideo extends Component {
         else
             this.callRequest(points);
     };
+
     callRequest(points) {
 
         //alert(this.props.navigation.state.params.playerId);
@@ -277,8 +286,9 @@ export default class AnalyzeWithoutVideo extends Component {
             alert(JSON.stringify(e.response.data.error));
         });
     };
+
     tempRecorder() {
-        this.setState({ status: "recorder" })
+        this.setState({ status: "recorder", currentTime: 0.0, base64: "", commentsAudio: "" })
         this._record();
     };
 
@@ -293,7 +303,9 @@ export default class AnalyzeWithoutVideo extends Component {
             }
 
             // play when loaded
-            sound.play();
+            sound.play((success) => {
+                this.setState({ statusAudio: "play" });
+            });
 
         });
 
@@ -310,9 +322,17 @@ export default class AnalyzeWithoutVideo extends Component {
 
     _stopAudio() {
         this.setState({ statusAudio: "play" })
-        if (sound)
+        if (sound) {
             sound.stop();
+            sound.setVolume(0.0);
+
+        }
     };
+
+    _deleteAudio() {
+        this.setState({ status: "play", currentTime: 0.0, base64: "", commentsAudio: "" });
+        this._stopAudio();
+    }
 
     render() {
         let { steps } = this.props.navigation.state.params;
@@ -353,11 +373,16 @@ export default class AnalyzeWithoutVideo extends Component {
                     </View>
                     <Form style={{ paddingLeft: '5%', paddingRight: "5%" }}>
                         <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                            <Text style={{ fontSize: 10, color: 'gray' }}>0/255</Text>
+                            <Text style={{ fontSize: 10, color: 'gray' }}>{this.state.commentText.length + "/255"}</Text>
                         </View>
-                        <Textarea value={this.state.commentText} onKeyPress={(text) => this.setState({ commentText: text })} rowSpan={5} bordered placeholder="Texto" style={{ borderColor: '#269cda' }} />
+                        <Textarea maxLength={255} value={this.state.commentText} onChangeText={(text) => this.setState({ commentText: text })} rowSpan={5} bordered placeholder="Texto" placeholderTextColor={"#269cda"} style={{ borderColor: '#269cda',color:"#555555" }} />
+                        <TouchableOpacity onPress={() => this.setState({ commentText: "" })}>
+                            <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end', paddingTop: '2%' }} >
+                                <Text style={{ fontSize: 12, color: '#E07A2F' }}>Limpar</Text>
+                            </View>
+                        </TouchableOpacity>
                     </Form>
-                    <View style={{ paddingTop: '5%', paddingLeft: '5%' }}>
+                    <View style={{ paddingTop: '2%', paddingLeft: '5%' }}>
                         <Text style={{ color: "#269cda" }}>Aúdio: </Text>
                     </View>
                     {this.state.status !== "finish"
@@ -375,31 +400,31 @@ export default class AnalyzeWithoutVideo extends Component {
                         </Item>
                         : <Item style={{ borderColor: 'white', paddingTop: '5%', paddingLeft: '5%', flexDirection: 'row' }}>
 
-                
-                               
-                                    {this.state.statusAudio === "play" ?
-
-                                        <Button transparent onPress={() => this._playAudio()}>
-                                            <View style={styles.CircleShapeView2}>
-                                                <Icon name="play" size={30} color="white" />
-                                            </View>
-                                        </Button>
-                                        : <Button transparent onPress={() => this._pauseAudio()}>
-                                            <View style={styles.CircleShapeView2}>
-                                                <Icon name="pause" size={30} color="white" />
-                                            </View>
-                                        </Button>
-                                    }
-
-                                    <Button style={{ paddingLeft: 10 }} transparent onPress={() => this.setState({ status: "play", currentTime: 0.0, base64: "", commentsAudio: "" })}>
-                                        <View style={styles.CircleShapeView}>
-                                            <Icon name="delete" size={30} color="white" />
-                                        </View>
-                                    </Button>
-                                
 
 
-                            
+                            {this.state.statusAudio === "play" ?
+
+                                <Button transparent onPress={() => this._playAudio()}>
+                                    <View style={styles.CircleShapeView2}>
+                                        <Icon name="play" size={30} color="white" />
+                                    </View>
+                                </Button>
+                                : <Button transparent onPress={() => this._stopAudio()}>
+                                    <View style={styles.CircleShapeView2}>
+                                        <Icon name="stop" size={30} color="white" />
+                                    </View>
+                                </Button>
+                            }
+
+                            <Button style={{ paddingLeft: 10 }} transparent onPress={() => this._deleteAudio()}>
+                                <View style={styles.CircleShapeView}>
+                                    <Icon name="delete" size={30} color="white" />
+                                </View>
+                            </Button>
+
+
+
+
                             <Right style={{ borderBottomColor: '#E07A2F' }}>
                                 {/* <TouchableOpacity onPress={() => this.setState({ status: "play", currentTime: 0.0, base64: "", commentsAudio: "" })}>
                                     <Text style={{ fontSize: 12, color: '#E07A2F' }}> Limpar </Text>
@@ -432,7 +457,7 @@ export default class AnalyzeWithoutVideo extends Component {
                     </View>
                     <View style={{ paddingTop: '15%', paddingBottom: '15%', alignItems: 'center', justifyContent: 'center' }}>
 
-                        {this.state.status === "play"
+                        {this.state.status == "play" || this.state.status == "finish"
                             ? <TouchableOpacity onPress={() => this.tempRecorder()}>
                                 <View style={{ borderRadius: 50 }}>
                                     <Icon name="microphone" size={80} color='#269cda' />

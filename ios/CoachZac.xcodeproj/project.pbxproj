@@ -74,11 +74,9 @@
 		096D190BB45245249E3345B0 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6B4AC433A59C4F6BA61AF114 /* SimpleLineIcons.ttf */; };
 		6124E8004DD346ACA106F91E /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 29D3CF705BA242038BEF77B3 /* Zocial.ttf */; };
 		73FF3EBBC2A6493B976D9ECA /* libimageCropPicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A2B5E90864E427EBB28FB77 /* libimageCropPicker.a */; };
-		4BB48ABC66A74BFB8EDDC8CA /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC55E0A8BFDF4E0C94054892 /* libRNImagePicker.a */; };
 		BCE159216FE249518404A278 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DB6BC92CC24460D96E5A9F4 /* libRNSVG.a */; };
 		B5A3199B3D334A24998CCF5B /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AEDF66288BC94D83A6461499 /* libRNSVG-tvOS.a */; };
 		536C37E4B3394911A8880546 /* libRangeSlider.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 29A535B55C414EFB908162A5 /* libRangeSlider.a */; };
-		32E5D4E616C7480691545680 /* libRNAudioRecorderPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4160D1CAF6E64F9981C2D265 /* libRNAudioRecorderPlayer.a */; };
 		D7437C45AEC54C8A9982AAFF /* libRNAudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A0E9AFC983241889ADDF471 /* libRNAudio.a */; };
 		D0C985308D354B0F8A8CC226 /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AB518B1B794C73B21FB902 /* libRNSound.a */; };
 /* End PBXBuildFile section */
@@ -426,15 +424,11 @@
 		29D3CF705BA242038BEF77B3 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		90B66D82C9504611A0353D00 /* imageCropPicker.xcodeproj */ = {isa = PBXFileReference; name = "imageCropPicker.xcodeproj"; path = "../node_modules/react-native-customized-image-picker/ios/imageCropPicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		5A2B5E90864E427EBB28FB77 /* libimageCropPicker.a */ = {isa = PBXFileReference; name = "libimageCropPicker.a"; path = "libimageCropPicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		2514AD9D16FB4BFF96B36B0F /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; name = "RNImagePicker.xcodeproj"; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		CC55E0A8BFDF4E0C94054892 /* libRNImagePicker.a */ = {isa = PBXFileReference; name = "libRNImagePicker.a"; path = "libRNImagePicker.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		F6EBCDBA387845F1A26BC008 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; name = "RNSVG.xcodeproj"; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		2DB6BC92CC24460D96E5A9F4 /* libRNSVG.a */ = {isa = PBXFileReference; name = "libRNSVG.a"; path = "libRNSVG.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		AEDF66288BC94D83A6461499 /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; name = "libRNSVG-tvOS.a"; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		2C4F5D1C6BFC4C32923B47B5 /* RangeSlider.xcodeproj */ = {isa = PBXFileReference; name = "RangeSlider.xcodeproj"; path = "../node_modules/react-native-range-slider/ios/RangeSlider.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		29A535B55C414EFB908162A5 /* libRangeSlider.a */ = {isa = PBXFileReference; name = "libRangeSlider.a"; path = "libRangeSlider.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		B3A7AC66B6834BE586FF6EFD /* RNAudioRecorderPlayer.xcodeproj */ = {isa = PBXFileReference; name = "RNAudioRecorderPlayer.xcodeproj"; path = "../node_modules/react-native-audio-recorder-player/ios/RNAudioRecorderPlayer.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		4160D1CAF6E64F9981C2D265 /* libRNAudioRecorderPlayer.a */ = {isa = PBXFileReference; name = "libRNAudioRecorderPlayer.a"; path = "libRNAudioRecorderPlayer.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		0266D991FC7A432DA215C87F /* RNAudio.xcodeproj */ = {isa = PBXFileReference; name = "RNAudio.xcodeproj"; path = "../node_modules/react-native-audio/ios/RNAudio.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		6A0E9AFC983241889ADDF471 /* libRNAudio.a */ = {isa = PBXFileReference; name = "libRNAudio.a"; path = "libRNAudio.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		02986DC3B4474C9EA74577AB /* RNSound.xcodeproj */ = {isa = PBXFileReference; name = "RNSound.xcodeproj"; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
@@ -469,10 +463,8 @@
 				270AC1D0867646509708D91B /* libRNGestureHandler.a in Frameworks */,
 				4838DF52A0384601A8BAE1D7 /* libRNVectorIcons.a in Frameworks */,
 				73FF3EBBC2A6493B976D9ECA /* libimageCropPicker.a in Frameworks */,
-				4BB48ABC66A74BFB8EDDC8CA /* libRNImagePicker.a in Frameworks */,
 				BCE159216FE249518404A278 /* libRNSVG.a in Frameworks */,
 				536C37E4B3394911A8880546 /* libRangeSlider.a in Frameworks */,
-				32E5D4E616C7480691545680 /* libRNAudioRecorderPlayer.a in Frameworks */,
 				D7437C45AEC54C8A9982AAFF /* libRNAudio.a in Frameworks */,
 				D0C985308D354B0F8A8CC226 /* libRNSound.a in Frameworks */,
 			);
@@ -666,10 +658,8 @@
 				10FDEE10023A4726ADD989A7 /* RNGestureHandler.xcodeproj */,
 				148F8032D3444B8DA5E11720 /* RNVectorIcons.xcodeproj */,
 				90B66D82C9504611A0353D00 /* imageCropPicker.xcodeproj */,
-				2514AD9D16FB4BFF96B36B0F /* RNImagePicker.xcodeproj */,
 				F6EBCDBA387845F1A26BC008 /* RNSVG.xcodeproj */,
 				2C4F5D1C6BFC4C32923B47B5 /* RangeSlider.xcodeproj */,
-				B3A7AC66B6834BE586FF6EFD /* RNAudioRecorderPlayer.xcodeproj */,
 				0266D991FC7A432DA215C87F /* RNAudio.xcodeproj */,
 				02986DC3B4474C9EA74577AB /* RNSound.xcodeproj */,
 			);
@@ -1380,10 +1370,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-customized-image-picker\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-range-slider\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
@@ -1413,10 +1401,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-customized-image-picker\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-range-slider\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
@@ -1444,10 +1430,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-customized-image-picker\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-range-slider\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
@@ -1474,10 +1458,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-customized-image-picker\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-range-slider\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
@@ -1515,10 +1497,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-customized-image-picker\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-range-slider\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
@@ -1556,10 +1536,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-customized-image-picker\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-range-slider\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
@@ -1596,10 +1574,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-customized-image-picker\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-range-slider\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);
@@ -1636,10 +1612,8 @@
 					"$(SRCROOT)\..\node_modules\react-native-gesture-handler\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-customized-image-picker\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-svg\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-range-slider\ios/**",
-					"$(SRCROOT)\..\node_modules\react-native-audio-recorder-player\ios",
 					"$(SRCROOT)\..\node_modules\react-native-audio\ios",
 					"$(SRCROOT)\..\node_modules\react-native-sound\RNSound",
 				);

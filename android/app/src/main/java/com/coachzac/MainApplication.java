@@ -6,10 +6,10 @@ import com.facebook.react.ReactApplication;
 
 import com.zmxv.RNSound.RNSoundPackage;
 import com.rnim.rn.audio.ReactNativeAudioPackage;
-import com.dooboolab.RNAudioRecorderPlayerPackage;
+
 import com.horcrux.svg.SvgPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
-import com.imagepicker.ImagePickerPackage;
+
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
@@ -34,10 +34,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new RNSoundPackage(),
             new ReactNativeAudioPackage(),
-            new RNAudioRecorderPlayerPackage(),
             new SvgPackage(),
             new PickerPackage(),
-            new ImagePickerPackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage()
       );

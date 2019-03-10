@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Slider,ListView, View, StyleSheet, TouchableOpacity, Platform, TextInput, ScrollView, Alert, AsyncStorage } from 'react-native';
+import { Slider, ListView, View, StyleSheet, TouchableOpacity, Platform, TextInput, ScrollView, Alert, AsyncStorage } from 'react-native';
 import { Container, Textarea, Form, Item, Thumbnail, Header, Content, CheckBox, Button, List, ListItem, Text, Left, Body, Right, Title } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -7,6 +7,7 @@ import api from '../services/api';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { AudioRecorder, AudioUtils } from 'react-native-audio';
 import { Overlay } from 'react-native-elements';
+import Sound from 'react-native-sound';
 
 const Define = require('../config/Define.js');
 
@@ -14,6 +15,8 @@ const Parse = require('parse/react-native');
 Parse.setAsyncStorage(AsyncStorage);
 Parse.initialize(Define.appId);
 Parse.serverURL = Define.baseURL;
+
+var sound = null;
 
 export default class UpdateAnalyze extends Component {
 
@@ -36,7 +39,8 @@ export default class UpdateAnalyze extends Component {
         finished: false,
         audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac',
         hasPermission: undefined,
-        base64: ""
+        base64: "",
+        statusAudio: "play"
 
     };
 
@@ -61,7 +65,8 @@ export default class UpdateAnalyze extends Component {
                 //steps: this.props.navigation.state.params.steps,
                 values: this.props.navigation.state.params.values,
                 commentText: this.props.navigation.state.params.commentText,
-                commentAudio: this.props.navigation.state.params.commentAudio
+                commentAudio: this.props.navigation.state.params.commentAudio,
+                status: this.props.navigation.state.params.commentAudio ? "finish" : "play"
             });
 
             //alert(this.props.navigation.state.params.values);
@@ -153,12 +158,12 @@ export default class UpdateAnalyze extends Component {
 
     renderSliders(pos) {
         return (
-            <View style={{ paddingLeft: '10%',paddingTop:'3%'}}>
+            <View style={{ paddingLeft: '10%', paddingTop: '3%' }}>
                 <Text style={{ fontSize: 16, color: '#E07A2F' }}>
                     <Text style={{ fontSize: 14, color: '#696969' }}>{Define.nameSteps[pos] + ": "}</Text>
                     {this.state.values[pos]}
                 </Text>
-                <View style={{paddingRight: '10%', paddingTop:'3%' }}>
+                <View style={{ paddingRight: '10%', paddingTop: '3%' }}>
                     <Slider
                         value={this.state.values[pos]}
                         onValueChange={value => this.changeValues(pos, value)}
@@ -270,7 +275,7 @@ export default class UpdateAnalyze extends Component {
 
             _ApplicationId: Define.appId,
             _SessionToken: this.state.sessionToken,
-            analyzeId:  this.props.navigation.state.params.analyzeId,
+            analyzeId: this.props.navigation.state.params.analyzeId,
             playerId: this.props.navigation.state.params.playerId,
             points: points,
             commentText: this.state.commentText,
@@ -310,11 +315,11 @@ export default class UpdateAnalyze extends Component {
 
     };
 
-    deleteAnalyze(){
+    deleteAnalyze() {
         api.post('/deleteAnalyze', {
             _ApplicationId: Define.appId,
             _SessionToken: this.state.sessionToken,
-            analyzeId:  this.props.navigation.state.params.analyzeId
+            analyzeId: this.props.navigation.state.params.analyzeId
         }).then((res) => {
 
             AsyncStorage.multiSet([
@@ -326,7 +331,7 @@ export default class UpdateAnalyze extends Component {
                 index: 0,
                 actions: [NavigationActions.navigate({
                     routeName: 'Home',
-                    params: {page: 3}
+                    params: { page: 3 }
                 })],
             });
 
@@ -344,6 +349,51 @@ export default class UpdateAnalyze extends Component {
         this.setState({ status: "recorder" })
         this._record();
     };
+
+    _playAudio() {
+
+        let path = this.props.navigation.state.params.commentAudio ? this.props.navigation.state.params.commentAudio : this.state.audioPath;
+
+
+        this.setState({ statusAudio: "listen" })
+        //alert(this.state.audioPath);
+        sound = new Sound(path, null, (error) => {
+            if (error) {
+                // do something
+            }
+
+            // play when loaded
+            sound.play((success) => {
+                this.setState({ statusAudio: "play" });
+            });
+
+        });
+
+
+    };
+
+    _pauseAudio() {
+        if (sound !== null) {
+            // this.setState({ statusAudio: "play" })
+            // sound.pause();
+            alert(sound.getCurrentTime())
+        } else alert("sound null")
+    }
+
+    _stopAudio() {
+        this.setState({ statusAudio: "play" })
+        if (sound) {
+            sound.stop();
+            sound.setVolume(0.0);
+
+        }
+    };
+
+    _deleteAudio() {
+        this.setState({ status: "play", currentTime: 0.0, base64: "", commentsAudio: "" });
+        this._stopAudio();
+    }
+
 
     render() {
         let { steps } = this.props.navigation.state.params;
@@ -382,51 +432,60 @@ export default class UpdateAnalyze extends Component {
                     </View>
                     <Form style={{ paddingLeft: '5%', paddingRight: "5%", paddingBottom: "3%" }}>
                         <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                            <Text style={{ fontSize: 10, color: 'gray' }}>0/255</Text>
+                            <Text style={{ fontSize: 10, color: 'gray' }}>{this.state.commentText.length + "/255"}</Text>
                         </View>
-                        <Textarea rowSpan={5} bordered placeholder="Texto" style={{ borderColor: '#269cda' }} />
+                        <Textarea maxLength={255} value={this.state.commentText} onChangeText={(text) => this.setState({ commentText: text })} rowSpan={5} bordered placeholder="Texto" placeholderTextColor={"#269cda"} style={{ borderColor: '#269cda',color:'#555555'}} />
+                        <TouchableOpacity onPress={() => this.setState({ commentText: "" })}>
+                            <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end', paddingTop: '2%' }} >
+                                <Text style={{ fontSize: 12, color: '#E07A2F' }}>Limpar</Text>
+                            </View>
+                        </TouchableOpacity>
                     </Form>
 
+                    <View style={{ paddingTop: '2%', paddingLeft: '5%' }}>
+                        <Text style={{ color: "#269cda" }}>Aúdio: </Text>
+                    </View>
+
                     {this.state.status !== "finish"
-                        ? <Item style={{ borderColor: 'white', paddingTop: '7%', paddingLeft: '5%', flexDirection: 'row' }}>
-
-                            <Text style={{ color: "#269cda" }}>Aúdio: </Text>
-
-                            <Body style={{ alignItems: 'flex-start', paddingLeft: '5%' }}>
+                        ? <Item style={{ borderColor: 'white', paddingTop: '5%', paddingLeft: '5%', flexDirection: 'row' }}>
 
 
-                                <Button transparent onPress={() => this.setState({ isVisible: true })}>
+
+                            <Button transparent onPress={() => this.setState({ isVisible: true })}>
+                                <View style={styles.CircleShapeView2}>
+                                    <Icon name="microphone" size={30} color="white" />
+                                </View>
+                            </Button>
+
+
+                        </Item>
+                        : <Item style={{ borderColor: 'white', paddingTop: '5%', paddingLeft: '5%', flexDirection: 'row' }}>
+
+
+
+                            {this.state.statusAudio === "play" ?
+
+                                <Button transparent onPress={() => this._playAudio()}>
                                     <View style={styles.CircleShapeView2}>
-                                        <Icon name="microphone" size={30} color="white" />
+                                        <Icon name="play" size={30} color="white" />
                                     </View>
                                 </Button>
+                                : <Button transparent onPress={() => this._stopAudio()}>
+                                    <View style={styles.CircleShapeView2}>
+                                        <Icon name="stop" size={30} color="white" />
+                                    </View>
+                                </Button>
+                            }
 
-                            </Body>
-                            <Right>
-                            </Right>
-                        </Item>
-                        : <Item style={{ borderColor: 'white', paddingTop: '7%', paddingLeft: '5%', flexDirection: 'row' }}>
-
-                            <Text style={{ color: "#269cda" }}>Aúdio: </Text>
-
-                            <Body style={{ alignItems: 'flex-start', paddingLeft: '5%' }}>
-
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Button transparent onPress={() => this.setState({ isVisible: true })}>
-                                        <View style={styles.CircleShapeView2}>
-                                            <Icon name="play" size={30} color="white" />
-                                        </View>
-                                    </Button>
-
-                                    <Button style={{ paddingLeft: 10 }} transparent onPress={() => this.setState({ status: "play", currentTime: 0.0, base64: "", commentsAudio: "" })}>
-                                        <View style={styles.CircleShapeView}>
-                                            <Icon name="delete" size={30} color="white" />
-                                        </View>
-                                    </Button>
+                            <Button style={{ paddingLeft: 10 }} transparent onPress={() => this._deleteAudio()}>
+                                <View style={styles.CircleShapeView}>
+                                    <Icon name="delete" size={30} color="white" />
                                 </View>
+                            </Button>
 
 
-                            </Body>
+
+
                             <Right style={{ borderBottomColor: '#E07A2F' }}>
                                 {/* <TouchableOpacity onPress={() => this.setState({ status: "play", currentTime: 0.0, base64: "", commentsAudio: "" })}>
                                     <Text style={{ fontSize: 12, color: '#E07A2F' }}> Limpar </Text>
@@ -436,7 +495,7 @@ export default class UpdateAnalyze extends Component {
                     }
 
 
-                    <View style={{ paddingLeft: '5%', paddingRight: '5%', paddingTop: '5%' }}>
+                    <View style={{ paddingLeft: '5%', paddingRight: '5%', paddingTop: '10%' }}>
                         <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createAnalyze("update")}>
                             <Text>ALTERAR AVALIAÇÃO</Text>
                         </Button>
@@ -449,7 +508,7 @@ export default class UpdateAnalyze extends Component {
                     </View>
 
                     <View style={{ padding: '5%' }}>
-                        <Button bordered block danger style={{ borderColor: '#E07A2F' }} onPress={()=>this.deleteAnalyze()}>  
+                        <Button bordered block danger style={{ borderColor: '#E07A2F' }} onPress={() => this.deleteAnalyze()}>
                             <Text style={{ color: '#E07A2F' }}>EXCLUIR AVALIAÇÃO</Text>
                         </Button>
                     </View>
