@@ -39,7 +39,9 @@ const styles = StyleSheet.create({
 export default class SelectVideoModal extends Component {
 
     goAnalyzeWithouVideo(){
-        
+
+
+        alert(JSON.stringify(this.props.steps))
         this.props.onClose();
         //this.props.restartSteps();
         //alert(this.props.steps)

@@ -205,7 +205,7 @@ export default class PlayerProfile extends Component {
                 />
 
                 <PhotoModal
-                    uri={this.state.player.profileImage}
+                    uri={this.state.profileImage}
                     onClose={() => this.setState({ modalPhotoVisible: false })}
                     visible={this.state.modalPhotoVisible}
                 />

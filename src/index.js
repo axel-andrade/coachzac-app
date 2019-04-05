@@ -23,6 +23,8 @@ import UpdatePlayer from './pages/UpdatePlayer';
 import UpdateUser from './pages/UpdateUser';
 import UpdatePassword from './pages/UpdatePassword';
 import UpdateAnalyze from './pages/UpdateAnalyze';
+import UpdateAnalyzeForList from './pages/UpdateAnalyzeForList';
+
 
 //export default createAppContainer(TabNavigator);
 const AppNavigator = createStackNavigator({
@@ -90,6 +92,12 @@ const AppNavigator = createStackNavigator({
     },
     'UpdateAnalyze': {
         screen: UpdateAnalyze,
+        navigationOptions: ({ navigation }) => {
+            return ({ header: null });
+        }
+    },
+    'UpdateAnalyzeForList': {
+        screen: UpdateAnalyzeForList,
         navigationOptions: ({ navigation }) => {
             return ({ header: null });
         }

@@ -70,7 +70,7 @@ export default class Result extends Component {
       this.setState({ loading: false, analyzes: res.data.result.analyzes, count: parseInt(res.data.result.total) });
     }).catch((e) => {
       this.setState({ loading: false, error: true });
-      //Alert.alert(JSON.stringify(e.response.data.error));
+      Alert.alert(JSON.stringify(e.response.data.error));
     });
     // }
   };

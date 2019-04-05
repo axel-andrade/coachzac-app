@@ -66,7 +66,7 @@ export default class UpdateAnalyze extends Component {
                 values: this.props.navigation.state.params.values,
                 commentText: this.props.navigation.state.params.commentText,
                 commentAudio: this.props.navigation.state.params.commentAudio,
-                status: this.props.navigation.state.params.commentAudio ? "finish" : "play"
+                status: this.props.navigation.state.params.commentAudio ? "finish" : "play",
             });
 
             //alert(this.props.navigation.state.params.values);
@@ -288,20 +288,19 @@ export default class UpdateAnalyze extends Component {
                 ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })],
                 ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
             ]);
-
+            let analyze = { 
+                points: points,
+                commentText: this.state.commentText,
+                commentAudio: this.state.commentAudio,
+                player: this.props.navigation.state.params.player,
+                objectId: this.props.navigation.state.params.analyzeId
+            }
             let resetAnalyze = StackActions.reset({
                 index: 0,
                 actions: [NavigationActions.navigate({
-                    routeName: 'NewAnalyze',
+                    routeName: 'ResultDetail',
                     params: {
-                        points: points,
-                        playerName: this.props.navigation.state.params.playerName,
-                        steps: this.props.navigation.state.params.steps,
-                        playerId: this.props.navigation.state.params.playerId,
-                        values: this.state.values,
-                        commentText: this.state.commentText,
-                        commentAudio: this.state.commentAudio,
-                        analyzeId: this.props.navigation.state.params.analyzeId
+                       analyze: analyze
                     }
                 })],
             });
@@ -351,15 +350,15 @@ export default class UpdateAnalyze extends Component {
             '',
             'Tem certeza que deseja excluir esta avaliação?',
             [
-              {
-                text: 'Cancelar',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-              },
-              {text: 'Excluir', onPress: () => this.deleteAnalyze()},
-            ], 
-            {cancelable: false},
-          );
+                {
+                    text: 'Cancelar',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                },
+                { text: 'Excluir', onPress: () => this.deleteAnalyze() },
+            ],
+            { cancelable: false },
+        );
     };
 
     tempRecorder() {
@@ -451,7 +450,7 @@ export default class UpdateAnalyze extends Component {
                         <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                             <Text style={{ fontSize: 10, color: 'gray' }}>{this.state.commentText.length + "/255"}</Text>
                         </View>
-                        <Textarea maxLength={255} value={this.state.commentText} onChangeText={(text) => this.setState({ commentText: text })} rowSpan={5} bordered placeholder="Texto" placeholderTextColor={"#269cda"} style={{ borderColor: '#269cda',color:'#555555'}} />
+                        <Textarea maxLength={255} value={this.state.commentText} onChangeText={(text) => this.setState({ commentText: text })} rowSpan={5} bordered placeholder="Texto" placeholderTextColor={"#269cda"} style={{ borderColor: '#269cda', color: '#555555' }} />
                         <TouchableOpacity onPress={() => this.setState({ commentText: "" })}>
                             <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end', paddingTop: '2%' }} >
                                 <Text style={{ fontSize: 12, color: '#E07A2F' }}>Limpar</Text>
@@ -518,19 +517,12 @@ export default class UpdateAnalyze extends Component {
                         </Button>
                     </View>
 
-                    <View style={{ paddingLeft: '5%', paddingRight: '5%', paddingTop: '5%' }}>
-                        <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createAnalyze("create")}>
-                            <Text>SALVAR NOVA AVALIAÇÃO</Text>
-                        </Button>
-                    </View>
-
                     <View style={{ padding: '5%' }}>
                         <Button bordered block danger style={{ borderColor: '#E07A2F' }} onPress={() => this.showAlert()}>
                             <Text style={{ color: '#E07A2F' }}>EXCLUIR AVALIAÇÃO</Text>
                         </Button>
                     </View>
-
-
+                    
                 </Content>
 
 

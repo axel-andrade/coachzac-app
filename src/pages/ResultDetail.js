@@ -1,156 +1,314 @@
 import React, { Component } from 'react';
-import { ListView, View, StyleSheet, TouchableOpacity, ScrollView, Alert, AsyncStorage } from 'react-native';
-import { Container, Item, Thumbnail, Header, Content, Button, List, ListItem, Text, Left, Body, Right, Title } from 'native-base';
+import { ListView, View, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert, AsyncStorage } from 'react-native';
+import { Container, Textarea, Form, Item, Thumbnail, Header, Content, CheckBox, Button, List, ListItem, Text, Left, Body, Right, Title } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-const profileImage = require('../../assets/profile.png');
-import ProfileModal from '../components/ProfileModal';
-import PhotoModal from '../components/PhotoModal';
-import ChartScaleBand from '../components/ChartScaleBand';
+import { Slider } from 'react-native-elements';
+const Define = require('../config/Define.js');
+import api from '../services/api';
+import { NavigationActions, StackActions } from 'react-navigation';
+import { Overlay } from 'react-native-elements';
 
-export default class ResultDetail extends Component {
+import Sound from 'react-native-sound';
+
+var sound = null;
+const codes = ["foot-position","initial-arm","right-before","ball-elevation","ball-height","left-extended","foot-movement","knee-flexion"];
+const resetAction = StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({ routeName: 'Home', params: { page: 2} })],
+});
+
+export default class AnalyzeWithoutVideo extends Component {
+
 
     state = {
         analyze: [],
-        player: [],
-        existsProfileImage: false,
+        values: [],
+        sessionToken: "",
+        average: 0,
+        codes: [],
+        points: {},
+        showButtons: false,
         modalVisible: false,
-        fromListItem: true,
-        modalPhotoVisible: false,
-        good: [],
-        medium: [],
-        bad: [],
-        data: [],
-        keys: []
+        listFields: [],
+        statusAudio: "play"
     };
 
     async componentDidMount() {
+        const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
+        //this.props.navigation.state.params.playerId
+        if (sessionToken) {
+            this.setState({ sessionToken: sessionToken });
+            this.calculateAverage(this.props.navigation.state.params.analyze.points)
+        }
 
-        alert(JSON.stringify(this.props.navigation.state.params.analyze))
+        this.renderInfo();
+        this.initValues();
 
-        //verificando se o componente esta vindo da list item 
-        //if (this.state.fromListItem) {
+    };
 
-            let good = this.getSteps(this.props.navigation.state.params.analyze.player.goodSteps);
-            let medium = this.getSteps(this.props.navigation.state.params.analyze.player.mediumSteps);
-            let bad = this.getSteps(this.props.navigation.state.params.analyze.player.badSteps);
-            let existsProfileImage;
-            //Alert.alert("Veio do list item");
-            if (this.props.navigation.state.params.analyze.player.profileImage != undefined)
-                existsProfileImage = true;
-            else
-                existsProfileImage = false;
+    calculateAverage(points) {
+        let data = [];
+        let sum = 0, cont = 0;
+        for (let i in points) {
+            data.push(i)
+            sum += points[i];
+            cont++;
+        }
+        sum = sum / cont;
+        this.setState({ points: points, codes: data, average: sum.toFixed(1) })
+        // return sum.toFixed(1);
+    };
 
-            this.setState({
-                analyze: this.props.navigation.state.params.analyze,
-                player: this.props.navigation.state.params.analyze.player,
-                existsProfileImage: existsProfileImage,
-                good: good,
-                medium: medium,
-                bad: bad
+    setValues(points) {
+        alert(points)
+    }
+    renderInfo() {
+        let temp = [];
+        this.state.codes.map((data, index) => {
+            temp.push(
+                <Text note style={{ fontSize: 14, color: "#E07A2F" }}>
+                    <Text note style={{ fontSize: 14, color: 'black' }}>{Define.nameSteps[Define.codeSteps.indexOf(data)] + ": "}</Text>
+                    {this.state.points[data]}
+                </Text>
+            )
+        });
 
+        this.setState({ listFields: temp })
+
+    };
+
+    editAnalyze() {
+        this.props.navigation.navigate("UpdateAnalyzeForList", {
+            player: this.props.navigation.state.params.analyze.player,
+            steps: this.state.steps,
+            playerName: this.props.navigation.state.params.analyze.player.name,
+            playerId: this.props.navigation.state.params.analyze.player.objectId,
+            values: this.state.values,
+            commentText: this.props.navigation.state.params.analyze.commentText,
+            commentAudio: this.props.navigation.state.params.analyze.commentAudio,
+            analyzeId: this.props.navigation.state.params.analyze.objectId
+
+        })
+    };
+
+    _playAudio() {
+
+
+        this.setState({ statusAudio: "listen" })
+        //alert(this.state.audioPath);
+        sound = new Sound(this.props.navigation.state.params.analyze.commentAudio, null, (error) => {
+            if (error) {
+                // do something
+            }
+
+            // play when loaded
+            sound.play((success) => {
+                this.setState({ statusAudio: "play" });
             });
-            await AsyncStorage.multiSet([
-                ['@CoachZac:analyze', JSON.stringify(this.props.navigation.state.params.analyze)],
-            ]);
-        //}
+
+        });
+
+
+    };
+
+    _pauseAudio() {
+        if (sound !== null) {
+            // this.setState({ statusAudio: "play" })
+            // sound.pause();
+            alert(sound.getCurrentTime())
+        } else alert("sound null")
     }
 
-    getSteps(step) {
-        let data = [];
-        if (step) {
-            for (let i = 0; i < step.length; i++)
-                data.push(<Text note style={{ fontSize: 10, paddingTop: "2%" }}>{"- " + step[i]}</Text>)
+    _stopAudio() {
+        this.setState({ statusAudio: "play" })
+        if (sound) {
+            sound.stop();
+            sound.setVolume(0.0);
+
         }
-        else
-            data.push(<Text note style={{ fontSize: 10, paddingTop: "2%" }}>{"- Nenhum"}</Text>)
-        return data;
     };
+    
+    exitOverlay(){
+        this.setState({ modalVisible: false});
+        this._stopAudio();
+    }
 
-    renderInfo = (name, state) => {
-        return (
-            <Text note style={styles.note}>
-                <Text note style={[styles.note, styles.noteBold]}>{name}</Text>
-                {state}
-            </Text>
-        );
-    };
+    createSteps(){
+        let steps = [false,false,false,false,false,false,false,false];
+        
+        let {points} = this.props.navigation.state.params.analyze;
 
-    renderFundaments = (borderColor, color, step, nameStep) => {
-        return (
+        for(let i=0;i<codes.length;i++)
+            if(points[codes[i]]>=0)
+                steps[i] = true; 
 
-            <View style={{ paddingTop: '3%', paddingLeft: '5%', paddingRight: '5%' }}>
-                <View style={{ backgroundColor: "white", borderWidth: 1, borderColor: `${borderColor}`, alignItems: 'center', justifyContent: "center" }}>
-                    <Text style={{ fontSize: 12, color: `${color}`, padding: 3, fontWeight: "bold" }}>{"Passos " + nameStep}</Text>
-                </View>
-                {step}
-            </View>
+        return steps;
+    }
 
+    initValues() {
+        let data = [null, null, null, null, null, null, null, null];
+        let steps = this.createSteps();
+        let {points} = this.props.navigation.state.params.analyze;
+        for (let i = 0; i < steps.length; i++)
+            if (steps[i])
+                data[i] = points[codes[i]];
 
-        )
+        this.setState({ values: data, steps: steps })
     };
 
     render() {
+        
+        let { commentAudio, commentText } = this.props.navigation.state.params.analyze;
         return (
 
             <Container>
                 <Header style={{ backgroundColor: 'white' }}>
                     <Left>
-                        <Button transparent onPress={() => this.props.navigation.goBack()}>
+                        <Button transparent onPress={() => this.props.navigation.dispatch(resetAction)}>
                             <Icon name="arrow-left" size={22.5} color='#269cda' />
                         </Button>
                     </Left>
                     <Body>
-                        <Title style={{color:'#269cda'}}>Resultados</Title>
+                        <Title style={{color:'#269cda'}}>Resultado da Avaliação</Title>
                     </Body>
                     <Right></Right>
                 </Header>
 
-                <View style={{paddingLeft:'5%',paddingTop:'2%'}}>
-
-                    {this.renderInfo("Name: ", this.state.player.name)}
-                    {this.renderInfo("Fundamento: ", "Saque")}
-                    {this.renderInfo("Nota: ", this.state.analyze.average)}
-                    {this.renderInfo("Data: ", "")}
-                    
-                </View >
-
-                <View>
-                    {this.renderFundaments('green', 'green', this.state.good, 'Bons')}
-                    {this.renderFundaments('#FFD700', '#FFD700', this.state.medium, "Médios")}
-                    {this.renderFundaments('red', 'red', this.state.bad, "Ruins")}
-                </View>
-
-                <ChartScaleBand
-                    data={this.state.data}
-                    keys={this.state.keys}
-                />
+                <Content padder>
 
 
-            </Container>
+
+                    <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: '10%' }}>
+                        <View style={styles.CircleShapeView}>
+                            <Text style={{ color: '#E07A2F', fontWeight: 'bold', fontSize: 48 }}>{this.state.average} </Text>
+                        </View>
+                    </View>
+
+                    <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: '15%' }}>
+                        <TouchableOpacity onPress={() => this.setState({ modalVisible: true })}>
+                            <View style={{ borderBottomColor: '#E07A2F', borderBottomWidth: 0.5 }}>
+                                <Text style={{ color: '#E07A2F', fontSize: 14 }}>Ver Detalhes</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{ paddingTop: "10%" }}>
+                        <View style={{ padding: '5%' }}>
+                            <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.props.navigation.navigate("PlayerForAnalyze")}>
+                                <Text>NOVA AVALIAÇÃO</Text>
+                            </Button>
+                        </View>
+                        <View style={{ paddingLeft: '5%', paddingRight: '5%' }} >
+                            <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.editAnalyze()}>
+                                <Text>EDITAR AVALIAÇÃO</Text>
+                            </Button>
+                        </View>
+                    </View>
+
+                    {/* <Text>{JSON.stringify(this.state.values)}</Text>
+                    <Text>{JSON.stringify(this.state.steps)}</Text>
+                    <Text>{JSON.stringify(this.props.navigation.state.params.analyze)}</Text>
+                    */}
+
+                </Content>
+
+                <Overlay
+                    isVisible={this.state.modalVisible}
+
+                    width='auto'
+                    height='auto'
+                    onBackdropPress={() => this.exitOverlay()}
+                //containerStyle={{justifyContent:'center'}}
+                >
+                    <View style={{ padding: '2%' }}>
+                        <View style={{ paddingBottom: '5%' }}>
+                            <Text note style={{ fontSize: 14, color: '#269cda' }}>{"Informações: "}</Text>
+                        </View>
+                        <Text note style={{ fontSize: 14, color: "#E07A2F" }}>
+                            <Text note style={{ fontSize: 14, color: 'black' }}>{"Atleta: "}</Text>
+                            {this.props.navigation.state.params.playerName}
+                        </Text>
+                        <Text note style={{ fontSize: 14, color: "#E07A2F" }}>
+                            <Text note style={{ fontSize: 14, color: 'black' }}>{"Fundamento: "}</Text>
+                            Saque
+                        </Text>
+
+
+                        <View style={{ paddingTop: '5%', paddingBottom: '5%' }}>
+                            <Text note style={{ fontSize: 14, color: '#269cda' }}>{"Notas: "}</Text>
+                        </View>
+                        <View style={{ paddingBottom: '5%' }}>
+                            {this.state.listFields}
+                        </View>
+
+                        {
+                            commentText || commentAudio
+                                ? <View style={{ paddingBottom: '5%' }}>
+                                    <Text note style={{ fontSize: 14, color: '#269cda' }}>{"Comentários: "}</Text>
+                                </View>
+                                : null
+
+                        }
+
+                        {
+                            commentText ?
+                                <View style={{ paddingBottom: '5%' }}>
+                                    <Textarea editable={false} value={commentText} rowSpan={5} bordered style={{ borderColor: '#269cda', color: "#555555" }} />
+                                </View>
+                                : null
+                        }
+
+                        {
+                            commentAudio
+                                ? this.state.statusAudio === "play" ?
+
+                                    <Button transparent onPress={() => this._playAudio()}>
+                                        <View style={styles.CircleShapeView2}>
+                                            <Icon name="play" size={30} color="white" />
+                                        </View>
+                                    </Button>
+                                    : <Button transparent onPress={() => this._stopAudio()}>
+                                        <View style={styles.CircleShapeView2}>
+                                            <Icon name="stop" size={30} color="white" />
+                                        </View>
+                                    </Button>
+                                : null
+                        }
+
+
+                    </View>
+
+
+
+
+                </Overlay>
+
+            </Container >
+
         );
-    };
-
-}
-
-const styles = StyleSheet.create({
-    note: {
-        fontSize: 12
-    },
-    noteBold: {
-        fontWeight: 'bold',
-        color: '#269cda'
-    },
-    buttonEnviar: {
-        borderWidth: 1,
-        borderColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: 115, height: 49,
-        backgroundColor: '#E07A2F',
-
-        borderRadius: 23,
-    },
-    icon: {
-        paddingLeft: '15%', color: "#269cda"
     }
+}
+const styles = StyleSheet.create({
+    CircleShapeView: {
+        width: 120,
+        height: 120,
+        borderRadius: 120 / 2,
+        backgroundColor: 'white',
+        borderColor: '#269cda',
+        borderWidth: 0.5,
+        justifyContent: 'center',
+        alignItems: 'center', paddingLeft: 10
+
+    },
+    CircleShapeView2: {
+        width: 50,
+        height: 50,
+        borderRadius: 50 / 2,
+        backgroundColor: '#269cda',
+        borderColor: 'white',
+        borderWidth: 0.5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
 });

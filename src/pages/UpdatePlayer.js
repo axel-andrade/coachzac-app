@@ -145,6 +145,7 @@ export default class UpdatePlayer extends Component {
     };
 
     deletePlayer = async () => {
+
         api.post('/deletePlayer', {
             _ApplicationId: 'coachzacId',
             _SessionToken: this.state.sessionToken,
@@ -168,6 +169,24 @@ export default class UpdatePlayer extends Component {
         });
     };
 
+    showAlert = () => {
+        Alert.alert(
+            '',
+            'Tem certeza que deseja excluir este atleta?',
+            [
+              {
+                text: 'Cancelar',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel',
+              },
+              {text: 'OK', onPress: () => this.deletePlayer()},
+            ], 
+            {cancelable: false},
+          );
+    };
+
+    
+
     uploadPhoto = async (response) => {
 
         let parseFile = new Parse.File("profile.jpg", { base64: response.data });
@@ -190,6 +209,8 @@ export default class UpdatePlayer extends Component {
         });
 
     };
+
+    
 
     render() {
 
@@ -325,7 +346,7 @@ export default class UpdatePlayer extends Component {
                     </View>
 
                     <View style={{ padding: '5%' }}>
-                        <Button bordered block danger style={{ borderColor: '#E07A2F' }} onPress={this.deletePlayer}>
+                        <Button bordered block danger style={{ borderColor: '#E07A2F' }} onPress={this.showAlert}>
                             <Text style={{ color: '#E07A2F' }}>EXCLUIR ATLETA</Text>
                         </Button>
                     </View>

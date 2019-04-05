@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const styles = StyleSheet.create({
     note: {
-        fontSize: 12,
+        fontSize: 10,
     },
     noteBold: {
         color: "black",
@@ -54,7 +54,7 @@ const PlayerListItem = props => {
                 <TouchableOpacity onPress={() => onPress({ player })}>
                     <Text style={{ color: '#269cda', fontWeight: 'bold' }}>{player.name}</Text>
                     <Text note style={styles.note}>{calculateAge(new Date(player.dateOfBirth), new Date())+" anos"}</Text>
-                    <Text note style={styles.note}>{parseFloat(player.level).toFixed(1)+"/10"}</Text>
+                    <Text note style={styles.note}>{parseFloat(player.level).toFixed(1)}</Text>
                 </TouchableOpacity>
             </Body>
 
