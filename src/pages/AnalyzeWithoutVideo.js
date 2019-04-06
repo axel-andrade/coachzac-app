@@ -264,14 +264,11 @@ export default class AnalyzeWithoutVideo extends Component {
                 actions: [NavigationActions.navigate({
                     routeName: 'NewAnalyze',
                     params: {
-                        points: points,
-                        playerName: this.props.navigation.state.params.playerName,
+                       
                         steps: this.props.navigation.state.params.steps,
-                        playerId: this.props.navigation.state.params.playerId,
                         values: this.state.values,
-                        commentText: this.state.commentText,
-                        commentAudio: this.state.commentAudio,
-                        analyzeId: res.data.result.objectId
+                        analyze: res.data.result
+                       
                     }
                 })],
             });

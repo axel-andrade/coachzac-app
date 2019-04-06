@@ -28,6 +28,7 @@ export default class UpdateAnalyze extends Component {
         values: [],
         showComments: false,
         commentAudio: "",
+        oldCommentAudio: "",
         commentText: "",
         isVisible: false,
         status: "play",
@@ -56,16 +57,18 @@ export default class UpdateAnalyze extends Component {
     }
 
     async componentDidMount() {
+
         const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
 
         if (sessionToken) {
             this.setState({
                 sessionToken: sessionToken,
-                //playerId: this.props.navigation.state.params.playerId,
-                //steps: this.props.navigation.state.params.steps,
+                playerId: this.props.navigation.state.params.playerId,
+                steps: this.props.navigation.state.params.steps,
                 values: this.props.navigation.state.params.values,
                 commentText: this.props.navigation.state.params.commentText,
                 commentAudio: this.props.navigation.state.params.commentAudio,
+                oldCommentAudio: this.props.navigation.state.params.commentAudio,
                 status: this.props.navigation.state.params.commentAudio ? "finish" : "play",
             });
 
@@ -181,7 +184,7 @@ export default class UpdateAnalyze extends Component {
         );
     };
 
-    uploadAudio = async (points, op) => {
+    uploadAudio = async (points) => {
 
         let parseFile = new Parse.File("sound.aac", { base64: this.state.base64 });
         const result = await parseFile.save();
@@ -195,14 +198,12 @@ export default class UpdateAnalyze extends Component {
         test.set("uri", 'https' + url);
         test.save();
 
-        if (op === "create")
-            this.saveAnalyze(points);
-        else
-            this.UpdateAnalyze(points)
+    
+        this.UpdateAnalyze(points)
 
     };
 
-    createAnalyze(op) {
+    createAnalyze() {
 
         let data = this.state.values;
         let points = {};
@@ -212,64 +213,16 @@ export default class UpdateAnalyze extends Component {
             }
 
         }
-        if (this.state.status == "finish") {
-            if (op === "create")
-                this.uploadAudio(points, "create");
-            else
-                this.uploadAudio(points, "update");
+        if (this.state.status == "finish" && this.state.oldCommentAudio != this.state.commentAudio) {
+            this.uploadAudio(points);
         }
-        else {
-            if (op === "create")
-                this.saveAnalyze(points);
-            else
-                this.UpdateAnalyze(points);
-        }
+        
+     
+        this.UpdateAnalyze(points);
+    
 
     };
 
-    saveAnalyze(points) {
-
-        api.post('/createAnalyze', {
-
-            _ApplicationId: Define.appId,
-            _SessionToken: this.state.sessionToken,
-            fundamentId: Define.fundamentId,
-            playerId: this.props.navigation.state.params.playerId,
-            points: points,
-            commentText: this.state.commentText,
-            commentAudio: this.state.commentAudio,
-
-        }).then((res) => {
-            AsyncStorage.multiSet([
-                ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })],
-                ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
-            ]);
-
-            let resetAnalyze = StackActions.reset({
-                index: 0,
-                actions: [NavigationActions.navigate({
-                    routeName: 'NewAnalyze',
-                    params: {
-                        points: points,
-                        playerName: this.props.navigation.state.params.playerName,
-                        steps: this.props.navigation.state.params.steps,
-                        playerId: this.props.navigation.state.params.playerId,
-                        values: this.state.values,
-                        commentText: this.state.commentText,
-                        commentAudio: this.state.commentAudio,
-                        analyzeId: res.data.result.objectId
-                    }
-                })],
-            });
-
-            Alert.alert("Avaliação salva com sucesso!");
-            this.props.navigation.dispatch(resetAnalyze);
-
-        }).catch((e) => {
-            //alert("Erro");
-            alert(JSON.stringify(e.response.data.error));
-        });
-    };
 
     UpdateAnalyze(points) {
         api.post('/editAnalyze', {
@@ -288,13 +241,7 @@ export default class UpdateAnalyze extends Component {
                 ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })],
                 ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
             ]);
-            let analyze = { 
-                points: points,
-                commentText: this.state.commentText,
-                commentAudio: this.state.commentAudio,
-                player: this.props.navigation.state.params.player,
-                objectId: this.props.navigation.state.params.analyzeId
-            }
+            let analyze = res.data.result;
             let resetAnalyze = StackActions.reset({
                 index: 0,
                 actions: [NavigationActions.navigate({
@@ -331,7 +278,7 @@ export default class UpdateAnalyze extends Component {
                 index: 0,
                 actions: [NavigationActions.navigate({
                     routeName: 'Home',
-                    params: { page: 3 }
+                    params: { page: 2 }
                 })],
             });
 
@@ -406,7 +353,7 @@ export default class UpdateAnalyze extends Component {
     };
 
     _deleteAudio() {
-        this.setState({ status: "play", currentTime: 0.0, base64: "", commentsAudio: "" });
+        this.setState({ status: "play", currentTime: 0.0, base64: "", commentAudio: "" });
         this._stopAudio();
     }
 
@@ -512,7 +459,7 @@ export default class UpdateAnalyze extends Component {
 
 
                     <View style={{ paddingLeft: '5%', paddingRight: '5%', paddingTop: '10%' }}>
-                        <Button block style={{ backgroundColor: '#269cda' }} onPress={() => this.createAnalyze("update")}>
+                        <Button block style={{ backgroundColor: '#269cda' }} onPress={()=> this.createAnalyze()}>
                             <Text>ALTERAR AVALIAÇÃO</Text>
                         </Button>
                     </View>
@@ -522,7 +469,7 @@ export default class UpdateAnalyze extends Component {
                             <Text style={{ color: '#E07A2F' }}>EXCLUIR AVALIAÇÃO</Text>
                         </Button>
                     </View>
-                    
+                   
                 </Content>
 
 

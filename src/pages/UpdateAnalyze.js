@@ -20,7 +20,7 @@ var sound = null;
 
 export default class UpdateAnalyze extends Component {
 
-
+xmhç
     state = {
         playerId: "",
         steps: [],
@@ -294,14 +294,7 @@ export default class UpdateAnalyze extends Component {
                 actions: [NavigationActions.navigate({
                     routeName: 'NewAnalyze',
                     params: {
-                        points: points,
-                        playerName: this.props.navigation.state.params.playerName,
-                        steps: this.props.navigation.state.params.steps,
-                        playerId: this.props.navigation.state.params.playerId,
-                        values: this.state.values,
-                        commentText: this.state.commentText,
-                        commentAudio: this.state.commentAudio,
-                        analyzeId: this.props.navigation.state.params.analyzeId
+                        analyze: res.data.result
                     }
                 })],
             });
@@ -407,7 +400,7 @@ export default class UpdateAnalyze extends Component {
     };
 
     _deleteAudio() {
-        this.setState({ status: "play", currentTime: 0.0, base64: "", commentsAudio: "" });
+        this.setState({ status: "play", currentTime: 0.0, base64: "", commentAudio: "" });
         this._stopAudio();
     }
 
@@ -477,8 +470,6 @@ export default class UpdateAnalyze extends Component {
 
                         </Item>
                         : <Item style={{ borderColor: 'white', paddingTop: '5%', paddingLeft: '5%', flexDirection: 'row' }}>
-
-
 
                             {this.state.statusAudio === "play" ?
 

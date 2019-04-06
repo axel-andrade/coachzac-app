@@ -37,8 +37,13 @@ export default class AnalyzeWithoutVideo extends Component {
         const sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
         //this.props.navigation.state.params.playerId
         if (sessionToken) {
-            this.setState({ sessionToken: sessionToken });
-            this.calculateAverage(this.props.navigation.state.params.analyze.points)
+            this.setState({
+                 sessionToken: sessionToken,
+                 points: this.props.navigation.state.params.analyze.points,
+                 //average: parseFloat(this.props.navigation.state.params.analyze.average).toFixed(1),
+
+            });
+            this.calculateCodes(this.props.navigation.state.params.analyze.points);
         }
 
         this.renderInfo();
@@ -46,22 +51,21 @@ export default class AnalyzeWithoutVideo extends Component {
 
     };
 
-    calculateAverage(points) {
+    calculateCodes(points) {
         let data = [];
-        let sum = 0, cont = 0;
+     
         for (let i in points) {
             data.push(i)
-            sum += points[i];
-            cont++;
         }
-        sum = sum / cont;
-        this.setState({ points: points, codes: data, average: sum.toFixed(1) })
-        // return sum.toFixed(1);
+       
+        this.setState({codes: data})
+    
     };
 
     setValues(points) {
         alert(points)
-    }
+    };
+
     renderInfo() {
         let temp = [];
         this.state.codes.map((data, index) => {
@@ -162,16 +166,17 @@ export default class AnalyzeWithoutVideo extends Component {
         return (
 
             <Container>
-                <Header style={{ backgroundColor: 'white' }}>
+                <Header style={{ backgroundColor: 'white', justifyContent:'center'}}>
                     <Left>
                         <Button transparent onPress={() => this.props.navigation.dispatch(resetAction)}>
                             <Icon name="arrow-left" size={22.5} color='#269cda' />
                         </Button>
                     </Left>
                     <Body>
-                        <Title style={{color:'#269cda'}}>Resultado da Avaliação</Title>
+                        <Title style={{color:'#269cda'}}>Resultado</Title>
                     </Body>
                     <Right></Right>
+                    
                 </Header>
 
                 <Content padder>
@@ -180,7 +185,7 @@ export default class AnalyzeWithoutVideo extends Component {
 
                     <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: '10%' }}>
                         <View style={styles.CircleShapeView}>
-                            <Text style={{ color: '#E07A2F', fontWeight: 'bold', fontSize: 48 }}>{this.state.average} </Text>
+                            <Text style={{ color: '#E07A2F', fontWeight: 'bold', fontSize: 48 }}>{parseFloat(this.props.navigation.state.params.analyze.average).toFixed(1)} </Text>
                         </View>
                     </View>
 
@@ -204,11 +209,7 @@ export default class AnalyzeWithoutVideo extends Component {
                             </Button>
                         </View>
                     </View>
-
-                    {/* <Text>{JSON.stringify(this.state.values)}</Text>
-                    <Text>{JSON.stringify(this.state.steps)}</Text>
-                    <Text>{JSON.stringify(this.props.navigation.state.params.analyze)}</Text>
-                    */}
+                        
 
                 </Content>
 
@@ -226,7 +227,7 @@ export default class AnalyzeWithoutVideo extends Component {
                         </View>
                         <Text note style={{ fontSize: 14, color: "#E07A2F" }}>
                             <Text note style={{ fontSize: 14, color: 'black' }}>{"Atleta: "}</Text>
-                            {this.props.navigation.state.params.playerName}
+                            {this.props.navigation.state.params.analyze.player.name}
                         </Text>
                         <Text note style={{ fontSize: 14, color: "#E07A2F" }}>
                             <Text note style={{ fontSize: 14, color: 'black' }}>{"Fundamento: "}</Text>
