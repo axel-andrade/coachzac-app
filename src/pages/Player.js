@@ -7,6 +7,7 @@ import api from '../services/api';
 import PlayerList from '../components/PlayerList';
 import PhotoModal from '../components/PhotoModal';
 
+
 export default class Player extends Component {
   static navigationOptions = {
     tabBarLabel: "Tab1"

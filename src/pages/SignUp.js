@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, TouchableOpacity, AsyncStorage, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TextField } from 'react-native-material-textfield';
+
 import { Dropdown } from 'react-native-material-dropdown';
 import {
     Container,
@@ -19,10 +20,12 @@ import {
     Right,
     Label,
     Footer,
-    DatePicker
+    DatePicker,
+    Toast
 } from "native-base";
 
 import api from '../services/api';
+const Utils = require('../config/Utils.js');
 
 export default class SignUp extends Component {
 
@@ -34,20 +37,68 @@ export default class SignUp extends Component {
         password: "",
         repeatPassword: "",
         error: false,
-        errorMessage: "",
+        errorMessage: "Ops, algo deu errado",
         chosenDate: new Date(),
-        hasDate: false
+        hasDate: false,
+        buttonEnabled: false
+    };
+
+    async componentDidMount() {
+
+    };
+    validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
     };
 
     signUp = async () => {
 
+        this.setState({buttonEnabled: true});
+
+
         if (this.state.password != this.state.repeatPassword) {
-            Alert.alert("Error1"); Alert.alert("Error1");
+
             this.setState({
                 error: true,
                 errorMessage: "A senha não conferem",
+                buttonEnabled: false
             });
+            alert(this.state.errorMessage);
+            return;
         }
+
+        if (this.state.email.length && !this.validateEmail(this.state.email)) {
+
+            this.setState({
+                error: true,
+                errorMessage: "Email inválido",
+                buttonEnabled: false
+            });
+            alert(this.state.errorMessage);
+            return;
+        }
+     
+
+        if (
+            this.state.name.length <= 0 ||
+            this.state.email.length <= 0 ||
+            this.state.club.length <= 0 ||
+            !this.state.chosenDate ||
+            this.state.password.length <= 0 ||
+            this.state.repeatPassword.length <= 0
+        ) {
+
+            this.setState({
+                error: true,
+                errorMessage: "Preencha todos os campos",
+                buttonEnabled: false
+            });
+            alert(this.state.errorMessage);
+            return;
+        }
+
+
+
 
         //fazer a requisição e salvar o token e os dados do usuário e ir para pagina principal
 
@@ -66,18 +117,19 @@ export default class SignUp extends Component {
             AsyncStorage.multiSet([
                 ['@CoachZac:sessionToken', JSON.stringify(user.sessionToken)],
                 ['@CoachZac:user', JSON.stringify(user)],
+                ['@CoachZac:configPlayer', JSON.stringify({ hasChangePlayer: true })],
+                ['@CoachZac:configAnalyze', JSON.stringify({ hasChangeAnalyze: true })]
             ]);
+
 
             this.props.navigation.navigate('Home');
 
-            Alert.alert(this.state.sessionToken);
+            alert(this.state.sessionToken);
         }).catch((e) => {
 
-            this.setState({ error: true, name: "" });
-            Alert.alert(JSON.stringify(e.response.data.error));
+            this.setState({ error: true,  errorMessage: e.response.data.error, buttonEnabled: false});
+            alert(JSON.stringify(e.response.data.error));
         });
-
-
 
     };
 
@@ -147,7 +199,7 @@ export default class SignUp extends Component {
                                 </Left>
 
                                 <DatePicker
-                                    defaultDate={new Date(2009, 12, 31)}
+                                    defaultDate={new Date(1990, 12, 31)}
                                     minimumDate={new Date(1930, 1, 1)}
                                     maximumDate={new Date(2012, 12, 31)}
                                     locale={"pt-BR"}
@@ -165,26 +217,31 @@ export default class SignUp extends Component {
                             </Item>
                         </View>
 
+                        <View style={{paddingTop:'2%'}}>
 
-                        <TextField
-                            label="Senha"
-                            textColor='#555555'
-                            labelHeight={20}
-                            tintColor='#E07A2F'
-                            baseColor='#269cda'
-                            value={password}
-                            onChangeText={(password) => this.setState({ password })}
-                        />
+                            <TextField
+                                secureTextEntry={true}
+                                label="Senha"
+                                textColor='#555555'
+                                labelHeight={20}
+                                tintColor='#E07A2F'
+                                baseColor='#269cda'
+                                value={password}
+                                onChangeText={(password) => this.setState({ password })}
+                            />
 
-                        <TextField
-                            label="Repetir Senha"
-                            textColor='#555555'
-                            labelHeight={20}
-                            tintColor='#E07A2F'
-                            baseColor='#269cda'
-                            value={repeatPassword}
-                            onChangeText={(repeatPassword) => this.setState({ repeatPassword })}
-                        />
+                            <TextField
+                                secureTextEntry={true}
+                                label="Repetir Senha"
+                                textColor='#555555'
+                                labelHeight={20}
+                                tintColor='#E07A2F'
+                                baseColor='#269cda'
+                                value={repeatPassword}
+                                onChangeText={(repeatPassword) => this.setState({ repeatPassword })}
+                            />
+
+                        </View>
 
 
                     </View>
@@ -192,11 +249,10 @@ export default class SignUp extends Component {
                 </Content>
 
                 <View style={{ padding: '5%' }}>
-                    <Button block style={{ backgroundColor: '#269cda' }} onPress={this.signUp}>
-                        <Text uppercase={false}>Cadastrar</Text>
+                    <Button block style={{ backgroundColor: '#269cda' }} disabled={this.state.buttonEnabled} onPress={this.signUp}>
+                        <Text uppercase={true}>Cadastrar</Text>
                     </Button>
                 </View>
-
 
             </Container>
 

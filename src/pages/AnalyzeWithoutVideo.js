@@ -174,7 +174,7 @@ export default class AnalyzeWithoutVideo extends Component {
                     <Slider
                         value={this.state.value}
                         onValueChange={value => this.changeValues(pos, value)}
-                        minimumValue={0}
+                        minimumValue={1}
                         maximumValue={10}
                         maximumTrackTintColor={"#269cda"}
                         minimumTrackTintColor={'#269cda'}

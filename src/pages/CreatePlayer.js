@@ -194,6 +194,7 @@ export default class CreatePlayer extends Component {
                             onChangeText={(name) => this.setState({ name })}
                         />
                         <TextField
+                            keyboardType="email-address"
                             label="Email"
                             textColor='#555555'
                             labelHeight={20}
@@ -204,6 +205,7 @@ export default class CreatePlayer extends Component {
                         />
 
                         <TextField
+                            keyboardType="numeric"
                             label="Peso"
                             textColor='#555555'
                             labelHeight={20}
@@ -214,6 +216,7 @@ export default class CreatePlayer extends Component {
                         />
 
                         <TextField
+                            keyboardType="numeric"
                             label="Altura"
                             textColor='#555555'
                             labelHeight={20}
@@ -224,7 +227,7 @@ export default class CreatePlayer extends Component {
                         />
 
                         <TextField
-
+                            keyboardType="numeric"
                             label="Telefone"
                             textColor='#555555'
                             labelHeight={20}

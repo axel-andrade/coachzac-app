@@ -170,7 +170,7 @@ export default class UpdateAnalyze extends Component {
                     <Slider
                         value={this.state.values[pos]}
                         onValueChange={value => this.changeValues(pos, value)}
-                        minimumValue={0}
+                        minimumValue={1}
                         maximumValue={10}
                         maximumTrackTintColor={"#269cda"}
                         minimumTrackTintColor={'#269cda'}

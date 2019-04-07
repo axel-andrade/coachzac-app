@@ -30,6 +30,8 @@ export default class PlayerProfile extends Component {
 
     async componentDidMount() {
 
+        alert(JSON.stringify(this.props.navigation.state.params.player.mediumSteps));
+
         let existsProfileImage;
         let firstName = this.props.navigation.state.params.player.name.split(" ");
         let date = this.props.navigation.state.params.player.dateOfBirth.split("T");

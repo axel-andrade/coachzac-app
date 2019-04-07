@@ -36,6 +36,7 @@ export default class ResultByPlayer extends Component {
 
     async componentDidMount() {
 
+       
         //setTimeout(async () => {
         let sessionToken = JSON.parse(await AsyncStorage.getItem('@CoachZac:sessionToken'));
         let player = JSON.parse(await AsyncStorage.getItem('@CoachZac:player'));
